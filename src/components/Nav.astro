@@ -1,0 +1,165 @@
+---
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/astro/components";
+import Logo from "~/components/Logo.astro";
+import { siteConfig } from "~/config/site";
+import { getPosts } from "~/lib/blog";
+
+// Docs live on their own origin (docs.shadynotes.app), served by a separate
+// Dokploy app. The active-state logic below compares against Astro.url.pathname,
+// which can never start with "https://", so the Docs entry simply always renders
+// in the muted style. That is correct — you are never "on" the docs page while
+// on this site — and is why it needs no special casing.
+const links = [
+  { href: "/#features", label: "Features" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/download", label: "Download" },
+  { href: "https://docs.shadynotes.app", label: "Docs" },
+  { href: "/changelog", label: "Changelog" },
+];
+// The Blog link appears once there is something to read (in `npm run dev`,
+// drafts count — see lib/blog.ts).
+if ((await getPosts()).length > 0) links.push({ href: "/blog", label: "Blog" });
+
+interface Props {
+  /**
+   * The page decides who owns its one amber action (DESIGN.md, The One Signal
+   * Rule). Pages whose own content carries a primary CTA pass "secondary", and
+   * the nav's "Start free" steps down to the outline style.
+   */
+  cta?: "primary" | "secondary";
+}
+
+const { cta = "primary" } = Astro.props;
+const path = Astro.url.pathname;
+
+// Shared with Button.astro so Clerk's unstyled buttons match the design system.
+const btnBase =
+  "button inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-medium font-mono tracking-tight transition-colors select-none cursor-pointer";
+// Mirrors Button.astro: yellow fill, black text and a pill outline.
+const btnPrimary =
+  `${btnBase} button-primary bg-brand-cta text-brand-bg hover:bg-brand-cta-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cta`;
+// Mirrors Button.astro's secondary variant, for pages that pass cta="secondary".
+// Those pages promise "no card, no account", so the nav offers the download
+// rather than a sign-up form. /download itself keeps Start free: a Download
+// link to the page you are on would go nowhere.
+const navDownload = cta === "secondary" && path.replace(/\/$/, "") !== "/download";
+const btnSecondary =
+  `${btnBase} button-secondary border border-brand-line text-brand-fg hover:border-brand-accent hover:text-brand-accent hover:shadow-[0_0_16px_-2px_var(--color-brand-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent`;
+// Ghost button — same height/shape as the primary so the pair looks balanced.
+// max-md:hidden, not `hidden md:inline-flex`: btnBase already carries
+// inline-flex, which out-ranked `hidden` and left Sign in showing on phones.
+const signInGhost =
+  `${btnBase} button-ghost max-md:hidden text-brand-muted hover:text-brand-fg hover:bg-brand-fg/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-line`;
+---
+
+<header class="site-nav sticky top-0 z-40 border-b border-brand-line bg-brand-bg">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <a href="/" class="flex items-center gap-2.5 text-brand-fg hover:text-brand-accent transition-colors">
+      <Logo size={26} class="text-brand-accent" />
+      <span class="whitespace-nowrap font-sans text-base font-bold tracking-tight">{siteConfig.name}</span>
+    </a>
+
+    <div class="hidden items-center gap-7 md:flex">
+      {
+        links.map((l) => (
+          <a
+            href={l.href}
+            aria-current={path.replace(/\/$/, "") === l.href ? "page" : undefined}
+            class:list={[
+              "text-sm transition-colors",
+              path === l.href || (l.href !== "/" && path.startsWith(l.href))
+                ? "text-brand-accent"
+                : "text-brand-muted hover:text-brand-fg",
+            ]}
+          >
+            {l.label}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="flex items-center gap-2">
+      {navDownload && <a href="/download" class={btnSecondary}>Download</a>}
+      <Show when="signed-out">
+        <SignInButton mode="modal" asChild><button type="button" class={signInGhost}>Sign in</button></SignInButton>
+        {!navDownload && <SignUpButton mode="modal" asChild><button type="button" class={cta === "secondary" ? btnSecondary : btnPrimary}>Start free</button></SignUpButton>}
+      </Show>
+      <Show when="signed-in">
+        <UserButton />
+      </Show>
+
+      <!-- Below md the inline links are hidden, so they live here. A plain
+           <details> needs no JS to open; the script below only adds Escape
+           and click-outside to close it. -->
+      <details class="nav-menu relative md:hidden" data-nav-menu>
+        <summary
+          class="grid size-11 cursor-pointer list-none place-items-center rounded-md text-brand-fg transition-colors hover:bg-brand-fg/[0.06] [&::-webkit-details-marker]:hidden"
+          aria-label="Menu"
+        >
+          <svg class="nav-menu-open" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+          <svg class="nav-menu-close" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </summary>
+        <div class="absolute right-0 top-full mt-2 w-60 rounded-xl border border-brand-line bg-brand-bg-soft p-2 shadow-[0_1rem_2rem_rgb(0_0_0/0.5)]">
+          <ul>
+            {
+              links.map((l) => (
+                <li>
+                  <a
+                    href={l.href}
+                    aria-current={path.replace(/\/$/, "") === l.href ? "page" : undefined}
+                    class:list={[
+                      "flex min-h-11 items-center rounded-md px-3 text-base transition-colors hover:bg-brand-fg/[0.06]",
+                      path === l.href || (l.href !== "/" && path.startsWith(l.href))
+                        ? "text-brand-accent"
+                        : "text-brand-fg",
+                    ]}
+                  >
+                    {l.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <Show when="signed-out">
+            <div class="mt-2 border-t border-brand-line pt-2">
+              <SignInButton
+                mode="modal"
+                asChild
+              >
+                <button type="button" class="flex min-h-11 w-full cursor-pointer items-center rounded-full px-3 text-left text-base text-brand-muted transition-colors hover:bg-brand-bg-soft hover:text-brand-fg">Sign in</button>
+              </SignInButton>
+            </div>
+          </Show>
+        </div>
+      </details>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .nav-menu-close,
+  .nav-menu[open] .nav-menu-open {
+    display: none;
+  }
+  .nav-menu[open] .nav-menu-close {
+    display: block;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>("[data-nav-menu]").forEach((menu) => {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && menu.open) {
+        menu.open = false;
+        menu.querySelector("summary")?.focus();
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
+    });
+  });
+</script>

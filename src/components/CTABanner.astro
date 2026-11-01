@@ -1,0 +1,29 @@
+---
+import Button from "~/components/Button.astro";
+
+interface Props {
+  heading?: string;
+  body?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  heading = "Ready to keep your notes one scroll away?",
+  body = "Shady Notes is out now. Every plan starts with 14 free days of the full app — and your notes stay plain markdown files either way.",
+  ctaLabel = "See pricing",
+  ctaHref = "/pricing",
+} = Astro.props;
+---
+
+<section class="mx-auto mt-24 max-w-5xl px-6">
+  <div class="cta-panel px-8 py-16 text-center md:px-12">
+    <h2 class="font-sans text-2xl md:text-3xl font-bold tracking-tight text-balance">
+      {heading}
+    </h2>
+    <p class="mx-auto mt-4 max-w-xl text-base text-brand-muted">{body}</p>
+    <div class="mt-8">
+      <Button href={ctaHref} variant="primary">{ctaLabel}</Button>
+    </div>
+  </div>
+</section>

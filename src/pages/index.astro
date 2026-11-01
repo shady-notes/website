@@ -1,0 +1,393 @@
+---
+import Site from "~/layouts/Site.astro";
+import Button from "~/components/Button.astro";
+import CTABanner from "~/components/CTABanner.astro";
+import FAQItem from "~/components/FAQItem.astro";
+import BrandFilm from "~/components/BrandFilm.astro";
+import GestureStage from "~/components/GestureStage.astro";
+import { siteConfig } from "~/config/site";
+
+// The gesture facts sit beside the GestureStage demo, so each one only has to
+// name what the reader just watched, not narrate it.
+const gestures = [
+  [
+    "Scroll near the menu bar",
+    "The shade slides down over whatever you're doing. Scroll the other way and it's gone. Direction is configurable and auto-detects mouse or trackpad.",
+  ],
+  [
+    "One global hotkey",
+    "⌃⌥⌘↓ (Control-Option-Command-Down), rebindable, toggles the shade from inside any app. No window switching, no Dock, no Cmd+Tab.",
+  ],
+  [
+    "The amber pull tab",
+    "A small tab hangs below the menu bar while the app runs. Click to toggle. It shrinks to a quiet dot when your mouse leaves.",
+  ],
+  [
+    "Pin, window, minimize",
+    "Pin the shade open, detach it into a regular window, or strip the chrome for a distraction-free surface.",
+  ],
+];
+
+// Four points, not fourteen. The full inventory lives in the docs, which is
+// where a reader who wants it already expects to find it.
+const features = [
+  [
+    "Live markdown",
+    "Markers hide as you type and reveal when the cursor enters the line. Checkboxes, real tables, callouts, wikilinks and slash commands. ⌃E shows the raw source.",
+  ],
+  [
+    "Tabs, stars and search",
+    "Tabs that persist across restarts, starred notes, vault-wide search and a VS Code-style find bar.",
+  ],
+  [
+    "Plugins in the box",
+    "Daily Notes, Kanban and Tasks. Build your own as a single .md file with a YAML front-matter DSL, like this one.",
+  ],
+  [
+    "Sixteen themes",
+    "Eleven dark, five light, including Solarized, Dracula, Nord and Catppuccin. ⌘⌥T switches.",
+  ],
+];
+
+const themeSwatches = [
+  ["Dracula", "#282a36"],
+  ["Catppuccin Mocha", "#1e1e2e"],
+  ["Nord", "#2e3440"],
+  ["Gruvbox", "#282828"],
+  ["Tokyo Night", "#1a1b26"],
+  ["Rosé Pine", "#191724"],
+  ["Solarized Dark", "#002b36"],
+  ["Solarized Light", "#fdf6e3"],
+  ["Catppuccin Latte", "#eff1f5"],
+  ["Gruvbox Light", "#fbf1c7"],
+];
+
+const pricingTeaser = [
+  {
+    name: "Free",
+    price: "$0 · forever",
+    blurb: "A complete basic notepad. The first 14 days unlock everything.",
+  },
+  {
+    name: "Personal",
+    price: "$4 / month",
+    blurb: "Every theme, plugins, revision history and all updates, on a vault that stays yours.",
+  },
+  {
+    name: "Supporter",
+    price: "$8 / month",
+    blurb: "The same app plus early builds, priority support and a heavier vote on the roadmap.",
+  },
+];
+
+const chip = "rounded bg-brand-bg-soft px-1.5 py-0.5 font-mono text-[0.875em] text-brand-fg";
+---
+
+<Site navCta="secondary">
+  <section class="hero-section border-b border-brand-line">
+    <div class="mx-auto grid max-w-6xl gap-12 px-6 pt-16 pb-20 lg:grid-cols-1 md:items-center md:py-20">
+      <div class="hero-intro">
+        <h1 class="max-w-xl font-sans text-5xl font-bold leading-[1.05] tracking-tight text-balance md:text-6xl">
+          Your notes, one <mark>scroll</mark> away.
+        </h1>
+
+        <p class="mt-6 max-w-[34rem] text-lg text-brand-fg/85 md:text-xl">
+          Shady Notes slides down from the menu bar like a window shade. Scroll
+          near the top of the screen and your notes are there. Scroll back and
+          they're gone.
+        </p>
+
+        <p class="mt-4 max-w-[34rem] text-base text-brand-muted">
+          Underneath, every note is a plain <code class={chip}>.md</code> file on
+          your disk. Point it at the Obsidian vault you already have.
+        </p>
+
+        <div class="mt-10 flex flex-wrap items-center gap-x-4 gap-y-3">
+          <Button href="/download" variant="primary">Download for macOS</Button>
+          <Button href="/pricing" variant="ghost">See pricing</Button>
+        </div>
+
+        <p class="mt-5 text-sm text-brand-fg/85">
+          14-day full trial. No card, no account.
+        </p>
+        <p class="mt-2 font-mono text-xs text-brand-muted">
+          v{siteConfig.version} · macOS 13+ · Apple silicon and Intel · native Swift · notarised
+        </p>
+
+        <!-- Phones can't run a Mac app. Social and ad traffic lands here on a
+             phone more often than not, so below md offer the one useful move:
+             send the link to the Mac. navigator.share opens the share sheet
+             (AirDrop, Messages, Mail); without it, copy the link instead. -->
+        <div class="mt-6 rounded-xl border border-brand-line p-4 md:hidden" data-phone-path>
+          <p class="text-sm text-brand-fg/85">
+            On your phone? Shady Notes is a Mac app. Send yourself the link and
+            open it there.
+          </p>
+          <button
+            type="button"
+            class="button button-secondary mt-3 inline-flex min-h-11 items-center gap-2 px-4 text-sm"
+            data-share-link
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span data-share-label>Send the link to my Mac</span>
+          </button>
+        </div>
+      </div>
+
+      <BrandFilm hero />
+    </div>
+  </section>
+
+
+  <!-- THE GESTURE -->
+  <section id="features" class="border-b border-brand-line">
+    <!-- On wide screens the stage leads the left column and the heading sits
+         beside it, so the demo starts just under the hero instead of a
+         screen further down. Phones keep reading order: heading, demo, facts. -->
+    <div class="mx-auto grid max-w-6xl gap-x-12 gap-y-10 px-6 pt-16 pb-24 md:pt-20 lg:grid-cols-[1.45fr_1fr] lg:items-start">
+      <div class="lg:col-start-2 lg:row-start-1">
+        <h2 class="font-sans text-3xl font-bold tracking-tight text-balance md:text-4xl">
+          Notes that live just above your screen.
+        </h2>
+        <p class="mt-5 max-w-[60ch] text-base text-brand-fg/85 md:text-lg">
+          A notes app you keep open costs you a window. A notes app you have to
+          launch costs you the thought. Shady Notes costs you a flick of the
+          scroll wheel.
+        </p>
+      </div>
+
+      <div class="lg:col-start-1 lg:row-start-1">
+        <GestureStage />
+      </div>
+
+      <dl class="gesture-facts grid gap-x-8 border-y border-brand-line md:grid-cols-2 lg:col-span-2 lg:grid-cols-4">
+        {
+          gestures.map(([title, body]) => (
+            <div class="py-5">
+              <dt class="font-sans text-base font-bold">{title}</dt>
+              <dd class="mt-2 text-sm leading-relaxed text-brand-fg/75">{body}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- PLAIN FILES -->
+  <section class="border-b border-brand-line">
+    <div class="mx-auto max-w-6xl px-6 py-24">
+      <div class="grid gap-12 md:grid-cols-[1fr_1.2fr] md:items-start">
+        <div>
+          <h2 class="font-sans text-3xl font-bold tracking-tight text-balance md:text-4xl">
+            No lock-in. Just markdown.
+          </h2>
+          <p class="mt-5 max-w-[60ch] text-base text-brand-fg/85">
+            Every note is a standalone <strong class="text-brand-fg">.md file</strong> in
+            a folder you choose, by default <code class={chip}>~/Documents/ShadyNotes/</code>.
+            Point Obsidian at the same vault. Edit a note in VS Code and watch it
+            reload in the shade. Grep it. Back it up. It's your disk.
+          </p>
+          <p class="mt-4 max-w-[60ch] text-sm leading-relaxed text-brand-muted">
+            No server and no sync service hold your notes, and you don't need an
+            account to write. Only metadata is scanned at launch and a note loads when
+            you open it, so the shade scales to vaults with thousands of notes.
+          </p>
+        </div>
+
+        <pre tabindex="0" aria-label="Markdown example" class="overflow-x-auto rounded-xl border border-brand-line bg-brand-bg p-4 font-mono text-xs leading-relaxed text-brand-fg/90 sm:p-6 sm:text-sm"><code><span class="text-brand-muted">$</span> ls ~/Documents/ShadyNotes/
+<span class="text-brand-accent">projects/</span>    <span class="text-brand-accent">journal/</span>     <span class="text-brand-accent">plugins/</span>
+ideas.md     groceries.md meetings.md
+
+<span class="text-brand-muted">$</span> cat ideas.md
+<span class="text-brand-muted"># Ideas</span>
+
+- [x] a notes app with no window
+- [ ] that opens with a scroll
+- [ ] and never holds my files hostage</code></pre>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- THE EDITOR, IN FOUR POINTS -->
+  <section class="border-b border-brand-line">
+    <div class="mx-auto max-w-6xl px-6 py-24">
+      <h2 class="max-w-3xl font-sans text-3xl font-bold tracking-tight text-balance md:text-4xl">
+        Markdown that renders as you write.
+      </h2>
+      <p class="mt-5 max-w-[60ch] text-base text-brand-fg/85">
+        A WYSIWYG editor over real markdown source. Never a proprietary format
+        with an export bolted on.
+      </p>
+
+      <div class="mt-12 grid gap-12 lg:grid-cols-1 md:items-start">
+        <div>
+          <dl class="divide-y divide-brand-line border-y border-brand-line">
+            {
+              features.map(([title, body], i) => (
+                <div class="py-5">
+                  <dt class="font-sans text-base font-bold">{title}</dt>
+                  <dd class="mt-2 max-w-[60ch] text-sm leading-relaxed text-brand-fg/75">{body}</dd>
+                  {i === features.length - 1 && (
+                    <dd class="mt-4">
+                      <ul class="flex flex-wrap gap-2" aria-label="Some of the built-in themes">
+                        {themeSwatches.map(([name, c]) => (
+                          <li
+                            class="size-6 rounded-full border border-brand-line"
+                            style={`background: ${c}`}
+                            title={name}
+                          >
+                            <span class="sr-only">{name}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </dd>
+                  )}
+                </div>
+              ))
+            }
+          </dl>
+
+          <a
+            href="https://docs.shadynotes.app"
+            class="mt-6 inline-flex min-h-11 items-center gap-2 font-sans text-sm text-brand-accent underline-offset-4 hover:underline"
+          >
+            Every feature, in the docs
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </a>
+        </div>
+
+        <figure class="m-0">
+          <pre tabindex="0" aria-label="Markdown example" class="overflow-x-auto rounded-xl border border-brand-line bg-brand-bg p-4 font-mono text-xs leading-relaxed text-brand-fg/90 sm:p-6"><code><span class="text-brand-muted">---</span>
+<span class="text-brand-accent">plugin:</span> my-reading-list
+<span class="text-brand-accent">name:</span> Reading List
+<span class="text-brand-accent">schema:</span>
+  <span class="text-brand-accent">type:</span> reading
+  <span class="text-brand-accent">fields:</span>
+    - <span class="text-brand-accent">name:</span> status
+      <span class="text-brand-accent">type:</span> select
+      <span class="text-brand-accent">options:</span> [want, reading, finished]
+  <span class="text-brand-accent">group_by:</span> status
+<span class="text-brand-muted">---</span></code></pre>
+          <figcaption class="mt-3 text-sm text-brand-muted">
+            A whole plugin: one markdown file, rendered with native components.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING TEASER -->
+  <section class="border-b border-brand-line">
+    <div class="mx-auto max-w-6xl px-6 py-24">
+      <h2 class="max-w-3xl font-sans text-3xl font-bold tracking-tight text-balance md:text-4xl">
+        One small subscription. Zero hostages.
+      </h2>
+
+      <ul class="mt-12 grid border-y border-brand-line md:grid-cols-3 md:divide-x md:divide-brand-line max-md:divide-y max-md:divide-brand-line">
+        {
+          pricingTeaser.map((t) => (
+            <li class="py-6 md:px-6 md:first:pl-0 md:last:pr-0">
+              <div class="flex items-baseline justify-between gap-4">
+                <h3 class="font-sans text-lg font-bold">{t.name}</h3>
+                <span class="font-mono text-sm text-brand-accent">{t.price}</span>
+              </div>
+              <p class="mt-3 text-sm leading-relaxed text-brand-fg/75">{t.blurb}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mt-6 max-w-[60ch] text-sm leading-relaxed text-brand-fg/75">
+        If you stop paying, the app drops to Free. Your notes, the editor and the
+        shade keep working; only the extras lock. Pay for the app, never for your
+        notes.
+      </p>
+
+      <a
+        href="/pricing"
+        class="mt-6 inline-flex min-h-11 items-center gap-2 font-sans text-sm text-brand-accent underline-offset-4 hover:underline"
+      >
+        Compare plans
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- BEFORE YOU DOWNLOAD -->
+  <section class="border-b border-brand-line">
+    <div class="mx-auto max-w-6xl px-6 py-24">
+      <div class="grid gap-12 md:grid-cols-[1fr_1.4fr]">
+        <h2 class="font-sans text-3xl font-bold tracking-tight text-balance md:text-4xl">
+          Before you download.
+        </h2>
+        <div class="border-t border-brand-line">
+          <FAQItem question="Does it run on my Mac?">
+            One download runs natively on Apple silicon and Intel Macs, on macOS 13
+            or later.
+          </FAQItem>
+          <FAQItem question="Will macOS let me open it?">
+            Yes. It's signed and notarised by Apple, so there's no "unidentified
+            developer" warning. The first time you open it, macOS asks whether
+            you're sure you want to open an app downloaded from the internet;
+            that's the normal first-run prompt. Click Open.
+          </FAQItem>
+          <FAQItem question="Do I need an account?">
+            Not to write. The trial starts when the app does. You only sign in
+            if you subscribe, so the app can unlock the paid features.
+          </FAQItem>
+          <FAQItem question="What happens after the 14 days?">
+            The app drops to Free. Your notes, the editor and the shade keep
+            working exactly as before; the extra themes, plugins and revision
+            history lock until you subscribe.
+          </FAQItem>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTABanner
+    heading="Fourteen days of the full app."
+    body="Download, open, scroll. No card and no account, and your notes stay plain markdown files either way."
+    ctaLabel="Download for macOS"
+    ctaHref="/download"
+  />
+</Site>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-share-link]").forEach((btn) => {
+    const label = btn.querySelector<HTMLElement>("[data-share-label]");
+    const url = "https://shadynotes.app/";
+    const canShare = typeof navigator.share === "function";
+    const canCopy = Boolean(navigator.clipboard?.writeText);
+    if (!canShare && !canCopy) {
+      // style, not the hidden attribute: inline-flex would out-rank `hidden`.
+      btn.style.display = "none";
+      return;
+    }
+    if (!canShare && label) label.textContent = "Copy the link";
+
+    btn.addEventListener("click", async () => {
+      if (canShare) {
+        try {
+          await navigator.share({ title: "Shady Notes", text: "The menu-bar markdown notepad for your Mac.", url });
+        } catch {
+          // Dismissed share sheet: nothing to do.
+        }
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(url);
+        if (label) label.textContent = "Link copied";
+      } catch {
+        if (label) label.textContent = url;
+      }
+    });
+  });
+</script>

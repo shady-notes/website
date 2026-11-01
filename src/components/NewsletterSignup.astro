@@ -1,0 +1,125 @@
+---
+// Newsletter sign-up (playbook §3.6). Renders NOTHING until
+// siteConfig.newsletter.endpoint is set, so it can sit on pages before the
+// Worker exists.
+//
+// Contract with the Worker: POST JSON, exactly {email, interests, source} —
+// the Worker rejects unknown fields with 400, so do not add any here. A 2xx
+// means the confirmation mail was sent (or, with {status:"already-confirmed"},
+// that the address is already subscribed). Nothing is subscribed until the
+// visitor presses Confirm on the page the mail links to (double opt-in).
+import { siteConfig } from "~/config/site";
+import { TOPICS, TOPIC_IDS } from "~/config/blog";
+
+interface Props {
+  /** Recorded with the sign-up so you know which form it came from. */
+  source: string;
+  heading?: string;
+}
+
+const { source, heading = "Get new posts by email" } = Astro.props;
+const { endpoint, consentWording } = siteConfig.newsletter;
+const uid = `nl-${source.replace(/[^a-z0-9]+/gi, "-")}`;
+---
+
+{
+  endpoint && (
+    <section class="newsletter cta-panel not-prose mt-16 p-6 md:p-8" aria-labelledby={`${uid}-h`}>
+      <h2 id={`${uid}-h`} class="font-sans text-2xl font-bold">{heading}</h2>
+      <p class="mt-2 text-base text-brand-muted">
+        A short email when a post goes up. No tracking pixels, no link tracking.
+      </p>
+      <form class="mt-6" data-newsletter data-endpoint={endpoint} data-source={source} novalidate>
+        <label for={`${uid}-email`} class="block text-sm font-semibold">Email address</label>
+        <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+          <input
+            id={`${uid}-email`}
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            inputmode="email"
+            spellcheck="false"
+            class="newsletter-input min-h-11 w-full flex-1 rounded-full border border-brand-line bg-white px-4 text-base"
+          />
+          <button type="submit" class="button button-primary inline-flex min-h-11 items-center justify-center px-5 py-2.5 text-sm">
+            Subscribe
+          </button>
+        </div>
+        <fieldset class="mt-5">
+          <legend class="text-sm font-semibold">Topics</legend>
+          <div class="mt-2 flex flex-wrap gap-x-6 gap-y-1">
+            {TOPIC_IDS.map((id) => (
+              <label class="inline-flex min-h-11 items-center gap-2 text-sm">
+                <input type="checkbox" name="interests" value={id} checked class="size-4 accent-black" />
+                {TOPICS[id].label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <p class="mt-4 text-sm text-brand-muted">
+          {consentWording} See the <a href="/privacy#newsletter" class="underline">privacy policy</a>.
+        </p>
+        <p class="newsletter-status mt-4 text-sm font-semibold" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  )
+}
+
+<script>
+  const messages = {
+    sent: "Check your inbox. Press the button in the email to confirm; nothing is sent until you do.",
+    already: "That address is already subscribed.",
+    invalid: "That email address doesn't look right.",
+    topics: "Pick at least one topic.",
+    limited: "Too many tries from here. Wait a minute and try again.",
+    failed: "Something went wrong on our side. Please try again later.",
+    offline: "Couldn't reach the server. Check your connection and try again.",
+  };
+
+  document.querySelectorAll<HTMLFormElement>("form[data-newsletter]").forEach((form) => {
+    const status = form.querySelector<HTMLElement>(".newsletter-status")!;
+    const button = form.querySelector<HTMLButtonElement>("button[type=submit]")!;
+    const emailInput = form.querySelector<HTMLInputElement>("input[name=email]")!;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const interests = [...form.querySelectorAll<HTMLInputElement>("input[name=interests]:checked")].map((i) => i.value);
+      if (!emailInput.checkValidity() || !email) {
+        status.textContent = messages.invalid;
+        emailInput.focus();
+        return;
+      }
+      if (interests.length === 0) {
+        status.textContent = messages.topics;
+        return;
+      }
+
+      button.disabled = true;
+      status.textContent = "Sending…";
+      try {
+        const res = await fetch(form.dataset.endpoint!, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, interests, source: form.dataset.source }),
+        });
+        const body = await res.json().catch(() => ({}) as { status?: string });
+        if (res.ok) {
+          status.textContent = body.status === "already-confirmed" ? messages.already : messages.sent;
+          if (body.status !== "already-confirmed") form.reset();
+        } else if (res.status === 429) {
+          status.textContent = messages.limited;
+        } else if (res.status === 400) {
+          status.textContent = messages.invalid;
+        } else {
+          status.textContent = messages.failed;
+        }
+      } catch {
+        status.textContent = messages.offline;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>

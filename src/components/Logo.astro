@@ -1,0 +1,62 @@
+---
+import mark from "~/assets/logo-mark.png";
+
+interface Props {
+  size?: number;
+  class?: string;
+}
+const { size = 28, class: extra = "" } = Astro.props;
+---
+
+{/*
+  The beach umbrella — the app's own icon, not a redrawing of it.
+
+  This used to be a hand-drawn SVG approximation, because the source art in
+  shadynotes/design/logo/app-icon/ is near-black line work on transparency and
+  would have vanished against brand-bg, and because the mark has to inherit its
+  colour: Nav and Footer pass text-brand-accent, but sign-in and sign-up pass no
+  class at all and expect it to take the surrounding text colour.
+
+  Both of those are solved by using the art as a MASK rather than as an image.
+  The element paints `currentColor` and the artwork decides which pixels show,
+  so colour inheritance works exactly as it did with stroke="currentColor", and
+  the ink colour of the source file is irrelevant.
+
+  Two things about the asset, in src/assets/logo-mark.png:
+
+    * It comes from shadynotes_menu_bar_icon_CUTOUT.png. The neighbouring
+      shadynotes_menu_bar_icon.png looks identical in a viewer but is fully
+      opaque — it has a grey transparency checkerboard baked into it, which as a
+      mask would show as a solid tile.
+    * Its strokes are dilated by 9px at source resolution. The raw art is
+      hairline-thin, and at the 26px the nav renders it at, undilated strokes
+      go faint enough to read as a smudge. 9px was picked by rendering 26/28/40/72
+      against +0/+9/+14/+20: it is the point where the small sizes hold up and
+      the canopy scallops have not yet closed into each other.
+*/}
+<span
+  class:list={["inline-block shrink-0 align-middle logo-mark", extra]}
+  style={`width:${size}px;height:${size}px;--logo-mark:url(${mark.src})`}
+  aria-hidden="true"></span>
+
+<style>
+  .logo-mark {
+    -webkit-mask-image: var(--logo-mark);
+    mask-image: var(--logo-mark);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  /* Only paint once we know the mask will clip it. Without the guard, a browser
+   * that ignores mask-image renders this as a solid accent-coloured square in
+   * the nav — a worse failure than no mark at all. */
+  @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
+    .logo-mark {
+      background-color: currentColor;
+    }
+  }
+</style>

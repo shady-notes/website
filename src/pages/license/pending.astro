@@ -1,0 +1,48 @@
+---
+import Site from "~/layouts/Site.astro";
+import Button from "~/components/Button.astro";
+import { siteConfig } from "~/config/site";
+---
+
+<Site
+  title="You're subscribed — Shady Notes"
+  description="Thanks for subscribing. Sign in from the app to unlock premium."
+>
+  <section class="mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center px-6 py-20 text-center">
+    <div class="rounded-full border border-brand-accent/30 bg-brand-accent/10 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-brand-accent">
+      Subscription active
+    </div>
+
+    <h1 class="mt-8 font-sans text-4xl font-bold tracking-tight md:text-5xl">
+      You're all set.
+    </h1>
+
+    <p class="mt-6 max-w-xl text-base text-brand-fg/85 md:text-lg">
+      Thanks for subscribing to Shady Notes. Your premium features unlock as soon as
+      you sign in from the app — no licence key to copy, no email to wait for.
+    </p>
+
+    <div class="mt-8 w-full max-w-md rounded-2xl border border-brand-line bg-brand-bg p-6 text-left">
+      <p class="font-mono text-xs uppercase tracking-widest text-brand-muted">
+        To unlock premium
+      </p>
+      <ol class="mt-3 space-y-2 text-sm text-brand-fg/90">
+        <li>1. Open Shady Notes</li>
+        <li>2. Preferences → <span class="text-brand-accent">Premium</span></li>
+        <li>3. Click <span class="text-brand-accent">Sign In</span> — your browser confirms it and the app unlocks</li>
+      </ol>
+    </div>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+      <Button href="/download" variant="primary">Download Shady Notes</Button>
+    </div>
+
+    <p class="mt-12 max-w-xl font-mono text-xs text-brand-muted">
+      Signing in checks your subscription online once, then the app works offline.
+      Your notes are plain markdown files and never depend on it. Manage or cancel
+      your subscription anytime from your account. Questions? Email <a
+        href={`mailto:${siteConfig.contactEmail}`}
+        class="text-brand-accent hover:underline">{siteConfig.contactEmail}</a>.
+    </p>
+  </section>
+</Site>

@@ -1,0 +1,161 @@
+---
+import Site from "~/layouts/Site.astro";
+import Button from "~/components/Button.astro";
+import { siteConfig } from "~/config/site";
+
+const platforms = [
+  {
+    name: "macOS",
+    detail: "macOS 13 Ventura or newer · Apple Silicon & Intel",
+    tag: "Universal · signed & notarised DMG",
+    url: siteConfig.download.dmgUrl,
+    cta: "Download for macOS",
+  },
+  {
+    name: "Windows",
+    detail: "Windows 10 & 11",
+    tag: "In development",
+    url: siteConfig.download.windowsUrl,
+    cta: "Download for Windows",
+  },
+  {
+    name: "Linux",
+    detail: "Ubuntu 22.04+ · Debian-based",
+    tag: "In development",
+    url: siteConfig.download.linuxUrl,
+    cta: "Download for Linux",
+  },
+];
+---
+
+<Site
+  navCta="secondary"
+  title="Download Shady Notes"
+  description="Shady Notes for macOS 13+ — one signed, notarised universal download that runs natively on Apple Silicon and Intel Macs. Windows and Linux coming soon."
+>
+  <section class="border-b border-brand-line">
+    <div class="mx-auto max-w-5xl px-6 py-20 md:py-28">
+      <h1 class="mt-3 font-sans text-4xl font-bold tracking-tight md:text-5xl">
+        Get Shady Notes.
+      </h1>
+      <p class="mt-6 max-w-2xl text-base text-brand-fg/85 md:text-lg">
+        Available now for <strong class="text-brand-fg">macOS 13 Ventura or
+        newer</strong>, on <strong class="text-brand-fg">Apple Silicon and
+        Intel</strong> — one signed, notarised DMG that stays out of the Mac App
+        Store. <strong class="text-brand-fg">Windows</strong> and
+        <strong class="text-brand-fg">Linux</strong> are on the way.
+      </p>
+
+      <div class="mt-10 grid gap-4 sm:grid-cols-3">
+        {
+          platforms.map((p) => (
+            <div
+              class={`flex flex-col rounded-xl border p-6 ${
+                p.url
+                  ? "border-brand-accent/40 bg-brand-accent/[0.05]"
+                  : "border-brand-line"
+              }`}
+            >
+              <h2 class="font-sans text-lg font-bold">{p.name}</h2>
+              <p class="mt-2 text-sm text-brand-muted">{p.detail}</p>
+              <p
+                class={`mt-1 font-mono text-xs ${
+                  p.url ? "text-brand-accent" : "text-brand-muted"
+                }`}
+              >
+                {p.tag}
+              </p>
+              <div class="mt-auto pt-6">
+                {p.url ? (
+                  <Button href={p.url} variant="primary" external class="w-full">
+                    {p.cta}
+                  </Button>
+                ) : (
+                  <Button variant="secondary" disabled class="w-full">
+                    Coming soon
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="mt-6 text-sm text-brand-muted">
+        New to Shady Notes? The
+        <a href="https://docs.shadynotes.app/install/" class="text-brand-accent underline"
+          >installation guide</a
+        > walks through the first launch, and the
+        <a href="https://docs.shadynotes.app/tour/" class="text-brand-accent underline">tour</a>
+        covers everything it does.
+      </p>
+
+      <p class="mt-3 text-sm text-brand-muted">
+        Want Windows or Linux first? Join the
+        <a
+          href={siteConfig.socials.discord}
+          class="text-brand-accent underline"
+          target="_blank"
+          rel="noopener noreferrer">Discord</a
+        > and tell us — it moves the roadmap.
+      </p>
+    </div>
+  </section>
+
+  {/* What you get at launch */}
+  <section class="border-b border-brand-line">
+    <div class="mx-auto max-w-5xl px-6 py-20">
+      <div class="grid gap-8 md:grid-cols-3">
+        <div class="rounded-xl border border-brand-line p-6">
+          <h3 class="font-sans text-lg font-bold">Direct DMG</h3>
+          <p class="mt-3 text-sm text-brand-muted">
+            The straight path: download the signed, notarised disk image, drag
+            Shady Notes into <code class="font-mono text-brand-fg">/Applications</code>,
+            and launch. No installer, no helper apps, no kernel extensions.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-brand-line p-6">
+          <h3 class="font-sans text-lg font-bold">Light footprint</h3>
+          <p class="mt-3 text-sm text-brand-muted">
+            A native AppKit + SwiftUI app with no bundled browser and no
+            external packages. It sits in your menu bar and stays out of the
+            way until you scroll.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-brand-line p-6">
+          <h3 class="font-sans text-lg font-bold">Your vault, ready</h3>
+          <p class="mt-3 text-sm text-brand-muted">
+            First launch creates <code class="font-mono text-brand-fg">~/Documents/ShadyNotes/</code>
+            (or point it at an existing Obsidian vault in Settings). Notes are
+            plain .md files from the first keystroke.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Requirements */}
+  <section>
+    <div class="mx-auto max-w-5xl px-6 py-20">
+      <h2 class="font-sans text-2xl font-bold tracking-tight md:text-3xl">
+        Requirements.
+      </h2>
+      <ul class="mt-8 space-y-4 text-sm text-brand-fg/85">
+        {
+          [
+            "macOS 13 Ventura or later — Apple Silicon and Intel, both served by the same universal download.",
+            "About a scroll wheel's worth of muscle memory. That's it.",
+            "No account, no sign-up: the trial starts when the app does.",
+          ].map((line) => (
+            <li class="flex gap-3">
+              <span class="mt-2 size-1.5 shrink-0 rounded-full bg-brand-accent" />
+              <span>{line}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Site>

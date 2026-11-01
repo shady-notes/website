@@ -1,0 +1,242 @@
+---
+import Logo from "~/components/Logo.astro";
+
+/* Click the yellow control to toggle the shade; clicking outside returns it to rest.
+   Without JavaScript the illustrative notes panel stays visible. */
+---
+
+<figure class="stage" data-shade-stage>
+  <div class="stage-desk" id="shade-preview">
+    <div class="desktop-scene" aria-hidden="true">
+      <div class="desktop-wallpaper"></div>
+      <div class="desktop-menubar">
+        <div><strong>Finder</strong><span>File</span><span>Edit</span><span>View</span><span>Go</span></div>
+        <div><span class="desktop-app-mark"><Logo size={14} /></span><svg viewBox="0 0 24 24" fill="none"><path d="M3 8a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0M9 16a5 5 0 0 1 6 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg><span>100%</span><span>Mon 9:41</span></div>
+      </div>
+      <div class="desktop-dock">
+        {['finder', 'notes', 'browser', 'terminal', 'shade'].map((name) => <span class={`dock-icon dock-${name}`} title={name === "shade" ? "Shady Notes" : undefined}>{name === "shade" ? <Logo size={28} /> : <svg viewBox="0 0 32 32" fill="none"><rect x="6" y="6" width="20" height="20" rx="4" stroke="currentColor" stroke-width="2"/><path d={name === 'terminal' ? 'M10 12l4 4-4 4M17 21h5' : name === 'notes' ? 'M11 12h10M11 16h10M11 20h7' : 'M6 13h20M14 13v13'} stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>}</span>)}
+      </div>
+    </div>
+
+    <div class="stage-viewport" id="shade-preview-panel">
+      <div class="stage-shade">
+        <div class="stage-panel" aria-hidden="true">
+          <div class="mock-app">
+            <div class="mock-toolbar"><span class="mock-window-dots"><i></i><i></i><i></i></span><strong>Shady Notes</strong><span class="mock-tools">Search · New note</span></div>
+            <div class="mock-tabs"><span>Recent notes</span><strong>Welcome.md</strong></div>
+            <div class="mock-workspace">
+              <aside class="mock-sidebar"><span class="mock-search">Search notes</span><strong>My notes</strong><span class="selected">Welcome</span><span>Ideas</span><span>Daily notes</span><span>Reading list</span><span class="mock-add">+ New note</span></aside>
+              <div class="mock-editor"><h3>Right here when you need it.</h3><p>A little space for your next thought.</p><h4>Today</h4><p class="mock-task">☑ Write something down</p><p class="mock-task">☐ Keep the good ideas</p><p class="mock-task">☐ Make room for focus</p><h4>A note to myself</h4><p>Small steps count. Start with one.</p><div class="mock-code"># Ideas<br/>Your notes, your files.</div></div>
+            </div>
+            <div class="mock-status"><span>Markdown</span><span>Saved locally</span></div>
+          </div>
+        </div>
+        <!-- The app's amber pull tab rides on the shade's bottom edge: under
+             the menu bar while closed, carried down as the shade opens. -->
+
+      </div>
+    </div>
+    <button type="button" class="stage-pulltab" data-shade-trigger aria-keyshortcuts="Control+Alt+Meta+ArrowDown" aria-label="Toggle the shade" aria-expanded="false" aria-controls="shade-preview-panel"></button>
+  </div>
+  <div class="stage-invitation">
+    <svg class="invitation-arrow" viewBox="0 0 90 70" fill="none"><path d="M80 62C36 64 18 42 20 10M8 22L20 9l14 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+    <span class="stage-instructions"><strong class="hint-open">Give it a click</strong><strong class="hint-close">Click again to tuck it away</strong><span class="invitation-shortcut">or press <kbd>⌃⌥⌘↓</kbd></span></span>
+  </div>
+  <figcaption class="stage-caption">
+    <span>The shade, coming down over the desktop: sidebar, tabs and a markdown editor. Illustrated preview.</span>
+  </figcaption>
+</figure>
+
+<style>
+  .stage {
+    margin: 0;
+    position: relative;
+  }
+
+  .stage-desk {
+    position: relative;
+    /* Fictional macOS-style desktop, with a narrow shade on the right. */
+    aspect-ratio: 16 / 9;
+    container-type: inline-size;
+    overflow: hidden;
+    border: 1px solid var(--color-brand-line);
+    border-radius: 0.75rem;
+    background: var(--tint-soft);
+    box-shadow: 0 4px 0 #000;
+  }
+
+  /* The app's own amber pull tab, the one non-CTA amber the brand brief
+     allows. Positioned off the shade's bottom edge so it travels with it. */
+  .stage-pulltab {
+    position: absolute;
+    top: 6%;
+    left: 75%;
+    width: 48px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    z-index: 6;
+    transform: translateX(-50%);
+    background: transparent;
+    transition: top 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .stage-pulltab::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 6px;
+    right: 6px;
+    height: 10px;
+    border-radius: 0 0 5px 5px;
+    background: var(--color-brand-cta);
+  }
+  .stage.is-open .stage-pulltab { top: calc(66% - 6px); }
+  .stage-pulltab:hover::before { background: #fff3b0; }
+  .stage-pulltab:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
+  .stage-viewport {
+    position: absolute;
+    top: 6%;
+    left: 53%;
+    right: 3%;
+    bottom: 34%;
+    z-index: 3;
+    overflow: visible;
+    pointer-events: none;
+    clip-path: inset(0 -30px -30px);
+  }
+
+  /* The shade moves; the panel inside carries the corners and shadow, so
+     the pull tab can hang outside it without being clipped. */
+  .stage-shade {
+    position: relative;
+    height: calc(100% - 6px);
+    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .stage-panel {
+    position: relative;
+    height: 100%;
+    border-radius: 0 0 0.5rem 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1.25rem 2.5rem -0.5rem rgb(0 0 0 / 0.6);
+  }
+
+  .mock-app { height: 100%; display: flex; flex-direction: column; background: #28282c; color: #dedee2; font-size: 1.15cqw; line-height: 1.5; }
+  .mock-toolbar { display: flex; align-items: center; gap: 1cqw; padding: .8cqw; background: #333338; font-size: 1cqw; }
+  .mock-window-dots { display: flex; gap: .3cqw; }
+  .mock-window-dots i { width: .65cqw; height: .65cqw; border-radius: 50%; background: #ec7068; }
+  .mock-window-dots i:nth-child(2) { background: #e5be60; }
+  .mock-window-dots i:nth-child(3) { background: #78b482; }
+  .mock-tools { margin-left: auto; color: #aaaab4; font-size: .8cqw; }
+  .mock-tabs { display: flex; gap: 1cqw; border-bottom: 1px solid #45454c; padding: .5cqw .8cqw; font-size: .85cqw; }
+  .mock-tabs strong { border-bottom: 2px solid #d8b15b; }
+  .mock-workspace { flex: 1; display: grid; grid-template-columns: 28% 1fr; min-height: 0; }
+  .mock-sidebar { display: flex; flex-direction: column; gap: .6cqw; padding: .8cqw .5cqw; background: #202024; border-right: 1px solid #45454c; font-size: .95cqw; }
+  .mock-sidebar span, .mock-sidebar strong { padding: .25cqw .5cqw; border-radius: .3cqw; }
+  .mock-search { border: 1px solid #48484f; color: #a7a7b1; }
+  .mock-sidebar .selected { background: #414149; color: #fff; }
+  .mock-add { margin-top: auto; color: #bdbdc8; }
+  .mock-editor { padding: 1.4cqw; overflow: hidden; }
+  .mock-editor h3 { margin: 0 0 .8cqw; font-size: 1.8cqw; line-height: 1.15; color: #fff; }
+  .mock-editor h4 { margin: 1.2cqw 0 .5cqw; font-size: 1.2cqw; color: #fff; }
+  .mock-editor p { margin: .4cqw 0; font-size: 1cqw; }
+  .mock-code { margin-top: 1cqw; padding: .7cqw; border-radius: .4cqw; background: #202024; font-family: var(--font-mono); font-size: .9cqw; color: #c2c2ca; }
+  .mock-status { display: flex; justify-content: space-between; padding: .4cqw .8cqw; background: #202024; color: #a7a7b1; font-size: .75cqw; }
+
+  /* Closed: the panel is tucked under the menu bar and only the pull tab
+     (just past the shade's bottom edge) peeks out, as in the app. */
+  .stage[data-armed] .stage-shade {
+    transform: translateY(-100%);
+  }
+
+  .stage[data-armed].is-open .stage-shade {
+    transform: none;
+  }
+
+  .stage-caption {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    color: var(--color-brand-muted);
+  }
+
+  .desktop-scene { position: absolute; inset: 0; }
+  .desktop-wallpaper { position: absolute; inset: 0; background: radial-gradient(ellipse at 18% 90%, #f0b37b 0, transparent 55%), radial-gradient(ellipse at 85% 15%, #737daf 0, transparent 65%), #b8a5bd; }
+  .desktop-wallpaper::after { content: ""; position: absolute; width: 130%; height: 55%; left: -15%; bottom: -25%; border-radius: 50%; background: #65849c; box-shadow: 0 -3cqw 0 rgb(229 201 176 / .55); transform: rotate(-12deg); }
+  .desktop-menubar { position: absolute; inset: 0 0 auto; height: 6%; display: flex; align-items: center; justify-content: space-between; padding: 0 2%; background: rgb(255 255 255 / .65); color: #252531; font-size: 1.35cqw; }
+  .desktop-menubar div { display: flex; align-items: center; gap: 1.7cqw; }
+  .desktop-app-mark { display: inline-flex; align-items: center; color: #252531; }
+  .desktop-app-mark :global(.logo-mark) { width: 2cqw !important; height: 2cqw !important; }
+  .desktop-menubar svg { width: 1.5cqw; height: 1.5cqw; }
+  .desktop-dock { position: absolute; bottom: 2%; left: 50%; transform: translateX(-50%); display: flex; gap: .8cqw; padding: .8cqw; border: 1px solid rgb(255 255 255 / .55); border-radius: 1.6cqw; background: rgb(255 255 255 / .45); }
+  .dock-icon { display: block; width: 4.2cqw; height: 4.2cqw; border-radius: 1cqw; background: #5596d1; color: #fff; box-shadow: 0 .2cqw .5cqw rgb(0 0 0 / .15); }
+  .dock-icon svg { width: 100%; height: 100%; }
+  .dock-notes { background: #edc667; color: #4b4232; }
+  .dock-browser { background: #f4f4f4; color: #447eac; }
+  .dock-terminal { background: #33333a; }
+  .dock-shade { display: flex; align-items: center; justify-content: center; background: #ffd60a; color: #000; }
+  .dock-shade :global(.logo-mark) { width: 3.2cqw !important; height: 3.2cqw !important; }
+
+  .stage-invitation { position: absolute; top: 20%; left: calc(75% - 12px); display: flex; align-items: center; gap: 8px; padding: 0; pointer-events: none; color: #000; }
+  .invitation-arrow { position: absolute; width: 50px; height: 42px; left: 0; top: -49px; flex-shrink: 0; }
+  .stage-instructions { display: block; padding: 7px 11px; background: #fff3b0; border: 1px solid #000; border-radius: 9px; }
+  .stage.is-open .stage-invitation { display: none; }
+  .stage-invitation strong { font-size: clamp(10px, 1.8cqw, 15px); line-height: 1.4; font-weight: 650; }
+  .invitation-shortcut { display: block; margin-top: 3px; color: #555; font-size: clamp(9px, 1.5cqw, 13px); }
+  .invitation-shortcut kbd { padding: 2px 6px; border: 1px solid #000; border-radius: 5px; background: #fff3b0; color: #000; font-family: var(--font-sans); }
+  .hint-close { display: none; }
+  .stage.is-open .hint-open { display: none; }
+  .stage.is-open .hint-close { display: inline; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage-shade, .stage-pulltab {
+      transition: none;
+    }
+    .stage-cue {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-shade-stage]").forEach((stage) => {
+    const trigger = stage.querySelector<HTMLButtonElement>("[data-shade-trigger]");
+    if (!trigger) return;
+    stage.setAttribute("data-armed", "");
+
+    function setOpen(open: boolean) {
+      stage.classList.toggle("is-open", open);
+      trigger!.setAttribute("aria-expanded", String(open));
+    }
+
+    trigger.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setOpen(!stage.classList.contains("is-open"));
+    });
+    stage.querySelector<HTMLElement>(".stage-desk")?.addEventListener("click", () => {
+      if (stage.classList.contains("is-open")) setOpen(false);
+    });
+    document.addEventListener("click", (event) => {
+      if (event.target instanceof Node && !stage.contains(event.target)) setOpen(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+      if ((event.code === "ArrowDown" || event.key === "ArrowDown") && event.ctrlKey && event.altKey && event.metaKey) {
+        const target = event.target;
+        if (target instanceof HTMLElement && (target.isContentEditable || target.closest("input, textarea, select"))) return;
+        const rect = (stage.closest("section") ?? stage).getBoundingClientRect();
+        if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
+        event.preventDefault();
+        if (event.repeat) return;
+        event.stopPropagation();
+        setOpen(!stage.classList.contains("is-open"));
+      }
+    });
+  });
+</script>

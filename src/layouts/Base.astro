@@ -1,0 +1,74 @@
+---
+import "~/styles/global.css";
+import { FEED_TITLE } from "~/config/blog";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  /** "article" for blog posts; adds the article:* Open Graph tags. */
+  ogType?: "website" | "article";
+  publishedTime?: Date;
+  /** Keep a page out of search results (draft preview, empty blog). */
+  noindex?: boolean;
+}
+
+const {
+  title = "Shady Notes — your notes, one scroll away",
+  description = "The macOS markdown notepad that slides down from the menu bar like a window shade. Plain .md files on disk, Obsidian-compatible.",
+  canonical = Astro.url.href,
+  ogType = "website",
+  publishedTime,
+  noindex = false,
+} = Astro.props;
+
+// Open Graph requires an ABSOLUTE image URL — a relative "/og-cover.png" is not
+// resolved by most scrapers, so the card renders with no image even when the
+// file exists. Astro.site is the configured https://shadynotes.app.
+//
+// The filename changed from og-image.png when the card was restyled, and that
+// is the point: Slack, Twitter and Facebook cache social previews against the
+// IMAGE URL and will happily keep serving a stale card for weeks. Re-pointing
+// at a new path is the only reliable way to make every scraper refetch. Rename
+// it again on the next redesign rather than overwriting in place.
+const ogImage = new URL("/og-cover.png", Astro.site).href;
+const feedUrl = new URL("/blog/feed.xml", Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {/* PNG, not SVG: the mark is the app's own icon (raster line art), the same
+        drawing components/Logo.astro masks. Its strokes are dilated harder here
+        than there — 16px is the design size for a favicon, and the raw hairlines
+        disappear at it. */}
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="alternate" type="application/atom+xml" title={FEED_TITLE} href={feedUrl} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Shady Notes" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

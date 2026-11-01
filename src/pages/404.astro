@@ -1,0 +1,26 @@
+---
+import Site from "~/layouts/Site.astro";
+import Button from "~/components/Button.astro";
+---
+
+<Site
+  navCta="secondary"
+  title="Not found — Shady Notes"
+  description="This note doesn't exist."
+>
+  <section class="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center px-6 py-20 text-center">
+    <p class="font-mono text-xs uppercase tracking-widest text-brand-muted">
+      404
+    </p>
+    <h1 class="mt-3 font-sans text-4xl font-bold tracking-tight md:text-5xl">
+      The shade came down on nothing.
+    </h1>
+    <p class="mt-5 max-w-md text-base text-brand-muted">
+      Sorry — there's no note at this URL. Try the homepage, or pick a page
+      from the nav.
+    </p>
+    <div class="mt-8">
+      <Button href="/" variant="primary">Back to shadynotes.app</Button>
+    </div>
+  </section>
+</Site>

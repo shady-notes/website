@@ -3,11 +3,13 @@
 How the Shady Notes web presence is built and published, and what is left to do for the blog and the
 newsletter. Adapted on 2026-11-01 from the Dozable playbook (a static site, a Markdown blog with drafts,
 edge analytics and a double opt-in newsletter on Cloudflare) to the Shady Notes setup, which differs in one
-big way: **the site is an Astro project, and this repo holds only its built output.**
+big way: **the site is an Astro project, built and deployed by GitHub Actions from this repo.**
 
-Deeper background lives in the private source repo (`shadynotes-hostinger`):
-`docs/CLOUDFLARE-DNS-PROXY-SETUP.md`, `docs/CLOUDFLARE-ANALYTICS.md`, `site/README.md`,
-`site/src/content/blog/README.md` (post format) and `site/src/content/blog/STYLE.md` (writing guide).
+Since 2026-11-01 this repo (`shady-notes/website`) holds the site's source. Before that it held only
+built output pushed by `make deploy` from the private `shadynotes-hostinger` repo, whose `site/` folder
+is now retired for the landing page. Post format: `src/content/blog/README.md`; writing guide:
+`src/content/blog/STYLE.md`. Cloudflare background: `docs/CLOUDFLARE-DNS-PROXY-SETUP.md` and
+`docs/CLOUDFLARE-ANALYTICS.md` in `shadynotes-hostinger`.
 
 ## 1. The shape
 
@@ -20,14 +22,12 @@ Deeper background lives in the private source repo (`shadynotes-hostinger`):
  -> shady-notes.github.io   custom domain)                DNS, DNS-only)             separate deploy)
       |                          |
  GitHub Pages              Worker "subscribe" + D1  ----> Resend API -> inbox
- repo shady-notes/website  (not built yet)
- (PUBLIC, built output only)
+ (deployment from Actions)  (not built yet)
       ^
-      |  make deploy  (scripts/deploy-pages.sh: builds origin/main, replaces this repo's contents, pushes)
+      |  GitHub Actions "Deploy site" (.github/workflows/deploy.yml), on every push to main
       |
- shadynotes-hostinger (PRIVATE)
-   site/                      Astro 5 + Tailwind 4, static output
-   site/src/content/blog/     posts: YYYY-MM-DD-slug/index.md (drafts never built)
+ shady-notes/website (PUBLIC, this repo): Astro 5 + Tailwind 4 source
+   src/content/blog/          posts: YYYY-MM-DD-slug/index.md (drafts never built)
 ```
 
 Nothing runs on a server for the site itself: GitHub Pages serves static files behind the proxied
@@ -35,28 +35,28 @@ Cloudflare zone. The only planned runtime code is the sign-up Worker.
 
 ## 2. This repo
 
-- **What it is:** the public GitHub Pages repo for `shadynotes.app`. `CNAME` names the domain;
-  `.nojekyll` stops Jekyll processing. Every commit is `site: build of shadynotes-hostinger@<sha>`.
-- **Do not edit the site files by hand.** `make deploy` deletes everything except `.git` and
-  `docs/`, then copies in a fresh build, so hand edits to pages are lost on the next deploy. Change the
-  source in `shadynotes-hostinger/site/` instead. `docs/` is kept across deploys for hand-written notes
-  like this one; the deploy refuses to run if the Astro build ever produces a `docs/` of its own.
-  Anything in `docs/` is also served publicly (for example `https://shadynotes.app/docs/…`).
-- **It is public.** Never commit drafts, secrets, account ids or anything from the private repo
-  other than the build. Commits should use the GitHub noreply email
-  (`<id>+<user>@users.noreply.github.com`), set repo-locally.
-- **Deploy:** in `shadynotes-hostinger`, merge to `main`, then `make deploy` and, a minute later,
-  `make verify`. The script builds `origin/main` in a throwaway worktree, so unpushed or uncommitted
-  work is never published.
+- **What it is:** the public source of `shadynotes.app`: an Astro 5 + Tailwind 4 static site.
+  `public/CNAME` names the domain. Pages is set to build from **GitHub Actions**, not from a branch.
+- **Deploy:** push to `main`. `.github/workflows/deploy.yml` runs `npm ci`, `astro check` and
+  `npm run build`, then publishes `dist/`. Pull requests run the same build without deploying, so a
+  bad post or type error fails before merge. Watch it with `gh run watch` or the Actions tab.
+- **Local:** `npm install`, `npm run dev` (http://localhost:4321), `npm run build`. Dev sign-in needs a
+  gitignored `.env` with the Clerk *development* keys; production uses the committed
+  `.env.production` (publishable key only).
+- **It is public.** Never commit secrets (the Clerk `sk_…` key stays in the gitignored `.env`).
+  Committed blog drafts are readable on GitHub even though they are never built.
+- **`make deploy` in `shadynotes-hostinger` must not be used for the site any more:** it would replace
+  this repo's source with built output. The Actions build would then fail and the live site would stay
+  on its last deployment, but the repo would need a revert.
 
 ## 3. Status against the Dozable playbook
 
 | Playbook step | Shady Notes | Status |
 |---|---|---|
-| 1a Writing guide (`STYLE.md`) | `site/src/content/blog/STYLE.md` | done |
-| 1a Design guide | `DESIGN.md` (repo root) + tokens in `site/src/styles/global.css` | done (already existed) |
+| 1a Writing guide (`STYLE.md`) | `src/content/blog/STYLE.md` | done |
+| 1a Design guide | `DESIGN.md` + tokens in `src/styles/global.css` | done (already existed) |
 | 3.1 DNS on Cloudflare, proxied `@`/`www` | since 2026-10-12 | done |
-| 3.2 Site repo + Pages | this repo, fed by `make deploy` | done |
+| 3.2 Site repo + Pages | this repo, deployed by GitHub Actions | done |
 | 3.2 `stamp.sh` cache-busting | not needed: Astro fingerprints `/_astro/*` assets | n/a |
 | 3.3 Blog build | Astro content collection instead of `blog-build.py` | done (no posts published yet) |
 | 3.4 Private preview (Pages + Access) | drafts preview in `npm run dev` only | not built |
@@ -68,7 +68,7 @@ Cloudflare zone. The only planned runtime code is the sign-up Worker.
 
 ## 4. The blog (done)
 
-Source: `shadynotes-hostinger/site/`.
+Source: this repo.
 
 | Piece | Where |
 |---|---|
@@ -113,8 +113,8 @@ Publish a post:
 1. Write `src/content/blog/YYYY-MM-DD-slug/index.md` with `status: draft`; read it in `npm run dev`.
 2. Check it against `STYLE.md`'s "Before publishing" list.
 3. Set `status: published`, add the slug to `addresses` in `src/data/blog-addresses.ts`,
-   run `npm run build` (must pass), commit, PR, merge to `main`.
-4. `make deploy`, then `make verify`, and load `https://shadynotes.app/blog/<slug>/` and each image.
+   run `npm run build` (must pass), commit, and push to `main` (or merge a PR).
+4. When the "Deploy site" action finishes, load `https://shadynotes.app/blog/<slug>/` and each image.
 
 ## 5. Analytics (done)
 
@@ -128,8 +128,8 @@ turned on, update section 5 of `/privacy` in the same change.
 
 ### 6.1 The form (done, off)
 
-`site/src/components/NewsletterSignup.astro` renders on `/blog/` and under each post, **only when
-`siteConfig.newsletter.endpoint` is set** (`site/src/config/site.ts`). It POSTs JSON
+`src/components/NewsletterSignup.astro` renders on `/blog/` and under each post, **only when
+`siteConfig.newsletter.endpoint` is set** (`src/config/site.ts`). It POSTs JSON
 `{email, interests, source}` — exactly those three keys — and handles 2xx (`status:
 "already-confirmed"` means already subscribed), 400, 429 and network errors.
 
@@ -187,7 +187,7 @@ both repos. Note that the old `preview.shadynotes.app` (the VPS alias) was delet
 
 ## 8. Gotchas that apply here
 
-- **Hand edits to this repo vanish** on the next `make deploy`, except in `docs/` (section 2).
+- **Never run `make deploy` from `shadynotes-hostinger`** for the site: it overwrites this repo (section 2).
 - **Deploy builds `origin/main`**, not your working tree: merge first, then deploy.
 - **Clerk records stay DNS-only** (`clerk`, `accounts`, `clkmail`, `clk._domainkey`,
   `clk2._domainkey`); proxying them breaks sign-in and mail.
@@ -204,7 +204,7 @@ both repos. Note that the old `preview.shadynotes.app` (the VPS alias) was delet
 - [x] Domain on Cloudflare; `@`/`www` proxied to GitHub Pages; HTTPS
 - [x] Blog builds; drafts excluded; address ledger; Atom feed; sitemap
 - [x] Analytics position stated truthfully in `/privacy`
-- [ ] First post published (`make deploy`, page and images 200, feed lists it)
+- [ ] First post published (Action green, page and images 200, feed lists it)
 - [ ] `shady-notes` org domain verified in GitHub (needs an org owner)
 - [ ] D1 created, migrations applied, secrets set, `subscribe` Worker deployed, preflight 204
 - [ ] Resend `send.shadynotes.app` verified (DNS-only), tracking off, webhook set, bounce test 200

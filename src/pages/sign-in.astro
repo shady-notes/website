@@ -1,0 +1,32 @@
+---
+import { SignIn } from "@clerk/astro/components";
+import Site from "~/layouts/Site.astro";
+import Logo from "~/components/Logo.astro";
+
+// Wrapped in the Site layout so global.css (and therefore Tailwind) loads at
+// all. Without a layout this page shipped with no stylesheet, which left the
+// utility classes below inert — the Clerk card sat top-left on a bare white
+// page, on an otherwise dark-themed site.
+//
+// Nav and footer are hidden on purpose: this is a focused auth page, and the
+// nav's own "Sign in" button is Clerk-aware, so it would render a redundant
+// sign-in control on the sign-in page. The logo stays as the way back out.
+---
+
+<Site
+  title="Sign in — Shady Notes"
+  description="Sign in to your Shady Notes account."
+  hideNav
+  hideFooter
+>
+  <div class="flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-12">
+    <a
+      href="/"
+      class="text-brand-fg transition-colors hover:text-brand-accent"
+      aria-label="Shady Notes home"
+    >
+      <Logo size={40} />
+    </a>
+    <SignIn />
+  </div>
+</Site>

@@ -1,0 +1,90 @@
+---
+import Site from "~/layouts/Site.astro";
+import PricingCard from "~/components/PricingCard.astro";
+import FAQItem from "~/components/FAQItem.astro";
+import CTABanner from "~/components/CTABanner.astro";
+import { tiers, pricingFaq } from "~/data/pricing";
+---
+
+<Site
+  navCta="secondary"
+  title="Pricing — Shady Notes"
+  description="Free forever for the basics, with 14 days of everything. Personal $4/mo or $36/yr unlocks all themes, plugins, and revision history. Your notes stay plain markdown files either way."
+>
+  <section class="border-b border-brand-line">
+    <div class="mx-auto max-w-6xl px-6 py-20 md:py-28">
+      <div class="mx-auto max-w-2xl text-center">
+        <h1 class="mt-3 font-sans text-4xl font-bold tracking-tight md:text-5xl">
+          Pay for the app. Never for your notes.
+        </h1>
+        <p class="mt-5 text-base text-brand-fg/85 md:text-lg">
+          The basics are free forever, and every install starts with 14 days of
+          the full app. Your notes are plain markdown files on your own disk —
+          whatever you decide later, they're already yours.
+        </p>
+      </div>
+
+      {/* Billing period switch — flips every card between monthly and annual. */}
+      <div class="mx-auto mt-10 flex w-fit items-center gap-1 rounded-full border border-brand-line p-1 font-mono text-sm">
+        <button
+          type="button"
+          aria-pressed="true"
+          data-billing="monthly"
+          class="billing-btn rounded-full px-4 py-1.5 transition-colors data-[active=true]:bg-brand-accent data-[active=true]:text-brand-bg text-brand-muted"
+          data-active="true"
+        >
+          Monthly
+        </button>
+        <button
+          type="button"
+          aria-pressed="false"
+          data-billing="yearly"
+          class="billing-btn rounded-full px-4 py-1.5 transition-colors data-[active=true]:bg-brand-accent data-[active=true]:text-brand-bg text-brand-muted"
+        >
+          Yearly · save 25%
+        </button>
+      </div>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-3 md:items-stretch">
+        {tiers.map((tier) => <PricingCard tier={tier} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-brand-line">
+    <div class="mx-auto max-w-3xl px-6 py-24">
+      <h2 class="font-sans text-3xl font-bold tracking-tight md:text-4xl">
+        Common questions.
+      </h2>
+      <div class="mt-10">
+        {pricingFaq.map((f) => <FAQItem question={f.question}>{f.answer}</FAQItem>)}
+      </div>
+    </div>
+  </section>
+
+  <CTABanner
+    heading="Free to use. 14 days of everything."
+    body="No card, no account — download and write. The basics are free forever; subscribe only once the shade has earned its place above your screen."
+    ctaLabel="Download Shady Notes"
+    ctaHref="/download"
+  />
+</Site>
+
+<script is:inline>
+  (function () {
+    const buttons = document.querySelectorAll(".billing-btn");
+    function set(mode) {
+      buttons.forEach((b) => {
+        const active = b.dataset.billing === mode ? "true" : "false";
+        b.setAttribute("data-active", active);
+        b.setAttribute("aria-pressed", active);
+      });
+      document.querySelectorAll("[data-billing-show]").forEach((el) => {
+        const on = el.getAttribute("data-billing-show") === mode;
+        el.classList.toggle("hidden", !on);
+        el.classList.toggle("flex", on);
+      });
+    }
+    buttons.forEach((b) => b.addEventListener("click", () => set(b.dataset.billing)));
+  })();
+</script>

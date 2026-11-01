@@ -1,0 +1,39 @@
+---
+import Base from "~/layouts/Base.astro";
+import Nav from "~/components/Nav.astro";
+import Footer from "~/components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogType?: "website" | "article";
+  publishedTime?: Date;
+  noindex?: boolean;
+  hideNav?: boolean;
+  hideFooter?: boolean;
+  /** Pass "secondary" when the page's own content carries the amber CTA. */
+  navCta?: "primary" | "secondary";
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogType,
+  publishedTime,
+  noindex,
+  hideNav = false,
+  hideFooter = false,
+  navCta = "primary",
+} = Astro.props;
+---
+
+<Base {title} {description} {canonical} {ogType} {publishedTime} {noindex}>
+  <a class="skip-link" href="#main">Skip to content</a>
+  {!hideNav && <Nav cta={navCta} />}
+  <main id="main">
+    <slot />
+  </main>
+  {!hideFooter && <Footer />}
+</Base>

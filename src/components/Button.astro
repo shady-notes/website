@@ -1,0 +1,59 @@
+---
+type Variant = "primary" | "secondary" | "ghost";
+
+interface Props {
+  href?: string;
+  variant?: Variant;
+  disabled?: boolean;
+  class?: string;
+  external?: boolean;
+}
+
+const {
+  href,
+  variant = "primary",
+  disabled = false,
+  class: extra = "",
+  external = false,
+} = Astro.props;
+
+const base =
+  "button inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-medium font-mono tracking-tight transition-colors select-none";
+
+// The primary button is the one place amber survives the Matrix palette — see
+// the note in global.css. Secondary and ghost carry the neon green instead.
+const styles: Record<Variant, string> = {
+  primary:
+    "bg-brand-cta text-brand-bg hover:bg-brand-cta-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cta",
+  secondary:
+    "border border-brand-line text-brand-fg hover:border-brand-accent hover:text-brand-accent hover:shadow-[0_0_16px_-2px_var(--color-brand-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent",
+  ghost: "text-brand-fg hover:text-brand-accent",
+};
+
+const disabledStyles = disabled
+  ? "opacity-50 cursor-not-allowed pointer-events-none"
+  : "";
+
+const classes = `${base} button-${variant} ${styles[variant]} ${disabledStyles} ${extra}`.trim();
+
+const rel = external ? "noopener noreferrer" : undefined;
+const target = external ? "_blank" : undefined;
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class={classes}
+      aria-disabled={disabled ? "true" : undefined}
+      rel={rel}
+      target={target}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button type="button" class={classes} disabled={disabled}>
+      <slot />
+    </button>
+  )
+}

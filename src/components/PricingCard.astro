@@ -1,0 +1,153 @@
+---
+import Button from "~/components/Button.astro";
+import {
+  Show,
+  SignInButton,
+  __experimental_CheckoutButton as CheckoutButton,
+} from "@clerk/astro/components";
+import type { PricingTier } from "~/data/pricing";
+import { siteConfig } from "~/config/site";
+
+interface Props {
+  tier: PricingTier;
+}
+
+const { tier } = Astro.props;
+const billing = siteConfig.billing;
+
+const isPaid = tier.id !== "free";
+// Clerk plan id for this paid tier (checkout needs the id, not the slug).
+const planId =
+  tier.id === "personal"
+    ? billing.planIds.personal
+    : tier.id === "supporter"
+      ? billing.planIds.supporter
+      : "";
+// Live checkout is gated: until go-live, paid tiers show a disabled CTA.
+const checkoutLive = isPaid && billing.billingLive && Boolean(planId);
+
+// Brand-styled CTA (Clerk's unstyled buttons take a class + slotted label).
+const ctaBase =
+  "button inline-flex min-h-11 w-full items-center justify-center rounded-lg px-5 py-2.5 font-mono text-sm font-bold tracking-tight transition-colors cursor-pointer";
+const ctaClass = tier.featured
+  ? `${ctaBase} button-primary bg-brand-cta text-brand-bg hover:bg-brand-cta-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cta`
+  : `${ctaBase} button-secondary border border-brand-line text-brand-fg hover:border-brand-accent/50`;
+---
+
+<article
+  class:list={[
+    "pricing-card relative flex flex-col rounded-2xl border p-8",
+    tier.featured
+      ? "pricing-card-featured"
+      : "border-brand-line bg-brand-bg",
+  ]}
+>
+
+
+  <header>
+    <h2 class="font-sans text-xl font-bold tracking-tight">{tier.name}</h2>
+    <p class="mt-2 text-sm text-brand-muted">{tier.subline}</p>
+  </header>
+
+  <div class="mt-6">
+    {
+      tier.id === "free" ? (
+        <div class="flex items-baseline gap-2">
+          <span class="font-mono text-4xl font-bold">Free</span>
+          <span class="text-sm text-brand-muted">{tier.priceUnit}</span>
+        </div>
+      ) : (
+        <>
+          <div data-billing-show="monthly" class="flex items-baseline gap-2">
+            <span class="font-mono text-4xl font-bold">{tier.priceMonthly}</span>
+            <span class="text-sm text-brand-muted">{tier.priceUnit}</span>
+          </div>
+          <div data-billing-show="yearly" class="hidden items-baseline gap-2">
+            <span class="font-mono text-4xl font-bold">{tier.priceYearly}</span>
+            <span class="text-sm text-brand-muted">per year</span>
+          </div>
+          {tier.yearlySavingNote && (
+            <p
+              data-billing-show="yearly"
+              class="mt-1 hidden text-xs font-mono text-brand-accent"
+            >
+              {tier.yearlySavingNote}
+            </p>
+          )}
+        </>
+      )
+    }
+  </div>
+
+  <ul class="mt-6 space-y-2.5 text-sm">
+    {
+      tier.features.map((f) => (
+        <li class="flex gap-2.5">
+          <span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-brand-accent" />
+          <span set:html={f.replace(/`([^`]+)`/g, "<code class='font-mono text-brand-fg'>$1</code>")} />
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="mt-8 flex-1" />
+
+  <div class="mt-4">
+    {
+      !isPaid ? (
+        <Button
+          href={tier.ctaHrefMonthly || undefined}
+          variant="secondary"
+          class="w-full"
+        >
+          {tier.ctaLabel}
+        </Button>
+      ) : checkoutLive ? (
+        <>
+          {/* Signed out — prompt sign-in; they can subscribe right after. */}
+          <Show when="signed-out">
+            <SignInButton mode="modal" asChild><button type="button" class={ctaClass}>{tier.ctaLabel}</button></SignInButton>
+          </Show>
+          {/* Signed in — open Clerk checkout for the period the toggle selects.
+             Each button is wrapped in a plain div so show/hide (hidden↔flex) never
+             fights the button's own inline-flex display. */}
+          <Show when="signed-in">
+            <div data-billing-show="monthly" class="flex">
+              <CheckoutButton planId={planId} planPeriod="month" for="user" asChild><button type="button" class={ctaClass}>
+                {tier.ctaLabel}
+              </button></CheckoutButton>
+            </div>
+            <div data-billing-show="yearly" class="hidden">
+              <CheckoutButton planId={planId} planPeriod="annual" for="user" asChild><button type="button" class={ctaClass}>
+                {tier.ctaLabel}
+              </button></CheckoutButton>
+            </div>
+          </Show>
+        </>
+      ) : (
+        <>
+          {/* Checkout is not open yet, so the CTA carries the price rather than a
+             promise. Same monthly/yearly wrapper divs as the live branch so the
+             billing toggle (hidden↔flex) drives both states identically. */}
+          <div data-billing-show="monthly" class="flex">
+            <Button variant={tier.featured ? "primary" : "secondary"} disabled class="w-full">
+              {tier.priceMonthly} / month
+            </Button>
+          </div>
+          <div data-billing-show="yearly" class="hidden">
+            <Button variant={tier.featured ? "primary" : "secondary"} disabled class="w-full">
+              {tier.priceYearly} / year
+            </Button>
+          </div>
+          <p class="mt-2 text-center text-[11px] text-brand-muted">
+            Subscribe on the web with Clerk Billing — opens when Shady Notes launches.
+          </p>
+        </>
+      )
+    }
+  </div>
+
+  <p class="mt-4 border-t border-brand-line pt-4 text-xs text-brand-muted">
+    {tier.gatingRationale}
+  </p>
+</article>

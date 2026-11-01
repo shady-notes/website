@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+npm-debug.log
+.idea/
+
+# Secrets. .env.production is committed on purpose: it holds only PUBLIC_
+# values (the Clerk publishable key ships in the browser bundle anyway).
+.env
+.env.local
+.env.*.local

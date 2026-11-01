@@ -1,0 +1,26 @@
+---
+import { SignUp } from "@clerk/astro/components";
+import Site from "~/layouts/Site.astro";
+import Logo from "~/components/Logo.astro";
+
+// Same fix as sign-in.astro — see the note there. These two were the only pages
+// in the site that rendered without a layout, and so the only two without CSS.
+---
+
+<Site
+  title="Sign up — Shady Notes"
+  description="Create your Shady Notes account."
+  hideNav
+  hideFooter
+>
+  <div class="flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-12">
+    <a
+      href="/"
+      class="text-brand-fg transition-colors hover:text-brand-accent"
+      aria-label="Shady Notes home"
+    >
+      <Logo size={40} />
+    </a>
+    <SignUp />
+  </div>
+</Site>

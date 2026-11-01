@@ -1,0 +1,118 @@
+---
+import Site from "~/layouts/Site.astro";
+
+// Curated highlights from shadynotes/CHANGELOG.md — verified shipped versions
+// only. Keep versions coarse where the changelog is; never invent entries.
+const groups = [
+  {
+    title: "4.x — the Navigator grows tabs",
+    entries: [
+      {
+        version: "v4.0.21",
+        title: "Multi-preview tabs in the Navigator.",
+        body: "Open multiple notes side by side in a flat tab model: a tab strip appears above the preview with per-tab close buttons, ⌥-click or right-click to open in a new tab, ⌃⌥→ / ⌃⌥W / ⌃⇥ to open, close, and cycle.",
+      },
+      {
+        version: "v4.0.21",
+        title: "Cycle workspace filters from the keyboard.",
+        body: "⌥Tab / ⇧⌥Tab step through workspace filters — All → Root → each workspace → wrap.",
+      },
+      {
+        version: "v4.0.19",
+        title: "Table rendering hardened.",
+        body: "Raw mode no longer hides backticks, previews render tables independently of the editor's mode, and columns are content-fitted from the very first render.",
+      },
+    ],
+  },
+  {
+    title: "3.0 — the plugin platform",
+    entries: [
+      {
+        version: "v3.0.0",
+        title: "Your vault becomes a queryable database.",
+        body: "MarkdownDB indexes every note by front matter, with file watching and change notifications. Plugins are .md files with a YAML DSL — schema, queries, computed fields, mustache templates, and 30+ declarative native components.",
+      },
+      {
+        version: "v3.0.0",
+        title: "Daily Notes, Kanban, and Tasks ship built-in.",
+        body: "A journal timeline with mood emoji and tags, a kanban board whose cards are plain .md files, and a vault-wide task aggregator — all scopeable to a workspace or the whole vault.",
+      },
+      {
+        version: "v3.0.0",
+        title: "A WebView escape hatch for custom plugin UI.",
+        body: "window.shady.query/update/create/delete expose the vault API to JavaScript, with theme tokens injected as CSS custom properties.",
+      },
+    ],
+  },
+  {
+    title: "2.x — the editor earns its keep",
+    entries: [
+      {
+        version: "v2.6.0",
+        title: "Typed callouts, Obsidian-style.",
+        body: "> [!TIP], > [!WARNING] and friends render with an SF Symbol icon, coloured title, and tinted background. External file changes are detected and reloaded automatically.",
+      },
+      {
+        version: "v2.5.0",
+        title: "Images: paste, drag, resize, preview.",
+        body: "Paste screenshots or drag images from Finder; they land in the attachments folder as ![[wiki-links]]. Drag a corner handle to resize inline; click in read-only mode for a zoomable preview window.",
+      },
+      {
+        version: "v2.3.0",
+        title: "14 themes and find & replace.",
+        body: "Catppuccin ×4, Nord, Gruvbox ×2, Tokyo Night, Rose Pine and Solarized Light joined the palette — with live hover previews, a ⌘⌥T quick picker, and a VS Code-style find bar.",
+      },
+      {
+        version: "v2.1.0",
+        title: "Plain-file persistence landed.",
+        body: "Every note became an individual .md file in an Obsidian-compatible vault, with a file-tree sidebar, async search, and persistent tabs.",
+      },
+    ],
+  },
+];
+---
+
+<Site
+  title="Changelog — Shady Notes"
+  description="What's new in Shady Notes: Navigator tabs, the plugin platform, themes, callouts, and a markdown editor that keeps getting sharper."
+>
+  <section class="border-b border-brand-line">
+    <div class="mx-auto max-w-3xl px-6 py-20 md:py-28">
+      <h1 class="mt-3 font-sans text-4xl font-bold tracking-tight md:text-5xl">
+        What's new.
+      </h1>
+      <p class="mt-5 text-base text-brand-fg/85 md:text-lg">
+        Shady Notes is in the 4.x series and shipping steadily — from a
+        one-gesture notepad to a full markdown workspace with tabs, themes, and
+        a plugin platform. Highlights below; the full history ships with the app.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-3xl px-6 py-20">
+      {
+        groups.map((g) => (
+          <div class="mb-16 last:mb-0">
+            <h2 class="font-sans text-xs uppercase tracking-widest text-brand-accent">
+              {g.title}
+            </h2>
+            <div class="mt-6 space-y-8">
+              {g.entries.map((e) => (
+                <article class="border-l-2 border-brand-line pl-5 hover:border-brand-accent transition-colors">
+                  <div class="flex items-baseline gap-3">
+                    <span class="font-mono text-xs text-brand-muted">
+                      {e.version}
+                    </span>
+                  </div>
+                  <h3 class="mt-1 font-sans text-base font-bold">{e.title}</h3>
+                  <p class="mt-2 text-sm text-brand-muted">{e.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</Site>

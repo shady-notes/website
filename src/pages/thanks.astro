@@ -1,0 +1,45 @@
+---
+import Site from "~/layouts/Site.astro";
+import Button from "~/components/Button.astro";
+import { siteConfig } from "~/config/site";
+---
+
+<Site
+  navCta="secondary"
+  title="Welcome to Shady Notes"
+  description="Your subscription is live. Check your email for the receipt and download link."
+>
+  <section class="mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center px-6 py-20 text-center">
+    <div class="rounded-full border border-brand-accent/30 bg-brand-accent/10 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-brand-accent">
+      Subscription active
+    </div>
+
+    <h1 class="mt-8 font-sans text-4xl font-bold tracking-tight md:text-5xl">
+      Welcome to Shady Notes.
+    </h1>
+
+    <p class="mt-6 max-w-xl text-base text-brand-fg/85 md:text-lg">
+      Your subscription is live. To unlock premium, open Shady Notes, go to
+      Preferences → Premium, and click Sign In — your browser confirms it and the
+      app unlocks. No licence key to copy. If anything doesn't go cleanly, email
+      us and we'll sort it.
+    </p>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+      <Button href="/download" variant="primary">Download Shady Notes</Button>
+      <Button
+        href={siteConfig.billing.customerPortalUrl || "#"}
+        variant="ghost"
+        disabled={!siteConfig.billing.customerPortalUrl}
+      >
+        Manage subscription →
+      </Button>
+    </div>
+
+    <p class="mt-12 font-mono text-xs text-brand-muted">
+      Questions? Email <a
+        href={`mailto:${siteConfig.contactEmail}`}
+        class="text-brand-accent hover:underline">{siteConfig.contactEmail}</a> — it's a real person at Round Rect.
+    </p>
+  </section>
+</Site>

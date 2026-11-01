@@ -1,0 +1,116 @@
+---
+import Site from "~/layouts/Site.astro";
+import { siteConfig } from "~/config/site";
+
+// Bridge page for the macOS app's sign-in flow. The app opens this in the
+// browser with a `?state=` nonce. Once the user is signed in with Clerk, we mint
+// an app token via the entitlement backend and hand it back to the app over the
+// `shadynotes://auth` deep link. Everything runs client-side (the site is static).
+const backendUrl = siteConfig.billing.backendUrl;
+---
+
+<Site
+  title="Connecting Shady Notes…"
+  description="Signing you in to Shady Notes."
+>
+  <section class="border-b border-brand-line">
+    <div class="mx-auto flex min-h-[60vh] max-w-xl flex-col items-center justify-center px-6 py-24 text-center">
+      <h1 class="font-sans text-2xl font-bold tracking-tight">Connecting Shady Notes</h1>
+      <p id="connect-status" class="mt-4 text-brand-muted">
+        Signing you in and returning to the app…
+      </p>
+      <div id="connect-actions" class="mt-6 hidden flex-col items-center gap-3">
+        <a
+          id="connect-retry"
+          href="#"
+          class="rounded-lg bg-brand-accent px-5 py-2.5 font-mono text-sm font-bold text-brand-bg transition-colors hover:bg-brand-accent-strong"
+        >
+          Reopen Shady Notes
+        </a>
+        <p class="text-xs text-brand-muted">
+          If nothing happens, make sure Shady Notes is installed and running, then
+          try again.
+        </p>
+      </div>
+      <div id="connect-meta" data-backend={backendUrl} hidden></div>
+    </div>
+  </section>
+</Site>
+
+<script>
+  import { $clerkStore } from "@clerk/astro/client";
+
+  const meta = document.getElementById("connect-meta")!;
+  const backend = (meta.dataset.backend ?? "").replace(/\/$/, "");
+  const statusEl = document.getElementById("connect-status")!;
+  const actionsEl = document.getElementById("connect-actions")!;
+  const retryEl = document.getElementById("connect-retry") as HTMLAnchorElement;
+
+  const params = new URLSearchParams(location.search);
+  const state = params.get("state") ?? "";
+
+  function fail(message: string) {
+    statusEl.textContent = message;
+    actionsEl.classList.remove("hidden");
+    actionsEl.classList.add("flex");
+  }
+
+  function returnToApp(appToken: string) {
+    const deepLink =
+      "shadynotes://auth?token=" +
+      encodeURIComponent(appToken) +
+      "&state=" +
+      encodeURIComponent(state);
+    retryEl.href = deepLink;
+    statusEl.textContent = "Signed in — returning to Shady Notes…";
+    actionsEl.classList.remove("hidden");
+    actionsEl.classList.add("flex");
+    location.href = deepLink;
+  }
+
+  // Wait for Clerk to load, then run the flow exactly once.
+  let done = false;
+  const unsubscribe = $clerkStore.subscribe(async (clerk) => {
+    if (done || !clerk || !clerk.loaded) return;
+    done = true;
+    unsubscribe();
+
+    if (!clerk.user) {
+      // Not signed in — hand the return trip to Clerk rather than hand-rolling
+      // it. A `?redirect_url=` of our own is silently ignored: Clerk computes
+      // buildAfterSignInUrl() as "/" regardless, so the user finished signing in
+      // and landed on the homepage. This page never re-ran, no app token was
+      // minted, the shadynotes://auth deep link never fired, and the desktop app
+      // sat on "Signing in…" forever. It only worked for people who were already
+      // signed in, because then this branch is skipped entirely.
+      //
+      // signInForceRedirectUrl is Clerk's own mechanism and it does survive the
+      // round trip. signUpForceRedirectUrl covers the "Sign up" link on that
+      // page — a brand-new user has no account yet, which is the common case.
+      const back = location.pathname + location.search;
+      clerk.redirectToSignIn({
+        signInForceRedirectUrl: back,
+        signUpForceRedirectUrl: back,
+      });
+      return;
+    }
+
+    try {
+      const sessionToken = await clerk.session?.getToken();
+      if (!sessionToken) return fail("Couldn't read your session. Please try again.");
+
+      const res = await fetch(backend + "/app/token", {
+        method: "POST",
+        headers: { authorization: "Bearer " + sessionToken },
+      });
+      if (!res.ok) return fail("Couldn't connect the app. Please try again.");
+
+      const data = (await res.json()) as { token?: string };
+      if (!data.token) return fail("Couldn't connect the app. Please try again.");
+
+      returnToApp(data.token);
+    } catch {
+      fail("Something went wrong. Please try again.");
+    }
+  });
+</script>

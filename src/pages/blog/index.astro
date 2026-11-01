@@ -1,0 +1,56 @@
+---
+import Site from "~/layouts/Site.astro";
+import NewsletterSignup from "~/components/NewsletterSignup.astro";
+import { getPosts, postUrl, formatDate } from "~/lib/blog";
+import { TOPICS } from "~/config/blog";
+
+const posts = await getPosts();
+const hasPublished = posts.some((p) => !p.isDraft);
+---
+
+<Site
+  title="Blog — Shady Notes"
+  description="Release news, how-tos and notes from building Shady Notes, the menu-bar markdown notepad for macOS."
+  noindex={!hasPublished}
+>
+  <section class="border-b border-brand-line">
+    <div class="mx-auto max-w-3xl px-6 py-20 md:py-28">
+      <h1 class="font-sans text-4xl font-bold tracking-tight md:text-5xl">Blog</h1>
+      <p class="mt-5 text-base text-brand-fg/85 md:text-lg">
+        Release news, how-tos and notes from building Shady Notes.
+        Follow along with the <a href="/blog/feed.xml" class="underline">Atom feed</a>.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-3xl px-6 py-16">
+      {
+        posts.length === 0 ? (
+          <p class="text-brand-muted">No posts yet.</p>
+        ) : (
+          <ol class="post-list">
+            {posts.map((p) => (
+              <li>
+                <article>
+                  <p class="font-mono text-xs text-brand-muted">
+                    <time datetime={p.data.date.toISOString().slice(0, 10)}>{formatDate(p.data.date)}</time>
+                    {" · "}
+                    {p.data.topics.map((t) => TOPICS[t].label).join(", ")}
+                    {p.isDraft && <span class="draft-badge ml-2">Draft</span>}
+                  </p>
+                  <h2 class="mt-2 font-sans text-2xl font-bold">
+                    <a href={postUrl(p.slug)} class="hover:underline">{p.data.title}</a>
+                  </h2>
+                  <p class="mt-2 text-base text-brand-muted">{p.data.summary}</p>
+                </article>
+              </li>
+            ))}
+          </ol>
+        )
+      }
+
+      <NewsletterSignup source="blog-index" />
+    </div>
+  </section>
+</Site>

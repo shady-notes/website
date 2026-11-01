@@ -1,0 +1,285 @@
+---
+/*
+  Matrix digital rain, scoped to the right-hand plane of the hero.
+
+  Two pieces, both purely decorative (aria-hidden, pointer-events-none):
+
+    1. A canvas of falling glyphs. It is deliberately NOT full-bleed — it starts
+       at 40% of the hero width and masks itself in from transparent, so the
+       headline and body copy on the left never sit on top of moving glyphs.
+       At <md the hero stacks and the copy would collide with it, so the whole
+       thing drops to a low opacity behind the stacked column.
+
+    2. A perspective floor across the bottom plane, as a stretched SVG whose
+       top edge is the horizon. No canvas cost.
+
+  Both respect prefers-reduced-motion: the rain draws a fixed number of frames
+  to build a still field, then stops, and the grid never drifts.
+*/
+interface Props {
+  /** Where the rain starts, as a CSS length/percentage from the left. */
+  from?: string;
+  class?: string;
+}
+
+const { from = "40%", class: extra = "" } = Astro.props;
+
+/*
+  Floor geometry, in viewBox units (the SVG stretches with preserveAspectRatio
+  ="none", so these are ratios, not pixels).
+
+  Built explicitly rather than as a rotateX'd div: a CSS 3D plane's on-screen
+  extent is a non-linear function of its height, the perspective distance AND
+  the angle, so pinning its horizon to "just under the deck chair" turns into
+  guesswork — the first attempt at this ended up crammed into the last 50px of
+  the section. Here the horizon is simply y=0, and the box is positioned where
+  the horizon belongs.
+
+  Rows are measured DOWN from the horizon as H/(1 + j*k) — 1/z foreshortening,
+  so they crowd together approaching y=0 and spread apart toward the viewer at
+  y=H. Writing it the other way round (H * (1 - 1/(1 + j*k))) inverts the depth
+  cue: the rows bunch at the bottom instead and the plane reads as a flat
+  striped panel rather than a floor.
+*/
+const FLOOR_W = 1000;
+const FLOOR_H = 300;
+const VANISH_X = 430;
+const rays = Array.from({ length: 27 }, (_, i) => VANISH_X + (i - 13) * 135);
+const rows = Array.from({ length: 22 }, (_, j) => FLOOR_H / (1 + j * 0.26));
+---
+
+<div
+  class:list={["matrix-fx pointer-events-none absolute inset-0 -z-10", extra]}
+  aria-hidden="true"
+  style={`--rain-from: ${from};`}
+>
+  <canvas class="matrix-rain" data-matrix-rain></canvas>
+
+  <svg
+    class="matrix-floor"
+    viewBox={`0 0 ${FLOOR_W} ${FLOOR_H}`}
+    preserveAspectRatio="none"
+    fill="none"
+  >
+    {
+      rays.map((x) => (
+        <line x1={VANISH_X} y1="0" x2={x} y2={FLOOR_H} vector-effect="non-scaling-stroke" />
+      ))
+    }
+    {
+      rows.map((y) => (
+        <line x1="0" y1={y} x2={FLOOR_W} y2={y} vector-effect="non-scaling-stroke" />
+      ))
+    }
+  </svg>
+  <div class="matrix-horizon"></div>
+</div>
+
+<style>
+  .matrix-rain {
+    position: absolute;
+    inset-block: 0;
+    left: var(--rain-from);
+    right: 0;
+    width: auto;
+    height: 100%;
+    /* Backdrop, not subject: at full strength the glyphs win the fight with
+       the wireframe standing in front of them. */
+    opacity: 0.72;
+    /* Fade in from the left so glyphs never hard-edge against the copy. */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgb(0 0 0 / 0.3) 26%,
+      rgb(0 0 0 / 1) 55%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgb(0 0 0 / 0.3) 26%,
+      rgb(0 0 0 / 1) 55%
+    );
+  }
+
+  /* Stacked layout: the copy sits over the whole width, so pull the rain back
+     to a texture rather than a foreground element. */
+  @media (max-width: 767px) {
+    .matrix-rain {
+      left: 0;
+      opacity: 0.28;
+      -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0 / 1), transparent);
+      mask-image: linear-gradient(to bottom, rgb(0 0 0 / 1), transparent);
+    }
+  }
+
+  /* --- perspective floor, bottom plane --- */
+  .matrix-floor {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    /* The top edge of this box IS the horizon, so it lands just under the art. */
+    height: 22%;
+    /* Explicit width, not left+right+auto: <svg> is a replaced element, so
+       width:auto resolves from its intrinsic viewBox ratio instead of stretching
+       — which parked the whole floor in a 517px box on the left. */
+    width: 100%;
+    stroke: var(--color-brand-accent);
+    stroke-width: 1;
+    opacity: 0.5;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, rgb(0 0 0 / 1) 38%),
+      linear-gradient(to right, transparent 36%, rgb(0 0 0 / 1) 56%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to bottom, transparent, rgb(0 0 0 / 1) 38%),
+      linear-gradient(to right, transparent 36%, rgb(0 0 0 / 1) 56%);
+    mask-composite: intersect;
+  }
+
+  /* The horizon line the grid recedes to. */
+  .matrix-horizon {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 22%;
+    height: 1px;
+    /* Hard transparent hold to 32%: a plain `transparent →` ramp from x=0 still
+       leaves a visible hairline running through the body copy. */
+    background: linear-gradient(
+      to right,
+      transparent 0 32%,
+      color-mix(in oklab, var(--color-brand-accent) 35%, transparent) 48%,
+      color-mix(in oklab, var(--color-brand-accent) 60%, transparent) 78%,
+      transparent
+    );
+    opacity: 0.6;
+  }
+</style>
+
+<script>
+  // Half-width katakana + digits + a few Latin glyphs, the canonical mix.
+  const GLYPHS =
+    "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789ABCDEFZ:=*+-<>";
+
+  const FONT_SIZE = 15;
+  const HEAD = "#C6FFDD";
+  const BODY = "#00FF66";
+  // Matches --color-brand-bg. The per-frame veil is what makes the tails fade.
+  const FADE = "rgba(3, 15, 10, 0.1)";
+
+  const glyph = () => GLYPHS[(Math.random() * GLYPHS.length) | 0];
+
+  function startRain(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let drops: number[] = [];
+    let width = 0;
+    let height = 0;
+    let raf = 0;
+    let visible = true;
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = rect.width;
+      height = rect.height;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx!.font = `${FONT_SIZE}px "SF Mono", ui-monospace, "JetBrains Mono", Menlo, monospace`;
+      ctx!.textBaseline = "top";
+
+      const columns = Math.ceil(width / FONT_SIZE);
+      // Seed above the top edge so the first frames rain in rather than
+      // popping a full screen of glyphs into existence.
+      drops = Array.from(
+        { length: columns },
+        () => -Math.random() * (height / FONT_SIZE),
+      );
+      ctx!.clearRect(0, 0, width, height);
+    }
+
+    function draw() {
+      if (!width || !height) return;
+
+      ctx!.fillStyle = FADE;
+      ctx!.fillRect(0, 0, width, height);
+
+      for (let i = 0; i < drops.length; i++) {
+        const x = i * FONT_SIZE;
+        const y = drops[i] * FONT_SIZE;
+
+        if (y > 0) {
+          ctx!.fillStyle = HEAD;
+          ctx!.fillText(glyph(), x, y);
+          ctx!.fillStyle = BODY;
+          ctx!.fillText(glyph(), x, y - FONT_SIZE);
+        }
+
+        // Reset a column once it is off the bottom, at random, so the columns
+        // never fall back into lockstep.
+        if (y > height && Math.random() > 0.975) {
+          drops[i] = -Math.random() * 8;
+        } else {
+          drops[i]++;
+        }
+      }
+    }
+
+    function loop() {
+      if (visible) draw();
+      raf = window.requestAnimationFrame(loop);
+    }
+
+    resize();
+
+    // Below md the hero stacks and the copy sits over the rain, so it holds
+    // still there too (DESIGN.md: no moving glyphs behind copy).
+    if (reduced || window.matchMedia("(max-width: 767px)").matches) {
+      // Build a still field once and leave it there.
+      for (let i = 0; i < 90; i++) draw();
+      return;
+    }
+
+    // Only animate while the hero is on screen AND the tab is visible. The
+    // two are tracked separately: visibilitychange used to overwrite the
+    // observer's answer, so returning to the tab restarted drawing into a
+    // canvas that had scrolled away.
+    let onScreen = true;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        visible = onScreen && !document.hidden;
+      },
+      { threshold: 0 },
+    );
+    io.observe(canvas);
+
+    const ro = new ResizeObserver(() => resize());
+    ro.observe(canvas);
+
+    document.addEventListener("visibilitychange", () => {
+      visible = onScreen && !document.hidden;
+    });
+
+    raf = window.requestAnimationFrame(loop);
+
+    // Astro view transitions swap the document without a reload; without this
+    // the old rAF keeps drawing into a detached canvas.
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        window.cancelAnimationFrame(raf);
+        io.disconnect();
+        ro.disconnect();
+      },
+      { once: true },
+    );
+  }
+
+  document
+    .querySelectorAll<HTMLCanvasElement>("canvas[data-matrix-rain]")
+    .forEach(startRain);
+</script>

@@ -1,0 +1,106 @@
+---
+import Logo from "~/components/Logo.astro";
+import { siteConfig } from "~/config/site";
+import { getPosts } from "~/lib/blog";
+
+const hasBlog = (await getPosts()).length > 0;
+
+const year = new Date().getFullYear();
+// "2026–2026" read as a typo. Collapse the range when it starts this year.
+const startYear = siteConfig.buildYearRange.split("–")[0];
+const yearSpan = String(year) === startYear ? startYear : `${startYear}–${year}`;
+
+const groups: { title: string; links: { href: string; label: string; external?: boolean }[] }[] = [
+  {
+    title: "Product",
+    links: [
+      { href: "/#features", label: "Features" },
+      { href: "/pricing", label: "Pricing" },
+      { href: "/download", label: "Download" },
+      // Own subdomain, not a third-party site — deliberately NOT marked
+      // external, so it opens in the same tab like the rest of Product.
+      { href: "https://docs.shadynotes.app", label: "Docs" },
+      { href: "/changelog", label: "Changelog" },
+      ...(hasBlog
+        ? [
+            { href: "/blog", label: "Blog" },
+            { href: "/blog/feed.xml", label: "Atom feed" },
+          ]
+        : []),
+    ],
+  },
+  {
+    title: "Community",
+    links: [
+      { href: siteConfig.socials.discord, label: "Discord", external: true },
+      {
+        href: `mailto:${siteConfig.contactEmail}`,
+        label: siteConfig.contactEmail,
+      },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { href: "/terms", label: "Terms" },
+      { href: "/privacy", label: "Privacy" },
+      { href: "/refund", label: "Refund" },
+    ],
+  },
+];
+---
+
+<footer class="site-footer border-t border-brand-line mt-24">
+  <div class="mx-auto max-w-6xl px-6 py-16">
+    <div class="grid gap-12 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+      <div>
+        <a
+          href="/"
+          class="inline-flex items-center gap-2.5 text-brand-fg hover:text-brand-accent transition-colors"
+        >
+          <Logo size={28} class="text-brand-accent" />
+          <span class="font-sans text-base font-bold tracking-tight">
+            {siteConfig.name}
+          </span>
+        </a>
+        <p class="mt-4 max-w-xs text-sm text-brand-muted">
+          The menu-bar markdown notepad for your Mac. By {siteConfig.company}.
+        </p>
+      </div>
+
+      {
+        groups.map((g) => (
+          <div>
+            <h2 class="font-sans text-xs font-bold tracking-widest uppercase text-brand-fg">
+              {g.title}
+            </h2>
+            <ul class="mt-2 md:mt-4 md:space-y-2.5">
+              {g.links.map((l) => (
+                <li>
+                  <a
+                    href={l.href}
+                    rel={l.external ? "noopener noreferrer" : undefined}
+                    target={l.external ? "_blank" : undefined}
+                    class="inline-flex min-h-11 items-center text-sm text-brand-muted transition-colors hover:text-brand-accent md:min-h-0"
+                  >
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-16 flex flex-col gap-3 border-t border-brand-line pt-8 text-xs text-brand-muted md:flex-row md:items-center md:justify-between">
+      <p>
+        © {yearSpan} {siteConfig.company}.
+        {siteConfig.name} is a product of {siteConfig.legalEntity}.
+      </p>
+      <p class="font-mono">
+        macOS 13+ · native Swift · notarised · Developer-ID
+      </p>
+    </div>
+  </div>
+</footer>
