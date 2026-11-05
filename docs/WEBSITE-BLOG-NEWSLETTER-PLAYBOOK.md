@@ -98,7 +98,7 @@ Behaviour:
 
 - **Address** is `/blog/<slug>/` (folder name minus the date). Once published it never changes.
 - **Drafts** are shown only by `npm run dev`, with a Draft banner. `npm run build` skips them, so they
-  never reach this public repo.
+  never reach the live site. A committed draft is still readable on GitHub (section 2).
 - **Address ledger:** the build refuses to publish a slug not listed in `addresses`, to drop a listed
   address, or to re-use a `retired` one. A rename maps `old → new` under `renamed`, which builds a
   redirect page; add a Cloudflare redirect rule too for a real 301 (Pages cannot send one).
@@ -188,7 +188,8 @@ both repos. Note that the old `preview.shadynotes.app` (the VPS alias) was delet
 ## 8. Gotchas that apply here
 
 - **Never run `make deploy` from `shadynotes-hostinger`** for the site: it overwrites this repo (section 2).
-- **Deploy builds `origin/main`**, not your working tree: merge first, then deploy.
+- **The live site is whatever `main` builds to.** A push or merge to `main` deploys it; local
+  changes and open PRs deploy nothing until they land on `main`.
 - **Clerk records stay DNS-only** (`clerk`, `accounts`, `clkmail`, `clk._domainkey`,
   `clk2._domainkey`); proxying them breaks sign-in and mail.
 - **A Cloudflare ruleset PUT replaces every rule in that phase** — GET, merge, then PUT. The zone
