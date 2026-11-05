@@ -1,0 +1,29 @@
+# Test the sign-up Worker and the newsletter sender. Tests only: the Worker is
+# deployed by hand with `wrangler deploy` (newsletter/README.md), never from CI.
+name: Newsletter tests
+
+on:
+  push:
+    branches: [main]
+    paths: ["newsletter/**", "src/config/site.ts", "src/config/blog.ts", "src/content/blog/**", ".github/workflows/newsletter.yml"]
+  pull_request:
+    paths: ["newsletter/**", "src/config/site.ts", "src/config/blog.ts", "src/content/blog/**", ".github/workflows/newsletter.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: newsletter
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: newsletter/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm test

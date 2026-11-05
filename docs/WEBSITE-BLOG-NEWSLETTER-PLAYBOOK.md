@@ -22,7 +22,7 @@ is now retired for the landing page. Post format: `src/content/blog/README.md`; 
  -> shady-notes.github.io   custom domain)                DNS, DNS-only)             separate deploy)
       |                          |
  GitHub Pages              Worker "subscribe" + D1  ----> Resend API -> inbox
- (deployment from Actions)  (not built yet)
+ (deployment from Actions)  (written: newsletter/; not deployed)
       ^
       |  GitHub Actions "Deploy site" (.github/workflows/deploy.yml), on every push to main
       |
@@ -31,7 +31,8 @@ is now retired for the landing page. Post format: `src/content/blog/README.md`; 
 ```
 
 Nothing runs on a server for the site itself: GitHub Pages serves static files behind the proxied
-Cloudflare zone. The only planned runtime code is the sign-up Worker.
+Cloudflare zone. The only runtime code is the sign-up Worker in `newsletter/` (written and tested, not
+deployed yet).
 
 ## 2. This repo
 
@@ -61,9 +62,9 @@ Cloudflare zone. The only planned runtime code is the sign-up Worker.
 | 3.3 Blog build | Astro content collection instead of `blog-build.py` | done (no posts published yet) |
 | 3.4 Private preview (Pages + Access) | drafts preview in `npm run dev` only | not built |
 | 3.5 Analytics | Cloudflare edge counts, no script on pages | done |
-| 3.6 Subscribe Worker + D1 | form ready, Worker not written | to do |
+| 3.6 Subscribe Worker + D1 | `newsletter/`: Worker, migrations, tests; not deployed | written, to deploy |
 | 3.7 Resend | — | to do |
-| 3.8 Send a post as a newsletter | — | to do (needs 3.6, 3.7) |
+| 3.8 Send a post as a newsletter | `newsletter/tools/post.mjs` | written, to use (needs 3.6, 3.7) |
 | 3.9 Privacy policy | `/privacy` — analytics wording updated; newsletter section ready, shown only when the form is on | partly done |
 
 ## 4. The blog (done)
@@ -124,7 +125,10 @@ because `@`/`www` are proxied; read them in the dashboard or with the GraphQL sc
 beacon (only Cloudflare's email-decode script, from Email Address Obfuscation). If a beacon is ever
 turned on, update section 5 of `/privacy` in the same change.
 
-## 6. Newsletter (to do)
+## 6. Newsletter (written, not deployed)
+
+The code is in `newsletter/`; its README has the setup, go-live and sending runbook. This section
+keeps the decisions.
 
 ### 6.1 The form (done, off)
 
@@ -143,7 +147,8 @@ Turning it on is one deploy that changes three things together:
 
 ### 6.2 The subscribe Worker
 
-Follow Dozable playbook §3.6, with these names:
+`newsletter/src/`, written from Dozable playbook §3.6 (the Dozable code itself was not available),
+with these names:
 
 - Worker `subscribe`, custom domain `subscribe.shadynotes.app` (created by `wrangler deploy`).
 - D1 database `signups`; tables `signups`, `issues`, `deliveries`, `send_batches`.
@@ -155,8 +160,14 @@ Follow Dozable playbook §3.6, with these names:
   one-click unsubscribe (RFC 8058), rate limit keyed on `SHA-256(salt + UTC day + IP)`, 30-day
   retention for unconfirmed and unsubscribed, no request logs, no open/click tracking. The privacy
   text in 6.1 describes exactly this; change both together.
-- Secrets via stdin only: `RESEND_API_KEY` (sending-only), `STATS_KEY`, `RESEND_WEBHOOK_SECRET`,
-  `LIMITER_SALT`.
+- Secrets via stdin only: `RESEND_API_KEY` (sending-only), `ADMIN_KEY` (bearer for `/v1/admin/*`, kept
+  in the keychain as `shadynotes-newsletter` / `admin`), `RESEND_WEBHOOK_SECRET`, `LIMITER_SALT`, and
+  `TOKEN_SECRET` (signs unsubscribe links; set once, since a new one breaks every link already sent).
+  Dozable's `STATS_KEY` is `ADMIN_KEY` here.
+- Sign-ups answer 503 until the Worker's `POLICY_VERSION` is set, so deploying early is safe.
+- Tests: `npm test` (Worker against SQLite and a fake Resend; checks `CONSENT_WORDING` and topic ids
+  against the site) and `scripts/local-e2e.sh` (real Workers runtime, local D1, fake Resend). CI runs
+  `npm test` (`.github/workflows/newsletter.yml`); the Worker is deployed by hand, never from CI.
 
 ### 6.3 Resend
 
@@ -168,14 +179,21 @@ Follow Dozable playbook §3.6, with these names:
   `email.complained`.
 - Sender `hello@shadynotes.app` needs a decision: either verify the root domain in Resend (check it
   does not conflict with the existing mail setup) or send from `hello@send.shadynotes.app` with
-  `Reply-To: hello@shadynotes.app`.
+  `Reply-To: hello@shadynotes.app`. The code currently uses the second (`FROM` and `REPLY_TO` in
+  `newsletter/src/config.js`).
 
 ### 6.4 Sending a post
 
-Not built. Port the playbook's `post.py preview|test|send|status` (3.8): it reads a published post,
-refuses to send unless the page and images answer 200 and the exact rendering was test-sent, mails
-only confirmed, unsuppressed subscribers whose interests overlap the post's `topics`, and only posts
-with `email: true`. Post links in emails must be absolute (`STYLE.md` requires this already).
+`node newsletter/tools/post.mjs preview|test|send|status <slug>`, the Node port of the playbook's
+`post.py` (3.8). It reads a published post, refuses to send unless the page and images answer 200 and
+the exact rendering was test-sent, mails only confirmed, unsuppressed subscribers whose interests
+overlap the post's `topics`, and only posts with `email: true`. Post links in emails must be absolute
+(`STYLE.md` requires this already); post images take their fingerprinted URL from the live page.
+Nobody gets a post twice: recipients are claimed before each batch of 100, and a retried batch reuses
+its idempotency key (Resend keeps those for 24 hours).
+
+The seven posts published on 2026-11-06 predate the newsletter. Don't mail them as a backlog; the
+first issue should be a new post.
 
 ## 7. Private preview (not built, optional)
 
@@ -211,6 +229,7 @@ both repos. Note that the old `preview.shadynotes.app` (the VPS alias) was delet
 - [ ] Resend `send.shadynotes.app` verified (DNS-only), tracking off, webhook set, bounce test 200
 - [ ] Newsletter switched on (endpoint + `policyVersion` + Worker consent wording in one deploy)
 - [ ] Confirm, unsubscribe, resubscribe and rate limit (429) tested from the live form
-- [ ] Sender script ported; first `test` and `send`
+- [x] Worker, migrations and sender written; `npm test` and `scripts/local-e2e.sh` pass
+- [ ] First `test` and `send`
 - [ ] Decide: private preview (section 7), Workers Paid, Resend plan, Access on admin routes
 - [ ] Legal review of the newsletter privacy text and sender identity

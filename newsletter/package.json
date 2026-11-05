@@ -1,0 +1,23 @@
+{
+  "name": "shadynotes-newsletter",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Sign-up Worker (subscribe.shadynotes.app) and the newsletter sender for the Shady Notes blog.",
+  "scripts": {
+    "test": "node --test --test-reporter=spec \"test/*.test.js\"",
+    "dev": "wrangler dev --local --port 8787",
+    "db:local": "wrangler d1 migrations apply signups --local",
+    "post": "node tools/post.mjs"
+  },
+  "dependencies": {
+    "marked": "14.1.4",
+    "yaml": "2.6.1"
+  },
+  "devDependencies": {
+    "wrangler": "4.149.0"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

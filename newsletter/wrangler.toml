@@ -1,0 +1,44 @@
+# The sign-up Worker: subscribe.shadynotes.app (playbook §6.2).
+#
+# Deploy: `npx wrangler deploy` from this folder. The custom domain and its DNS
+# record are created by the deploy. Secrets go in by stdin, never as arguments:
+#   printf %s "$VALUE" | npx wrangler secret put NAME
+# Secrets: RESEND_API_KEY (sending-only key), ADMIN_KEY, RESEND_WEBHOOK_SECRET,
+#          LIMITER_SALT, TOKEN_SECRET. LIMITER_SALT and TOKEN_SECRET are set
+#          ONCE: changing TOKEN_SECRET breaks every unsubscribe link already sent.
+name = "subscribe"
+main = "src/worker.js"
+compatibility_date = "2026-09-01"
+workers_dev = false
+routes = [ { pattern = "subscribe.shadynotes.app", custom_domain = true } ]
+
+[vars]
+SUBSCRIBE_ORIGIN = "https://subscribe.shadynotes.app"
+# EMPTY = sign-ups answer 503. Set to the go-live date (YYYY-MM-DD) in the same
+# change that sets the site's newsletter.policyVersion to the same date.
+POLICY_VERSION = ""
+# Must equal siteConfig.newsletter.consentWording in src/config/site.ts exactly
+# (test/sync.test.js checks it).
+CONSENT_WORDING = "Email me new Shady Notes posts on the topics I picked. I'll confirm by the link you send, and I can unsubscribe from any email."
+# Comma-separated addresses that `post.mjs test` sends to.
+TEST_RECIPIENTS = ""
+# Confirmation mails per UTC day across all sign-ups; protects the Resend quota.
+DAILY_CONFIRM_CAP = "200"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "signups"
+# Replace with the id printed by `npx wrangler d1 create signups`.
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[[ratelimits]]
+name = "SIGNUP_LIMITER"
+namespace_id = "2026110601"
+simple = { limit = 5, period = 60 }
+
+[triggers]
+crons = ["15 2 * * *"]   # retention: delete stale unconfirmed and unsubscribed sign-ups
+
+[observability]
+enabled = false          # no request logs, so no IP addresses are kept
