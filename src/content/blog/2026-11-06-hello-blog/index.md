@@ -1,10 +1,10 @@
 ---
 title: The Shady Notes blog
-date: 2026-11-01
+date: 2026-11-06
 topics: [behind-the-scenes]
 summary: Release news, how-tos and notes from building Shady Notes now have a home at shadynotes.app/blog.
 email: false
-status: draft
+status: published
 ---
 
 Shady Notes now has a blog. It is where release notes get more room than a
