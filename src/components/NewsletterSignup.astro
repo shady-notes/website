@@ -15,16 +15,18 @@ interface Props {
   /** Recorded with the sign-up so you know which form it came from. */
   source: string;
   heading?: string;
+  /** Spacing and padding of the panel; the pop-up passes a tighter set. */
+  class?: string;
 }
 
-const { source, heading = "Get new posts by email" } = Astro.props;
+const { source, heading = "Get new posts by email", class: spacing = "mt-16 p-6 md:p-8" } = Astro.props;
 const { endpoint, consentWording } = siteConfig.newsletter;
 const uid = `nl-${source.replace(/[^a-z0-9]+/gi, "-")}`;
 ---
 
 {
   endpoint && (
-    <section class="newsletter cta-panel not-prose mt-16 p-6 md:p-8" aria-labelledby={`${uid}-h`}>
+    <section class:list={["newsletter cta-panel not-prose", spacing]} aria-labelledby={`${uid}-h`}>
       <h2 id={`${uid}-h`} class="font-sans text-2xl font-bold">{heading}</h2>
       <p class="mt-2 text-base text-brand-muted">
         A short email when a post goes up. No tracking pixels, no link tracking.
@@ -106,6 +108,7 @@ const uid = `nl-${source.replace(/[^a-z0-9]+/gi, "-")}`;
         });
         const body = await res.json().catch(() => ({}) as { status?: string });
         if (res.ok) {
+          form.dispatchEvent(new CustomEvent("newsletter:sent", { bubbles: true }));
           status.textContent = body.status === "already-confirmed" ? messages.already : messages.sent;
           if (body.status !== "already-confirmed") form.reset();
         } else if (res.status === 429) {

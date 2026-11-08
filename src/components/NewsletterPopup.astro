@@ -1,0 +1,148 @@
+---
+// Newsletter sign-up that slides in from the bottom corner once the reader
+// reaches the end of the page (`[data-newsletter-popup-end]`). Non-modal: the
+// page stays usable, nothing grabs focus, Escape or × closes it.
+//
+// Shown at most once per visit. Closing it hides it for 30 days; a sign-up
+// hides it for good. Both are per-browser conveniences in localStorage, so a
+// blocked or empty storage just means it can show again — never an error.
+// Renders nothing while siteConfig.newsletter.endpoint is empty.
+import NewsletterSignup from "~/components/NewsletterSignup.astro";
+import { siteConfig } from "~/config/site";
+
+interface Props {
+  /** Recorded with the sign-up; must match the Worker's source pattern. */
+  source: string;
+}
+
+const { source } = Astro.props;
+---
+
+{
+  siteConfig.newsletter.endpoint && (
+    <aside class="newsletter-popup" data-newsletter-popup aria-label="Newsletter sign-up" hidden>
+      <button type="button" class="newsletter-popup-close" data-newsletter-popup-close aria-label="Close">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+      <NewsletterSignup source={source} heading="Get new posts by email" class="p-5 pr-12 md:p-6 md:pr-14" />
+    </aside>
+  )
+}
+
+<script>
+  const KEY = "newsletter-popup";
+  const DISMISS_DAYS = 30;
+
+  const read = (): { dismissedAt?: number; subscribed?: boolean } => {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) ?? "{}") ?? {};
+    } catch {
+      return {};
+    }
+  };
+  const write = (value: object) => {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(value));
+    } catch {
+      // Private mode or blocked storage: the pop-up may show again next visit.
+    }
+  };
+
+  const popup = document.querySelector<HTMLElement>("[data-newsletter-popup]");
+  const end = document.querySelector<HTMLElement>("[data-newsletter-popup-end]");
+  const state = read();
+  const recentlyDismissed = state.dismissedAt && Date.now() - state.dismissedAt < DISMISS_DAYS * 86_400_000;
+
+  if (popup && end && !state.subscribed && !recentlyDismissed) {
+    let sent = false;
+    let queued = false;
+
+    const close = () => {
+      popup.classList.remove("is-open");
+      popup.addEventListener("transitionend", () => (popup.hidden = true), { once: true });
+      // No transition (reduced motion): hide straight away.
+      if (getComputedStyle(popup).transitionDuration === "0s") popup.hidden = true;
+      document.removeEventListener("keydown", onKey);
+      if (!sent) write({ dismissedAt: Date.now() });
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+
+    popup.querySelector("[data-newsletter-popup-close]")?.addEventListener("click", close);
+    popup.addEventListener("newsletter:sent", () => {
+      sent = true;
+      write({ subscribed: true });
+    });
+
+    // Checked on scroll (once per frame), not with an IntersectionObserver: on a
+    // phone the footer is taller than the screen, and a fast fling can jump
+    // past the marker without it ever being on screen. Only a real scroll
+    // counts, so a window that already shows the end on load stays quiet.
+    const check = () => {
+      queued = false;
+      if (end.getBoundingClientRect().top >= window.innerHeight) return;
+      window.removeEventListener("scroll", onScroll);
+      popup.hidden = false;
+      requestAnimationFrame(() => requestAnimationFrame(() => popup.classList.add("is-open")));
+      document.addEventListener("keydown", onKey);
+    };
+    const onScroll = () => {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(check);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+</script>
+
+<style>
+  .newsletter-popup {
+    position: fixed;
+    z-index: 50;
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+  .newsletter-popup.is-open {
+    opacity: 1;
+    transform: none;
+  }
+  @media (min-width: 640px) {
+    .newsletter-popup {
+      left: auto;
+      right: 24px;
+      bottom: 24px;
+      width: 420px;
+    }
+  }
+  .newsletter-popup-close {
+    position: absolute;
+    z-index: 1;
+    top: 8px;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    color: #000;
+  }
+  .newsletter-popup-close:hover {
+    background: rgb(0 0 0 / 8%);
+  }
+  .newsletter-popup-close:focus-visible {
+    outline: 3px solid #000;
+    outline-offset: -3px;
+  }
+</style>
