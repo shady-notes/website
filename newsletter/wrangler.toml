@@ -17,7 +17,7 @@ routes = [ { pattern = "subscribe.shadynotes.app", custom_domain = true } ]
 SUBSCRIBE_ORIGIN = "https://subscribe.shadynotes.app"
 # EMPTY = sign-ups answer 503. Set to the go-live date (YYYY-MM-DD) in the same
 # change that sets the site's newsletter.policyVersion to the same date.
-POLICY_VERSION = ""
+POLICY_VERSION = "2026-11-08"
 # Must equal siteConfig.newsletter.consentWording in src/config/site.ts exactly
 # (test/sync.test.js checks it).
 CONSENT_WORDING = "Email me new Shady Notes posts on the topics I picked. I'll confirm by the link you send, and I can unsubscribe from any email."

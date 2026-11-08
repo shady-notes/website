@@ -39,8 +39,8 @@ export const siteConfig = {
     //      page shows it as "Last updated" and the Worker must store the same
     //      value as POLICY_VERSION with every confirmed sign-up.
     //   3. The Worker's CONSENT_WORDING -> exactly `consentWording` below.
-    endpoint: "",
-    policyVersion: "",
+    endpoint: "https://subscribe.shadynotes.app/v1/signup",
+    policyVersion: "2026-11-08",
     consentWording:
       "Email me new Shady Notes posts on the topics I picked. I'll confirm by the link you send, and I can unsubscribe from any email.",
   },
