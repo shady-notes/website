@@ -5,7 +5,6 @@ import CTABanner from "~/components/CTABanner.astro";
 import FAQItem from "~/components/FAQItem.astro";
 import BrandFilm from "~/components/BrandFilm.astro";
 import GestureStage from "~/components/GestureStage.astro";
-import NewsletterPopup from "~/components/NewsletterPopup.astro";
 import { siteConfig } from "~/config/site";
 
 // The gesture facts sit beside the GestureStage demo, so each one only has to
@@ -359,9 +358,9 @@ ideas.md     groceries.md meetings.md
     ctaLabel="Download for macOS"
     ctaHref="/download"
   />
-  {/* Reaching this point (the end of the page) opens the newsletter pop-up. */}
+  {/* Reaching this point (the end of the page) opens the newsletter pop-up
+      (Site.astro), if 3 minutes of reading haven't already. */}
   <div data-newsletter-popup-end aria-hidden="true"></div>
-  <NewsletterPopup source="home-popup" />
 </Site>
 
 <script>

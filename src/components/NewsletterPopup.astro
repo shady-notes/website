@@ -1,10 +1,14 @@
 ---
-// Newsletter sign-up that slides in from the bottom corner once the reader
-// reaches the end of the page (`[data-newsletter-popup-end]`). Non-modal: the
-// page stays usable, nothing grabs focus, Escape or × closes it.
+// Newsletter sign-up that slides in from the bottom corner. Non-modal: the
+// page stays usable, nothing grabs focus, Escape or × closes it. It opens when
+// either happens first:
+//   - the reader has spent 3 minutes on the site this visit, counted only while
+//     the tab is visible and carried across pages in sessionStorage;
+//   - the reader scrolls to a `[data-newsletter-popup-end]` marker, if the page
+//     has one (the homepage does).
 //
 // Shown at most once per visit. Closing it hides it for 30 days; a sign-up
-// hides it for good. Both are per-browser conveniences in localStorage, so a
+// hides it for good. Both are per-browser conveniences in web storage, so a
 // blocked or empty storage just means it can show again — never an error.
 // Renders nothing while siteConfig.newsletter.endpoint is empty.
 import NewsletterSignup from "~/components/NewsletterSignup.astro";
@@ -33,39 +37,54 @@ const { source } = Astro.props;
 
 <script>
   const KEY = "newsletter-popup";
+  const VISIT_KEY = "newsletter-popup-visit";
   const DISMISS_DAYS = 30;
+  const READ_SECONDS = 180;
 
-  const read = (): { dismissedAt?: number; subscribed?: boolean } => {
+  const read = (store: () => Storage, key: string): Record<string, any> => {
     try {
-      return JSON.parse(localStorage.getItem(KEY) ?? "{}") ?? {};
+      return JSON.parse(store().getItem(key) ?? "{}") ?? {};
     } catch {
       return {};
     }
   };
-  const write = (value: object) => {
+  const write = (store: () => Storage, key: string, value: object) => {
     try {
-      localStorage.setItem(KEY, JSON.stringify(value));
+      store().setItem(key, JSON.stringify(value));
     } catch {
-      // Private mode or blocked storage: the pop-up may show again next visit.
+      // Private mode or blocked storage: the pop-up may show again.
     }
   };
+  const local = () => localStorage;
+  const session = () => sessionStorage;
 
   const popup = document.querySelector<HTMLElement>("[data-newsletter-popup]");
   const end = document.querySelector<HTMLElement>("[data-newsletter-popup-end]");
-  const state = read();
+  const state = read(local, KEY);
+  const visit: { seconds?: number; shown?: boolean } = read(session, VISIT_KEY);
   const recentlyDismissed = state.dismissedAt && Date.now() - state.dismissedAt < DISMISS_DAYS * 86_400_000;
 
-  if (popup && end && !state.subscribed && !recentlyDismissed) {
+  if (popup && !state.subscribed && !recentlyDismissed && !visit.shown) {
     let sent = false;
     let queued = false;
+    let timer: number | undefined;
 
+    const open = () => {
+      stop();
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("visibilitychange", onVisibility);
+      write(session, VISIT_KEY, { ...visit, shown: true });
+      popup.hidden = false;
+      requestAnimationFrame(() => requestAnimationFrame(() => popup.classList.add("is-open")));
+      document.addEventListener("keydown", onKey);
+    };
     const close = () => {
       popup.classList.remove("is-open");
       popup.addEventListener("transitionend", () => (popup.hidden = true), { once: true });
       // No transition (reduced motion): hide straight away.
       if (getComputedStyle(popup).transitionDuration === "0s") popup.hidden = true;
       document.removeEventListener("keydown", onKey);
-      if (!sent) write({ dismissedAt: Date.now() });
+      if (!sent) write(local, KEY, { dismissedAt: Date.now() });
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
@@ -74,20 +93,34 @@ const { source } = Astro.props;
     popup.querySelector("[data-newsletter-popup-close]")?.addEventListener("click", close);
     popup.addEventListener("newsletter:sent", () => {
       sent = true;
-      write({ subscribed: true });
+      write(local, KEY, { subscribed: true });
     });
 
-    // Checked on scroll (once per frame), not with an IntersectionObserver: on a
-    // phone the footer is taller than the screen, and a fast fling can jump
-    // past the marker without it ever being on screen. Only a real scroll
-    // counts, so a window that already shows the end on load stays quiet.
+    // Reading time: one tick a second while the tab is visible, saved each
+    // tick so it carries over to the next page of the visit.
+    const tick = () => {
+      visit.seconds = (visit.seconds ?? 0) + 1;
+      write(session, VISIT_KEY, visit);
+      if (visit.seconds >= READ_SECONDS) open();
+    };
+    const start = () => {
+      if (timer === undefined) timer = window.setInterval(tick, 1000);
+    };
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+    const onVisibility = () => (document.visibilityState === "visible" ? start() : stop());
+    document.addEventListener("visibilitychange", onVisibility);
+
+    // End of page: checked on scroll (once per frame), not with an
+    // IntersectionObserver: on a phone the footer is taller than the screen,
+    // and a fast fling can jump past the marker without it ever being on
+    // screen. Only a real scroll counts, so a window that already shows the end
+    // on load stays quiet.
     const check = () => {
       queued = false;
-      if (end.getBoundingClientRect().top >= window.innerHeight) return;
-      window.removeEventListener("scroll", onScroll);
-      popup.hidden = false;
-      requestAnimationFrame(() => requestAnimationFrame(() => popup.classList.add("is-open")));
-      document.addEventListener("keydown", onKey);
+      if (end && end.getBoundingClientRect().top < window.innerHeight) open();
     };
     const onScroll = () => {
       if (!queued) {
@@ -95,7 +128,10 @@ const { source } = Astro.props;
         requestAnimationFrame(check);
       }
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    if (end) window.addEventListener("scroll", onScroll, { passive: true });
+
+    if ((visit.seconds ?? 0) >= READ_SECONDS) open();
+    else onVisibility();
   }
 </script>
 
