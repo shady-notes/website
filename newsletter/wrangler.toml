@@ -22,7 +22,7 @@ POLICY_VERSION = ""
 # (test/sync.test.js checks it).
 CONSENT_WORDING = "Email me new Shady Notes posts on the topics I picked. I'll confirm by the link you send, and I can unsubscribe from any email."
 # Comma-separated addresses that `post.mjs test` sends to.
-TEST_RECIPIENTS = ""
+TEST_RECIPIENTS = "dev@datastack.cloud"
 # Confirmation mails per UTC day across all sign-ups; protects the Resend quota.
 DAILY_CONFIRM_CAP = "200"
 
