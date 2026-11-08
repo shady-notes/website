@@ -33,13 +33,8 @@ database_name = "signups"
 database_id = "76d2efe7-670c-4501-a09c-016298a6453e"
 migrations_dir = "migrations"
 
-[[ratelimits]]
-name = "SIGNUP_LIMITER"
-namespace_id = "2026110601"
-simple = { limit = 5, period = 60 }
-
 [triggers]
-crons = ["15 2 * * *"]   # retention: delete stale unconfirmed and unsubscribed sign-ups
+crons = ["15 2 * * *"]   # retention: stale sign-ups, unsubscribed addresses, old rate-limit rows
 
 [observability]
 enabled = false          # no request logs, so no IP addresses are kept

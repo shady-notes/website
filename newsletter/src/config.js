@@ -24,6 +24,9 @@ export const TOPIC_IDS = Object.keys(TOPICS);
 export const CONFIRM_RESEND_MINUTES = 10;
 export const CONFIRM_TOKEN_DAYS = 30;
 export const RETENTION_DAYS = 30;
+// Sign-ups allowed per hashed IP per window (counted in D1, see migrations/0002).
+export const SIGNUP_LIMIT = 5;
+export const SIGNUP_LIMIT_WINDOW_SECONDS = 60;
 export const BATCH_SIZE = 100; // Resend's batch maximum
 export const RESEND_API_BASE = "https://api.resend.com";
 export const UNSUBSCRIBE_PLACEHOLDER = "{{unsubscribe_url}}";

@@ -82,14 +82,21 @@ test("a new sign-up stores a pending row and sends one confirmation mail", async
   assert.notEqual(r.confirm_token_hash, token, "only a hash of the token is stored");
 });
 
-test("the rate-limit key is a daily hash, never the IP", async () => {
+test("the rate limit allows 5 sign-ups a minute per IP, keyed by a daily hash, never the IP", async () => {
+  for (let i = 0; i < 5; i++) assert.equal((await signup({ ...valid, email: `r${i}@example.com` })).status, 202);
+  const sixth = await signup({ ...valid, email: "r5@example.com" });
+  assert.equal(sixth.status, 429);
+  assert.equal(resend.calls.length, 5, "the refused sign-up sent no mail");
+  const keys = env.DB.raw.prepare("SELECT DISTINCT key FROM signup_attempts").all();
+  assert.equal(keys.length, 1);
+  assert.match(keys[0].key, /^[0-9a-f]{64}$/);
+  assert.ok(!keys[0].key.includes("203.0.113.7"));
+});
+
+test("rate-limit records older than an hour are removed", async () => {
+  env.DB.raw.prepare("INSERT INTO signup_attempts (key, at) VALUES ('old', '2000-01-01T00:00:00.000Z')").run();
   await signup(valid);
-  assert.equal(env.limiter.keys.length, 1);
-  assert.match(env.limiter.keys[0], /^[0-9a-f]{64}$/);
-  assert.ok(!env.limiter.keys[0].includes("203.0.113.7"));
-  env.limiter.allow = false;
-  const res = await signup({ ...valid, email: "other@example.com" });
-  assert.equal(res.status, 429);
+  assert.equal(env.DB.raw.prepare("SELECT count(*) AS n FROM signup_attempts WHERE key = 'old'").get().n, 0);
 });
 
 test("a repeat within 10 minutes sends no second mail", async () => {

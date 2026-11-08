@@ -7,6 +7,8 @@ import {
   CONFIRM_RESEND_MINUTES,
   CONFIRM_TOKEN_DAYS,
   RETENTION_DAYS,
+  SIGNUP_LIMIT,
+  SIGNUP_LIMIT_WINDOW_SECONDS,
 } from "./config.js";
 import { HttpError, json, corsHeaders, readJson, nowIso, minutesAgoIso, daysAgoIso, utcDay } from "./http.js";
 import { sha256Hex, randomToken, verifyUnsubscribeToken, unsubscribeToken, verifyWebhook } from "./crypto.js";
@@ -51,15 +53,21 @@ export async function handleSignup(request, env) {
 
   const { email, interests, source } = parseSignup(await readJson(request, cors, 4096), cors);
 
+  const db = env.DB;
+
   // Rate limit on a hash that changes daily, so the IP is never stored or logged.
+  // Counted in D1, not the rate-limit binding: that one is approximate per
+  // location and let 27 tries a minute through in production.
   const ip = request.headers.get("cf-connecting-ip") ?? "";
   const limiterKey = await sha256Hex(`${env.LIMITER_SALT ?? ""}|${utcDay()}|${ip}`);
-  if (env.SIGNUP_LIMITER) {
-    const { success } = await env.SIGNUP_LIMITER.limit({ key: limiterKey });
-    if (!success) throw new HttpError(429, "rate-limited", cors);
-  }
+  const windowStart = new Date(Date.now() - SIGNUP_LIMIT_WINDOW_SECONDS * 1000).toISOString();
+  const [, , recent] = await db.batch([
+    db.prepare("DELETE FROM signup_attempts WHERE at < ?").bind(minutesAgoIso(60)),
+    db.prepare("INSERT INTO signup_attempts (key, at) VALUES (?, ?)").bind(limiterKey, nowIso()),
+    db.prepare("SELECT count(*) AS n FROM signup_attempts WHERE key = ? AND at >= ?").bind(limiterKey, windowStart),
+  ]);
+  if (Number(recent.results[0].n) > SIGNUP_LIMIT) throw new HttpError(429, "rate-limited", cors);
 
-  const db = env.DB;
   const row = await db.prepare("SELECT * FROM signups WHERE email = ?").bind(email).first();
 
   // Bounced or complained: say "sent" so the form reveals nothing, but never mail.
@@ -284,5 +292,6 @@ export async function runRetention(env) {
   await env.DB.batch([
     env.DB.prepare(`DELETE FROM deliveries WHERE signup_id IN (${stale})`).bind(cutoff),
     env.DB.prepare(`DELETE FROM signups WHERE id IN (${stale})`).bind(cutoff),
+    env.DB.prepare("DELETE FROM signup_attempts WHERE at < ?").bind(minutesAgoIso(60)),
   ]);
 }

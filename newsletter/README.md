@@ -33,8 +33,10 @@ tools/post.mjs ──/v1/admin/*──────┘  (ADMIN_KEY)          Rese
   `List-Unsubscribe-Post`. Unsubscribe links are derived from `TOKEN_SECRET` and never expire.
 - **Repeats:** a confirmed address gets `already-confirmed` and no mail; an unconfirmed one gets
   a new mail at most every 10 minutes. Bounced or complained addresses are never mailed again.
-- **Limits:** 5 sign-ups a minute per `SHA-256(LIMITER_SALT + UTC day + IP)` (the IP is never
-  stored), and `DAILY_CONFIRM_CAP` confirmation mails a day in total.
+- **Limits:** 5 sign-ups a minute per `SHA-256(LIMITER_SALT + UTC day + IP)`, counted in D1
+  (`signup_attempts`, kept an hour; the IP is never stored), and `DAILY_CONFIRM_CAP` confirmation
+  mails a day in total. Not the Workers rate-limit binding: it is approximate per location and let
+  27 tries a minute through in production.
 - **Retention** (daily cron): unconfirmed sign-ups 30 days after their last confirmation mail,
   unsubscribed addresses 30 days after unsubscribing, with their delivery records.
 - **Consent record:** each confirm stores `POLICY_VERSION` and `CONSENT_WORDING`.

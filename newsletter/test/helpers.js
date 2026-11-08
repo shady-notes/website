@@ -84,7 +84,6 @@ export function fakeResend() {
 export const WEBHOOK_SECRET = `whsec_${Buffer.from("webhook-test-secret-0123456789").toString("base64")}`;
 
 export function makeEnv(overrides = {}) {
-  const limiter = { allow: true, keys: [] };
   return {
     DB: createD1(),
     SUBSCRIBE_ORIGIN: "https://subscribe.shadynotes.app",
@@ -98,13 +97,6 @@ export function makeEnv(overrides = {}) {
     RESEND_WEBHOOK_SECRET: WEBHOOK_SECRET,
     LIMITER_SALT: "salt",
     TOKEN_SECRET: "token-secret",
-    SIGNUP_LIMITER: {
-      async limit({ key }) {
-        limiter.keys.push(key);
-        return { success: limiter.allow };
-      },
-    },
-    limiter,
     ...overrides,
   };
 }
