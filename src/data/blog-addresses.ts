@@ -16,7 +16,7 @@
 // Retiring a post: delete (or unpublish) it and add its slug to `retired`.
 
 export const blogAddresses = {
-  addresses: ["hello-blog", "plain-markdown-files", "open-the-shade", "navigator-tabs", "callouts", "images-in-notes", "themes", "write-a-plugin"] as string[],
+  addresses: ["hello-blog", "plain-markdown-files", "open-the-shade", "navigator-tabs", "callouts", "images-in-notes", "themes", "write-a-plugin", "earlier-version-of-a-note"] as string[],
   renamed: {} as Record<string, string>,
   retired: [] as string[],
 };
