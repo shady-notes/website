@@ -9,10 +9,11 @@ import { getPosts } from "~/lib/blog";
 // which can never start with "https://", so the Docs entry simply always renders
 // in the muted style. That is correct — you are never "on" the docs page while
 // on this site — and is why it needs no special casing.
+// Download is the header button, not a second text link. The same list feeds
+// the desktop row and the mobile menu.
 const links = [
   { href: "/#features", label: "Features" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/download", label: "Download" },
   { href: "https://docs.shadynotes.app", label: "Docs" },
   { href: "/changelog", label: "Changelog" },
 ];

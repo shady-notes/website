@@ -5,6 +5,41 @@ import Site from "~/layouts/Site.astro";
 // only. Keep versions coarse where the changelog is; never invent entries.
 const groups = [
   {
+    title: "4.1 — a new icon, and updates from the menu",
+    entries: [
+      {
+        version: "v4.1.19",
+        title: "A new app icon and menu bar mark.",
+        body: "The Dock and Finder icon is the beach-scene artwork on an indigo tile, and the menu bar mark is a line-art umbrella. They replace the old bulb-and-document icon and the drawn pull-tab. Small sizes show the umbrella on its own; larger sizes show the full scene. The menu bar mark is wide, so it is no longer cropped into a square, and it has an accessibility description.",
+      },
+      {
+        version: "v4.1.19",
+        title: "The Dock uses the icon from the app.",
+        body: "The Dock kept the old artwork after launch, because the app drew its own icon and that overrode the one shipped with the app. It now uses the shipped icon.",
+      },
+      {
+        version: "v4.1.19",
+        title: "The workspace colour on the Dock icon shows up.",
+        body: "The Dock icon is colour-coded for the workspace, but that badge was skipped on every launch. It now appears.",
+      },
+      {
+        version: "v4.1.11",
+        title: "The preview background stays with the theme.",
+        body: "The preview pane painted an opaque system background over the theme behind it. It no longer draws that background, so the preview matches the rest of the window.",
+      },
+      {
+        version: "v4.1.7",
+        title: "Check for updates from the app.",
+        body: "Check for Updates is in the app menu and the menu-bar menu. The app also checks once a day on its own.",
+      },
+      {
+        version: "v4.1.7",
+        title: "The version sits in the app menu.",
+        body: "The app menu ends with the running version, so you can see it without opening About.",
+      },
+    ],
+  },
+  {
     title: "4.x — the Navigator grows tabs",
     entries: [
       {
