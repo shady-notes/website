@@ -49,7 +49,10 @@ export default defineConfig({
       // /coming-soon 301s to / on the public hosts — it only still exists as a
       // file for nginx's default_server holding page. Listing a URL that
       // redirects is a crawl error, so keep it out of the sitemap.
-      filter: (page) => !page.includes("/coming-soon") && !(blogIsEmpty && page.includes("/blog/")),
+      // /thanks and /license/pending are post-purchase pages, not landing pages.
+      filter: (page) =>
+        !["/coming-soon", "/thanks", "/license/pending"].some((path) => page.includes(path)) &&
+        !(blogIsEmpty && page.includes("/blog/")),
     }),
   ],
   vite: {

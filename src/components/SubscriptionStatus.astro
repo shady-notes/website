@@ -1,0 +1,43 @@
+---
+import { siteConfig } from "~/config/site";
+
+// Clerk plan keys are `user:<slug>`. The slugs are the ones this site already
+// uses for Personal and Supporter (siteConfig.billing.plans). The badge stays
+// neutral until Clerk's session reports one of those plans.
+const plans = [
+  `user:${siteConfig.billing.plans.personal}`,
+  `user:${siteConfig.billing.plans.supporter}`,
+].join(" ");
+---
+
+<div
+  data-subscription-status
+  data-plans={plans}
+  class="rounded-full border border-brand-accent/30 bg-brand-accent/10 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-brand-accent"
+>
+  Thank you
+</div>
+
+<script>
+  import { $isLoadedStore, $sessionStore } from "@clerk/astro/client";
+
+  const reveal = () => {
+    const has = $sessionStore.get()?.checkAuthorization;
+    if (!has) return;
+    document.querySelectorAll<HTMLElement>("[data-subscription-status]").forEach((node) => {
+      const plans = (node.dataset.plans ?? "").split(/\s+/).filter(Boolean);
+      const active = plans.some((plan) => {
+        try {
+          return has({ plan: plan as `user:${string}` });
+        } catch {
+          return false;
+        }
+      });
+      if (active) node.textContent = "Subscription active";
+    });
+  };
+
+  $isLoadedStore.subscribe((loaded) => {
+    if (loaded) reveal();
+  });
+</script>

@@ -56,10 +56,9 @@ export const tiers: PricingTier[] = [
       "Every theme, light and dark",
       "Plugins: Daily Notes, Kanban, Tasks — plus build your own",
       "Revision history — snapshots of every note, browse and restore",
-      "All updates while subscribed",
     ],
     gatingRationale:
-      "Personal pays for sustained, careful development of a native app — no Electron, no dependencies, just Swift. The basics stay free; what you pay for is the system on top: plugins, history, theming. Cancel anytime — your notes keep working everywhere, they were never trapped.",
+      "Personal pays for sustained, careful development of a native Mac app — no Electron. The basics stay free; what you pay for is the system on top: plugins, history, theming. Cancel anytime — your notes keep working everywhere, they were never trapped.",
     ctaLabel: "Get Personal",
     ctaHrefMonthly: "",
     ctaHrefYearly: "",
@@ -107,7 +106,7 @@ export const pricingFaq: FaqEntry[] = [
   {
     question: "Is this a subscription for my notes or for the app?",
     answer:
-      "For the app — specifically its premium layer. Shady Notes never stores your notes anywhere but your own disk — there's no sync service, no server, no account holding your data. The subscription funds development of a native, dependency-free Mac app.",
+      "For the app — specifically its premium layer. Shady Notes never stores your notes anywhere but your own disk — there's no sync service, no server, no account holding your data. The subscription funds development of a native Mac app.",
   },
   {
     question: "How does unlocking premium work — does the app phone home?",

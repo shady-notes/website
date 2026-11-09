@@ -11,10 +11,10 @@ interface Props {
   ogType?: "website" | "article";
   publishedTime?: Date;
   noindex?: boolean;
+  /** Full robots directive, for example "noindex,nofollow". Overrides `noindex`. */
+  robots?: string;
   hideNav?: boolean;
   hideFooter?: boolean;
-  /** Pass "secondary" when the page's own content carries the amber CTA. */
-  navCta?: "primary" | "secondary";
   /** Pass false on pages with a task to finish (sign-in, checkout, errors). */
   newsletterPopup?: boolean;
 }
@@ -26,9 +26,9 @@ const {
   ogType,
   publishedTime,
   noindex,
+  robots,
   hideNav = false,
   hideFooter = false,
-  navCta = "primary",
   newsletterPopup = true,
 } = Astro.props;
 
@@ -37,9 +37,9 @@ const {
 const popupSource = `popup:${Astro.url.pathname}`.replace(/[^a-z0-9:/_-]/gi, "-").slice(0, 80);
 ---
 
-<Base {title} {description} {canonical} {ogType} {publishedTime} {noindex}>
+<Base {title} {description} {canonical} {ogType} {publishedTime} {noindex} {robots}>
   <a class="skip-link" href="#main">Skip to content</a>
-  {!hideNav && <Nav cta={navCta} />}
+  {!hideNav && <Nav />}
   <main id="main">
     <slot />
   </main>
