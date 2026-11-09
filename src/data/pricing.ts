@@ -35,7 +35,7 @@ export const tiers: PricingTier[] = [
       "Plain `.md` files, Obsidian-compatible — no lock-in",
       "3 themes (Dark, Light, Nord)",
       "Starts as a 14-day trial of everything",
-      "No account or card to start. The app still checks for updates, and it re-checks the licence about every 12 hours when online",
+      "No account or card to start. The app checks for updates",
     ],
     gatingRationale:
       "The free tier is a genuinely good notepad because your notes should never be hostage. The first 14 days unlock everything so you can feel the full app in your own workflow — then it gently drops to Free.",
