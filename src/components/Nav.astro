@@ -1,5 +1,5 @@
 ---
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/astro/components";
+import { Show, SignInButton, UserButton } from "@clerk/astro/components";
 import Logo from "~/components/Logo.astro";
 import { siteConfig } from "~/config/site";
 import { getPosts } from "~/lib/blog";
@@ -9,10 +9,11 @@ import { getPosts } from "~/lib/blog";
 // which can never start with "https://", so the Docs entry simply always renders
 // in the muted style. That is correct — you are never "on" the docs page while
 // on this site — and is why it needs no special casing.
+// Download is the header button, not a second text link. The same list feeds
+// the desktop row and the mobile menu.
 const links = [
   { href: "/#features", label: "Features" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/download", label: "Download" },
   { href: "https://docs.shadynotes.app", label: "Docs" },
   { href: "/changelog", label: "Changelog" },
 ];
@@ -20,32 +21,17 @@ const links = [
 // drafts count — see lib/blog.ts).
 if ((await getPosts()).length > 0) links.push({ href: "/blog", label: "Blog" });
 
-interface Props {
-  /**
-   * The page decides who owns its one amber action (DESIGN.md, The One Signal
-   * Rule). Pages whose own content carries a primary CTA pass "secondary", and
-   * the nav's "Start free" steps down to the outline style.
-   */
-  cta?: "primary" | "secondary";
-}
-
-const { cta = "primary" } = Astro.props;
 const path = Astro.url.pathname;
 
-// Shared with Button.astro so Clerk's unstyled buttons match the design system.
+// One header action on every page: a plain link to the download page. It does
+// not open account creation. The label, destination and style do not vary by
+// page — including on /download itself, where the page's own button is the DMG.
+// Shared with Button.astro so it matches the design system.
 const btnBase =
   "button inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-medium font-mono tracking-tight transition-colors select-none cursor-pointer";
-// Mirrors Button.astro: yellow fill, black text and a pill outline.
-const btnPrimary =
-  `${btnBase} button-primary bg-brand-cta text-brand-bg hover:bg-brand-cta-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cta`;
-// Mirrors Button.astro's secondary variant, for pages that pass cta="secondary".
-// Those pages promise "no card, no account", so the nav offers the download
-// rather than a sign-up form. /download itself keeps Start free: a Download
-// link to the page you are on would go nowhere.
-const navDownload = cta === "secondary" && path.replace(/\/$/, "") !== "/download";
-const btnSecondary =
+const downloadCta =
   `${btnBase} button-secondary border border-brand-line text-brand-fg hover:border-brand-accent hover:text-brand-accent hover:shadow-[0_0_16px_-2px_var(--color-brand-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-accent`;
-// Ghost button — same height/shape as the primary so the pair looks balanced.
+// Ghost button — same height/shape as the download link so the pair looks balanced.
 // max-md:hidden, not `hidden md:inline-flex`: btnBase already carries
 // inline-flex, which out-ranked `hidden` and left Sign in showing on phones.
 const signInGhost =
@@ -79,10 +65,9 @@ const signInGhost =
     </div>
 
     <div class="flex items-center gap-2">
-      {navDownload && <a href="/download" class={btnSecondary}>Download</a>}
+      <a href="/download" class={downloadCta}>Download</a>
       <Show when="signed-out">
         <SignInButton mode="modal" asChild><button type="button" class={signInGhost}>Sign in</button></SignInButton>
-        {!navDownload && <SignUpButton mode="modal" asChild><button type="button" class={cta === "secondary" ? btnSecondary : btnPrimary}>Start free</button></SignUpButton>}
       </Show>
       <Show when="signed-in">
         <UserButton />

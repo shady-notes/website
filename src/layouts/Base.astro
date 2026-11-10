@@ -11,6 +11,8 @@ interface Props {
   publishedTime?: Date;
   /** Keep a page out of search results (draft preview, empty blog). */
   noindex?: boolean;
+  /** Full robots directive. When set, this is emitted instead of `noindex`. */
+  robots?: string;
 }
 
 const {
@@ -20,6 +22,7 @@ const {
   ogType = "website",
   publishedTime,
   noindex = false,
+  robots,
 } = Astro.props;
 
 // Open Graph requires an ABSOLUTE image URL — a relative "/og-cover.png" is not
@@ -44,7 +47,7 @@ const feedUrl = new URL("/blog/feed.xml", Astro.site).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {robots ? <meta name="robots" content={robots} /> : noindex && <meta name="robots" content="noindex" />}
     {/* PNG, not SVG: the mark is the app's own icon (raster line art), the same
         drawing components/Logo.astro masks. Its strokes are dilated harder here
         than there — 16px is the design size for a favicon, and the raw hairlines

@@ -59,10 +59,8 @@ export const siteConfig = {
     // Verify with `make verify-download` after every release.
     dmgVersion: DMG_VERSION,
     dmgUrl: `https://downloads.shadynotes.app/macos/ShadyNotes-${DMG_VERSION}.dmg`,
-    // Windows / Linux not built yet — the download page shows "Coming soon"
-    // for any platform whose URL is empty. Fill in when those builds ship.
-    windowsUrl: "",
-    linuxUrl: "",
+    // The public site offers the Mac app only. Do not add another platform
+    // here until a build is actually published.
     homebrewCommand: "",
   },
 

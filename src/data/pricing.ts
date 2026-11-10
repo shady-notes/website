@@ -25,8 +25,8 @@ export const tiers: PricingTier[] = [
     id: "free",
     name: "Free",
     subline: "A complete basic notepad. Yours forever.",
-    priceMonthly: "$0",
-    priceYearly: "$0",
+    priceMonthly: "US$0",
+    priceYearly: "US$0",
     priceUnit: "forever",
     yearlySavingNote: "",
     features: [
@@ -35,7 +35,7 @@ export const tiers: PricingTier[] = [
       "Plain `.md` files, Obsidian-compatible — no lock-in",
       "3 themes (Dark, Light, Nord)",
       "Starts as a 14-day trial of everything",
-      "No account or card to start — the basics never phone home",
+      "No account or card to start. The app checks for updates",
     ],
     gatingRationale:
       "The free tier is a genuinely good notepad because your notes should never be hostage. The first 14 days unlock everything so you can feel the full app in your own workflow — then it gently drops to Free.",
@@ -47,8 +47,8 @@ export const tiers: PricingTier[] = [
     id: "personal",
     name: "Personal",
     subline: "The full system. Every note, one scroll away.",
-    priceMonthly: "$4",
-    priceYearly: "$36",
+    priceMonthly: "US$4",
+    priceYearly: "US$36",
     priceUnit: "per month",
     yearlySavingNote: "Save 25% — three months free",
     features: [
@@ -56,10 +56,9 @@ export const tiers: PricingTier[] = [
       "Every theme, light and dark",
       "Plugins: Daily Notes, Kanban, Tasks — plus build your own",
       "Revision history — snapshots of every note, browse and restore",
-      "All updates while subscribed",
     ],
     gatingRationale:
-      "Personal pays for sustained, careful development of a native app — no Electron, no dependencies, just Swift. The basics stay free; what you pay for is the system on top: plugins, history, theming. Cancel anytime — your notes keep working everywhere, they were never trapped.",
+      "Personal pays for sustained, careful development of a native Mac app — no Electron. The basics stay free; what you pay for is the system on top: plugins, history, theming. Cancel anytime — your notes keep working everywhere, they were never trapped.",
     ctaLabel: "Get Personal",
     ctaHrefMonthly: "",
     ctaHrefYearly: "",
@@ -69,19 +68,13 @@ export const tiers: PricingTier[] = [
     id: "supporter",
     name: "Supporter",
     subline: "For people who want this app to exist for a decade.",
-    priceMonthly: "$8",
-    priceYearly: "$72",
+    priceMonthly: "US$8",
+    priceYearly: "US$72",
     priceUnit: "per month",
     yearlySavingNote: "Save 25% — three months free",
-    features: [
-      "Everything in Personal",
-      "Priority support, one-business-day response",
-      "Early builds before general release",
-      "A direct line on the roadmap — your votes weigh double",
-      "Your name in the credits (optional)",
-    ],
+    features: ["Everything in Personal."],
     gatingRationale:
-      "Supporter is Personal plus patronage. Same app — the extra buys early builds, a louder voice on what gets built next, and the warm feeling of keeping an independent Mac app independent.",
+      "Pay a little more to support independent development. Thank you.",
     ctaLabel: "Become a supporter",
     ctaHrefMonthly: "",
     ctaHrefYearly: "",
@@ -107,12 +100,12 @@ export const pricingFaq: FaqEntry[] = [
   {
     question: "Is this a subscription for my notes or for the app?",
     answer:
-      "For the app — specifically its premium layer. Shady Notes never stores your notes anywhere but your own disk — there's no sync service, no server, no account holding your data. The subscription funds development of a native, dependency-free Mac app.",
+      "For the app — specifically its premium layer. Shady Notes never stores your notes anywhere but your own disk — there's no sync service, no server, no account holding your data. The subscription funds development of a native Mac app.",
   },
   {
-    question: "How does unlocking premium work — does the app phone home?",
+    question: "How does unlocking premium work?",
     answer:
-      "Premium is tied to your account. You subscribe on the web, then click Sign In in the app's Preferences — that opens your browser, signs you in, and hands the app a token. The app checks your subscription online, then works offline for two weeks before a quiet background re-check. The only thing that ever leaves your Mac is that account token — never a single note. The free tier and the trial need no account at all.",
+      "Premium is tied to your account. You subscribe on the web, then click Sign In in the app's Preferences — that opens your browser, signs you in, and hands the app a token. When the Mac is online, the app re-checks the licence about every 12 hours. Offline, premium keeps working for a 14-day grace period. Update checks leave the Mac too. Notes stay on your Mac. The free tier and the trial need no account at all.",
   },
   {
     question: "Is it a subscription, or can I pay once?",
@@ -127,7 +120,7 @@ export const pricingFaq: FaqEntry[] = [
   {
     question: "Which payment provider do you use?",
     answer:
-      "Checkout and subscriptions run through Clerk Billing, with Stripe as the payment processor — every major card is accepted. Round Rect is the seller of record. You manage or cancel your subscription anytime from your account. Details confirmed at launch.",
+      "Checkout and subscriptions run through Clerk Billing. Round Rect is the seller of record. You manage or cancel your subscription anytime from your account.",
   },
   {
     question: "Is it on the Mac App Store?",
