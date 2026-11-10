@@ -1,0 +1,43 @@
+---
+title: Tabs
+description: Open several notes at once and move between them.
+---
+
+import { Image } from "astro:assets";
+import imgTabBar from "../../../assets/screenshots/tab-bar.png";
+
+Clicking a note in the sidebar opens it in a tab. The tab bar appears once you
+have two or more open.
+
+<Image src={imgTabBar} alt="The tab bar with four notes open, the active one in bold with an underline." />
+
+The active tab is shown in bold with an underline. Close buttons appear on hover.
+
+## Moving between tabs
+
+| Action | How |
+|---|---|
+| Switch | Click a tab, or <kbd>⌃⇥</kbd> / <kbd>⌃⇧⇥</kbd> |
+| Reorder | Drag a tab |
+| Close | The **×**, or <kbd>⌘W</kbd> |
+| Close others | Right-click → Close Other Tabs |
+| Close to the right | Right-click → Close Tabs to the Right |
+| Close all | The **⋮** menu → Close All Tabs |
+| Reveal the file | Right-click → Reveal in Finder |
+
+<kbd>⌃⇥</kbd> wraps around at the end.
+
+:::caution[⌘W closes the shade on the last tab]
+<kbd>⌘W</kbd> closes the active tab — and when only one is open, it closes the
+shade. Nothing is lost; notes are saved continuously.
+:::
+
+## Dragging the empty space
+
+Dragging the blank area of the tab bar moves the shade horizontally, the same as
+dragging the toolbar.
+
+## They persist
+
+Which tabs are open, their order, and which is active all survive a restart —
+per workspace, so switching workspaces switches the tab set too.

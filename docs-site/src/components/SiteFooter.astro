@@ -1,0 +1,37 @@
+---
+import mark from "../assets/logo.png";
+const groups = [
+  { title: "Product", links: [["https://shadynotes.app/#features", "Features"], ["https://shadynotes.app/pricing", "Pricing"], ["https://shadynotes.app/download", "Download"], ["/", "Docs"], ["https://shadynotes.app/changelog", "Changelog"]] },
+  { title: "Community", links: [["https://discord.gg/2TT9Mm9Uzf", "Discord"], ["mailto:hello@shadynotes.app", "hello@shadynotes.app"]] },
+  { title: "Legal", links: [["https://shadynotes.app/terms", "Terms"], ["https://shadynotes.app/privacy", "Privacy"], ["https://shadynotes.app/refund", "Refund"]] },
+];
+---
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <a href="https://shadynotes.app" class="footer-brand"><span class="footer-mark" style={`--mark: url(${mark.src})`} aria-hidden="true" />Shady Notes</a>
+        <p class="description">The menu-bar markdown notepad for your Mac. By Round Rect.</p>
+      </div>
+      {groups.map(group => <div><h2>{group.title}</h2><ul>{group.links.map(([href, label]) => <li><a href={href}>{label}</a></li>)}</ul></div>)}
+    </div>
+    <div class="footer-bottom"><p>© 2026 Round Rect. Shady Notes is a product of ROUNDRECT PTY LTD.</p><p class="platform">macOS 13+ · native Swift · notarised · Developer-ID</p></div>
+  </div>
+</footer>
+<style>
+  .site-footer { position: relative; z-index: 30; margin-top: 96px; border-top: 1px solid #000; background: #fff9dc; color: #000; }
+  .footer-inner { max-width: 1152px; margin: auto; padding: 64px 24px; }
+  .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; }
+  .footer-brand { display: inline-flex; align-items: center; gap: 10px; color: #000; font-size: 16px; font-weight: 700; text-decoration: none; }
+  .footer-mark { width: 28px; height: 28px; background: #000; mask: var(--mark) center / contain no-repeat; -webkit-mask: var(--mark) center / contain no-repeat; }
+  .description { margin-top: 16px; max-width: 320px; font-size: 14px; color: #555; }
+  h2 { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  ul { list-style: none; padding: 0; margin: 16px 0 0; }
+  li + li { margin-top: 10px; }
+  li a { color: #555; font-size: 14px; text-decoration: none; }
+  a:hover { color: #000; text-decoration: underline; }
+  .footer-bottom { margin-top: 64px; padding-top: 32px; border-top: 1px solid #000; display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: #555; }
+  .footer-bottom p { margin: 0; }
+  .platform { font-family: var(--sl-font-mono); }
+  @media (max-width: 767px) { .footer-grid { grid-template-columns: 1fr; } ul { margin-top: 8px; } li + li { margin-top: 0; } li a { display: inline-flex; align-items: center; min-height: 44px; } .footer-bottom { flex-direction: column; } }
+</style>

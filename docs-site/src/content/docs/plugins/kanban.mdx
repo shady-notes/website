@@ -1,0 +1,54 @@
+---
+title: Kanban
+description: A board view driven by front matter in your notes.
+---
+
+import { Image } from "astro:assets";
+import { Badge } from '@astrojs/starlight/components';
+import imgPluginKanban from "../../../assets/screenshots/plugin-kanban.png";
+
+<Badge text="Premium" variant="caution" /> Part of the plugin platform. See
+[Licensing](/account/licensing/).
+
+A board whose columns come from a front-matter field. Every card is a real note.
+
+<Image src={imgPluginKanban} alt="A Kanban board with note cards arranged across status columns." />
+
+## How a card becomes a card
+
+Give a note a `status`:
+
+```markdown
+---
+status: in-progress
+priority: high
+assignee: sam
+tags: [docs]
+---
+
+# Publish the docs site
+```
+
+It appears in the **in-progress** column. Columns are the distinct `status`
+values across the folder.
+
+## Dragging
+
+Dragging a card to another column **rewrites `status` in the file**. The board is
+an editor, not a display — the change is in the note, visible in any other
+editor, and captured by [revision history](/history/revisions/).
+
+## Fields it reads
+
+| Field | Used for |
+|---|---|
+| `status` | Which column |
+| `priority` | Card emphasis |
+| `assignee` | Shown on the card |
+| `tags` | Filtering |
+
+## Two board plugins
+
+**Kanban** is the native one described here. **Board** is an
+Obsidian-Kanban-compatible variant that reads that plugin's format instead —
+useful if you are coming from Obsidian with boards already set up.

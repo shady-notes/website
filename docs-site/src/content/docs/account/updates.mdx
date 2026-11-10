@@ -1,0 +1,49 @@
+---
+title: Updates
+description: How Shady Notes checks for and installs new versions.
+---
+
+import { Image } from "astro:assets";
+import imgSparkleUpdateDialog from "../../../assets/screenshots/sparkle-update-dialog.png";
+
+Shady Notes updates itself using **Sparkle**, the standard Mac update framework.
+
+<Image src={imgSparkleUpdateDialog} alt="The Sparkle update dialog offering a new version with release notes." />
+
+## Automatic checks
+
+Once a day, in the background. When one is found you get the dialog above with
+the release notes, and can install or skip.
+
+## Checking manually
+
+**Check for Updates…** from the app menu.
+
+## Verification
+
+Every update is checked twice before it is installed:
+
+- **Apple notarisation**, as with the original download
+- **An EdDSA signature** verified by Sparkle against a key built into the app
+
+An update that fails either check is refused. That means a tampered or
+substituted download cannot be installed, even if it reached your Mac.
+
+## Installed with Homebrew
+
+If you used `brew install --cask shadynotes`, update with Homebrew instead so its
+records stay accurate:
+
+```bash
+brew upgrade --cask shadynotes
+```
+
+## What updates do not touch
+
+Your notes, your vault location, your settings, and your recorded history. An
+update replaces the application only.
+
+## Release notes
+
+Every version is listed at
+[shadynotes.app/changelog](https://shadynotes.app/changelog).

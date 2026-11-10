@@ -1,0 +1,44 @@
+---
+title: Install
+description: Download Shady Notes, install it, and open it for the first time.
+---
+
+import { Image } from "astro:assets";
+import imgInstallDmgWindow from "../../assets/screenshots/install-dmg-window.png";
+
+Shady Notes is a Mac app. It needs **macOS 13 (Ventura) or later**, and runs
+natively on both Apple Silicon and Intel — the download is a single universal
+build, so there is nothing to choose between.
+
+## Download
+
+Get the current release from [shadynotes.app/download](https://shadynotes.app/download).
+
+<Image src={imgInstallDmgWindow} alt="The mounted Shady Notes disk image, showing the app icon beside an Applications folder shortcut." />
+
+1. Open the downloaded `.dmg`.
+2. Drag **Shady Notes** onto the **Applications** shortcut.
+3. Eject the disk image and open Shady Notes from Applications.
+
+The app is signed and notarised by Apple, so it opens without the
+"unidentified developer" warning. If macOS asks whether you're sure you want to
+open an app downloaded from the internet, that's the normal first-run prompt —
+click **Open**.
+
+## With Homebrew
+
+If you use Homebrew, the cask installs and updates the same build:
+
+```bash
+brew install --cask shadynotes
+```
+
+## What happens on first launch
+
+There is no window. Shady Notes lives in the menu bar — see
+[First run](/first-run/) for what to look for.
+
+:::note
+Shady Notes keeps itself up to date. It checks for new versions once a day and
+can install them for you. See [Updates](/account/updates/).
+:::

@@ -1,0 +1,101 @@
+---
+title: Settings
+description: Every setting in Preferences, what it does, and its default.
+---
+
+import { Image } from "astro:assets";
+import imgPrefsAppearance from "../../../assets/screenshots/prefs-appearance.png";
+import imgPrefsWorkspaces from "../../../assets/screenshots/prefs-workspaces.png";
+import imgPrefsEditor from "../../../assets/screenshots/prefs-editor.png";
+import imgPrefsShortcuts from "../../../assets/screenshots/prefs-shortcuts.png";
+import imgPrefsPlugins from "../../../assets/screenshots/prefs-plugins.png";
+import imgPrefsVault from "../../../assets/screenshots/prefs-vault.png";
+import imgPrefsHistory from "../../../assets/screenshots/prefs-history.png";
+import imgPrefsPremiumFree from "../../../assets/screenshots/prefs-premium-free.png";
+
+Preferences has eight tabs. This page maps what lives where; the pages linked
+from each section explain the settings in context.
+
+Open Preferences from the toolbar **…** menu or the menu bar icon.
+
+## Appearance
+
+Scroll direction and trigger zone depth · Esc closes the shade · launch at
+startup · awning style, tab width and inactive opacity · window material ·
+transparency for shade, sticky notes and window mode · editor background tint ·
+sticky note border and collapse snap · chrome border width · workspace dots.
+
+→ [Appearance](/customising/appearance/)
+
+<Image src={imgPrefsAppearance} alt="The Appearance tab in Preferences." />
+
+## Workspaces
+
+One row per workspace: name, colour, assigned file tree, home page, visible and
+active flags.
+
+→ [Workspaces](/concepts/workspaces/)
+
+<Image src={imgPrefsWorkspaces} alt="The Workspaces tab in Preferences." />
+
+## Editor
+
+The largest tab. Fonts and sizes · editor margin · code block wrap, width,
+language header, line height and colours · checkbox style and colour · automatic
+continuation · parent checkbox tracking · line numbers and whitespace per mode ·
+table lines, stripes and auto-format · attachments folder · image resize step ·
+multi-image drop · animate GIFs · preview backend.
+
+→ [Editor settings](/customising/editor-settings/)
+
+<Image src={imgPrefsEditor} alt="The Editor tab in Preferences." />
+
+## Shortcuts
+
+The three global hotkeys and all 32 editor actions.
+
+→ [Shortcuts](/customising/shortcuts/) ·
+[Keyboard shortcuts reference](/reference/keyboard-shortcuts/)
+
+<Image src={imgPrefsShortcuts} alt="The Shortcuts tab in Preferences." />
+
+## Plugins
+
+Enable and disable plugins, set each one's folder scope, and reach the catalog.
+
+→ [Plugins](/plugins/overview/)
+
+<Image src={imgPrefsPlugins} alt="The Plugins tab in Preferences, listing available plugins with enable toggles." />
+
+## Vault
+
+File trees — add, remove, rename, set auto-tracking and active state · new note
+naming strategy · conflict resolution mode.
+
+→ [Vault and files](/concepts/vault-and-files/) ·
+[Conflicts](/history/conflicts/)
+
+<Image src={imgPrefsVault} alt="The Vault tab in Preferences, showing file trees and note naming settings." />
+
+## History
+
+Enable revision history · repository path · commit interval · external change
+debounce · maximum concurrent loads.
+
+→ [Revision history](/history/revisions/) ·
+[The git backend](/history/git-backend/)
+
+<Image src={imgPrefsHistory} alt="The History tab in Preferences." />
+
+## Premium
+
+Account status, sign in and out, trial state, and which features are unlocked.
+
+→ [Licensing](/account/licensing/) · [Signing in](/account/sign-in/)
+
+<Image src={imgPrefsPremiumFree} alt="The Premium tab in Preferences showing the current trial state." />
+
+## Where settings are stored
+
+In macOS preferences, not in your vault. Copying the notes folder to another Mac
+brings the notes, not the configuration.

@@ -1,0 +1,74 @@
+---
+title: Installing plugins
+description: Add a plugin to your vault, enable it, update it, and remove it.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+<Badge text="Premium" variant="caution" /> Part of the plugin platform. See
+[Licensing](/account/licensing/).
+
+There is **no in-app plugin browser or marketplace**. A plugin is a Markdown
+file, so installing one is copying a file — the same thing you would do to add a
+note.
+
+## Installing
+
+Put the plugin's `.md` file in the **`plugins/` folder inside your vault**:
+
+```
+~/Documents/ShadyNotes/
+├── plugins/
+│   └── my-bookshelf.md      ← here
+├── Projects/
+└── Welcome.md
+```
+
+:::caution
+The plugins folder is read **once, at launch**. A file you drop in while the app
+is running will not appear until you quit and reopen Shady Notes.
+:::
+
+After restarting, the plugin shows up in **Preferences → Plugins** under
+*Installed Plugins*, and in the puzzle-piece tab in the sidebar.
+
+## Enabling and disabling
+
+**Preferences → Plugins** lists everything the app found, built-in and installed,
+each with a toggle. Right-clicking a row offers the same **Enable** / **Disable**.
+
+A disabled plugin stays installed — it just stops appearing in the sidebar.
+Nothing about your notes changes either way, because a plugin only ever *reads*
+the Markdown that was already there.
+
+## Updating
+
+Replace the file with the newer version and restart. If the new file carries the
+same `plugin:` id, it takes over from the old one.
+
+## Uninstalling
+
+Right-click an installed plugin in **Preferences → Plugins** and choose
+**Uninstall**. That deletes its `.md` file from `plugins/`.
+
+**Your notes are untouched.** A Kanban board is a view over notes that already
+existed; removing the view leaves every note exactly as it was.
+
+Built-in plugins cannot be uninstalled — they ship inside the app rather than as
+files in your vault. Disable them instead.
+
+## Built-ins need none of this
+
+The five built-in plugins — Daily Notes, Kanban, Board, Tasks and Recent — are
+already present. They only need enabling. See [Plugins](/plugins/overview/).
+
+## What a plugin can reach
+
+A plugin reads and writes notes in the folder it is scoped to. It has no access
+to the rest of your Mac, and no network access of its own.
+
+Since a plugin can write to your notes — the Kanban board rewriting `status` is
+exactly that — install ones you understand, the same judgement you would apply
+to any other editor extension. A plugin is a readable Markdown file, and
+right-clicking it in the sidebar offers **View Definition**, so you can read
+exactly what it does before you enable it.

@@ -1,0 +1,54 @@
+---
+title: Signing in
+description: Connect Shady Notes to your account.
+---
+
+import { Image } from "astro:assets";
+import imgPrefsPremiumSignedIn from "../../../assets/screenshots/prefs-premium-signed-in.png";
+import imgSigninConnectPage from "../../../assets/screenshots/signin-connect-page.png";
+
+## How it works
+
+Sign-in happens in your browser, not in the app — the app never sees a password.
+
+1. **Preferences → Premium → Sign in**
+2. Your browser opens `shadynotes.app/app/connect`
+3. Sign in or create an account there
+4. The page hands back to Shady Notes and the browser can be closed
+
+<Image src={imgSigninConnectPage} alt="The sign-in card that /app/connect redirects to when signed out, offering GitHub, Google or email." />
+
+The app receives a token, stores it in the **macOS Keychain**, and checks your
+entitlement.
+
+<Image src={imgPrefsPremiumSignedIn} alt="The Premium tab showing trial status, subscription controls and the revision history switch." />
+
+## Signed in is not the same as subscribed
+
+Two independent things:
+
+- **Signed in** — a token is stored and the app knows which account you are
+- **Entitled** — that account currently has an active plan
+
+You can be signed in with no subscription — during the trial, or on the free
+tier, that is the normal state. Subscribing happens on the web rather than in
+the app, and once a plan is on the account the app picks it up on its next check
+without signing in again.
+
+## Working offline
+
+After a successful check, the app works offline for **14 days** before needing
+to re-verify.
+
+## Signing out
+
+**Preferences → Premium → Sign out** removes the token from the Keychain and
+returns the app to the free tier. Notes are untouched.
+
+## If sign-in does not complete
+
+- Make sure the browser actually finished loading the connect page
+- The hand-off uses a `shadynotes://` link — allow the browser to open it
+- If the browser landed on the page but nothing happened in the app, close the
+  tab and start again from Preferences; the link is single-use
+- → [Troubleshooting](/help/troubleshooting/)

@@ -23,8 +23,25 @@ Push to `main`. The **Deploy site** workflow (`.github/workflows/deploy.yml`)
 runs `npm ci`, `astro check` and `npm run build`, then publishes `dist/` to
 Pages. Pull requests run the build without deploying.
 
-Do not use `make deploy` from `shadynotes-hostinger` for this site any more: it
-overwrites this repo with built output.
+## Everything else this repo deploys
+
+This repo replaced the private `shadynotes-hostinger` repo on 2026-11-10, when the
+Hostinger VPS shut down. Each service is a Cloudflare Worker with its own folder;
+`make help` lists the ops targets (deploys and live checks).
+
+| Host | Folder | Deploy |
+|---|---|---|
+| `api.shadynotes.app` — entitlement backend the macOS app calls | `api/` | `make api-deploy` |
+| `docs.shadynotes.app` — Starlight docs | `docs-site/` | `make docs-deploy` |
+| `downloads.shadynotes.app` — DMGs, Sparkle appcast, brand film | `downloads/` | the app repo's `make publish` |
+| `subscribe.shadynotes.app` — newsletter sign-up | `newsletter/` | `cd newsletter && npx wrangler deploy` |
+
+The ops targets expect two folders next to this repo: the app repo at `../shadynotes`
+and the brand media (not in git) at `../brand`.
+
+Also here: `homebrew/` (the Homebrew cask). The old repo's feature history, the
+community Discord bot (retired with the VPS) and the internal ops guides stay in
+the private `shadynotes-hostinger` repo, archived read-only — this repo is public.
 
 ## Layout
 

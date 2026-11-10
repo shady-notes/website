@@ -1,0 +1,89 @@
+---
+title: Licensing
+description: Free, trial, and paid tiers — and which features each one unlocks.
+---
+
+import { Image } from "astro:assets";
+import imgPrefsPremiumFree from "../../../assets/screenshots/prefs-premium-free.png";
+
+## What is gated
+
+Exactly **three** features need a trial or a paid plan. Everything else in Shady
+Notes is free, permanently, with no note limit and no nagging.
+
+| Premium | Free |
+|---|---|
+| [Plugins](/plugins/overview/) | Everything else |
+| All 16 [themes](/customising/themes/) | Dark, Light and Nord |
+| [Revision history](/history/revisions/) | — |
+
+Writing, the shade, the vault, [workspaces](/concepts/workspaces/),
+[tabs](/organising/tabs/), the [Navigator](/organising/navigator/),
+[sticky notes](/organising/sticky-notes/), search, find and replace,
+[conflict handling](/history/conflicts/), every Markdown feature, all
+[keyboard shortcuts](/reference/keyboard-shortcuts/) and every setting are free.
+
+## The trial
+
+Fourteen days, starting the first time the app checks — no sign-up, no card, no
+button to press. During it, all three gated features are unlocked.
+
+<Image src={imgPrefsPremiumFree} alt="The Premium tab in Preferences showing days remaining in the trial." />
+
+When it ends the app returns to the free tier. **Nothing is taken away that you
+made:** notes are untouched, plugin-managed notes stay exactly as they are, and
+recorded history is kept — you simply stop being able to browse it until you are
+on a paid plan again.
+
+If your theme was a premium one, it falls back to a free one.
+
+:::caution
+Trial state is stored **per Mac**, not per account. Installing on a second
+computer starts a separate trial there, and it is not restored by signing in.
+:::
+
+## The plans
+
+Prices and the full comparison are on
+[shadynotes.app/pricing](https://shadynotes.app/pricing). In short:
+
+| Plan | Monthly | Yearly | What it adds |
+|---|---|---|---|
+| **Free** | $0 | $0 | The editor, the vault, everything not listed above |
+| **Personal** | $4 | $36 | All three premium features, and updates while subscribed |
+| **Supporter** | $8 | $72 | Personal, plus priority support, early builds and a heavier vote on the roadmap |
+
+Yearly saves 25%. Both paid plans unlock exactly the same three features —
+Supporter is patronage rather than a bigger app.
+
+It is a subscription; there is no one-time or lifetime purchase. Checkout runs
+through **Clerk Billing**, with Stripe as the payment processor. Round Rect is
+the seller of record and handles tax, and you manage or cancel the subscription
+from your account at any time.
+
+Refunds are **14 days, no questions** — email `hello@shadynotes.app` from the
+address on your receipt. → [Refund policy](https://shadynotes.app/refund)
+
+## Signing in
+
+Buying happens on the web; the app finds out about it when you sign in. Subscribe
+at [shadynotes.app/pricing](https://shadynotes.app/pricing), then sign in from
+**Preferences → Premium** and the app picks up the entitlement on its next check.
+→ [Signing in](/account/sign-in/)
+
+## Offline
+
+Once entitlement is established, Shady Notes works offline for **14 days**
+before it needs to check again. A flight, or a week without a connection, is not
+a problem.
+
+## Cancelling
+
+If a subscription lapses, the app returns to the free tier at the next check.
+Your notes are never touched by any licensing state.
+
+## What goes online
+
+Only the app token, and only to check your account. **Your notes never leave your
+Mac** — they are not uploaded, synced or read by us. → [Privacy and
+data](/help/privacy-and-data/)

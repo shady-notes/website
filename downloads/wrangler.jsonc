@@ -1,0 +1,25 @@
+// downloads.shadynotes.app on Cloudflare Workers static assets (no server, no R2).
+// Replaced the Dokploy nginx container on the Hostinger VPS when it shut down
+// (2026-11-10); same URLs, so the app's SUFeedURL and the site did not change.
+//
+// public/ is NOT in git: `./sync.sh` fills it from the app repo's dist/ (DMGs,
+// deltas, appcast.xml) and brand/promo-videos/web/ (brand film), both checked
+// out NEXT TO this repo (../../shadynotes, ../../brand). The app repo's
+// `make publish` runs sync.sh + `wrangler deploy` for you. Per-file limit 25 MiB.
+// Cache rules (ported from the old nginx.conf) live in public/_headers, written
+// by sync.sh. src/worker.js runs only for /media/* to serve byte ranges.
+{
+  "name": "shadynotes-downloads",
+  "account_id": "65c6972b439fcf80bed005fdcbc9349f",
+  "compatibility_date": "2026-09-01",
+  "main": "src/worker.js",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/media/*"],
+    "not_found_handling": "none",
+    "html_handling": "none"
+  },
+  "workers_dev": true,
+  "routes": [{ "pattern": "downloads.shadynotes.app", "custom_domain": true }]
+}

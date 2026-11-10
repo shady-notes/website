@@ -1,0 +1,29 @@
+---
+title: Shady Notes docs
+description: A guide to keeping your notes one scroll away.
+tableOfContents: false
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+import DocsDirectory from '../../components/DocsDirectory.astro';
+
+Your notes live just above the screen, a scroll away. No windows cluttering
+the desktop — pull the shade down, write, let it roll back up.
+
+## Start here
+
+<CardGrid>
+  <LinkCard title="Install Shady Notes" description="Download the Mac app and get it into your menu bar." href="/install/" />
+  <LinkCard title="Take the tour" description="Find your way around the shade, sidebar and editor." href="/tour/" />
+</CardGrid>
+
+Every note is a plain `.md` file in a folder you choose — readable by
+Obsidian, VS Code, or anything else. [How the vault works](/concepts/vault-and-files/).
+
+A global hotkey opens the shade from any app, and every editor action can be
+remapped. [Keyboard shortcuts](/reference/keyboard-shortcuts/).
+
+Sixteen themes, a plugin platform, and settings for nearly everything.
+[Make it yours](/customising/themes/).
+
+<DocsDirectory />

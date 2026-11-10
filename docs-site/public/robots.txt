@@ -1,0 +1,6 @@
+# docs.shadynotes.app is its own origin with its own sitemap. The apex sitemap
+# at shadynotes.app deliberately does NOT list these URLs.
+User-agent: *
+Allow: /
+
+Sitemap: https://docs.shadynotes.app/sitemap-index.xml

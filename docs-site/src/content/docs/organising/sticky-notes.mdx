@@ -1,0 +1,44 @@
+---
+title: Sticky notes
+description: Float a single note in its own small window.
+---
+
+import { Image } from "astro:assets";
+import imgStickyNote from "../../../assets/screenshots/sticky-note.png";
+
+A **sticky note** is one note in its own small floating window, independent of
+the shade. Useful for something you want visible while working in another app —
+a checklist, a scratchpad, a set of commands.
+
+<Image src={imgStickyNote} alt="A sticky note floating above other windows, showing a note's contents." />
+
+## Opening one
+
+Assign a global hotkey in **Preferences → Shortcuts** — it is unset by default —
+or open one from the note's context menu.
+
+## Behaviour
+
+- Floats above ordinary windows
+- Independent of the shade: closing the shade leaves sticky notes open
+- Edits are the same file, saved the same way — a sticky note is a view of a
+  note, not a copy
+- Position and size persist across restarts
+
+## Options
+
+Two settings in **Preferences → Appearance**:
+
+- **Sticky note border** — draw a border around the window
+- **Collapse snap** — snap to a collapsed height when dragged small, so a note
+  can be tucked to a title bar and expanded later
+
+## Sticky notes vs. the shade
+
+| | Shade | Sticky note |
+|---|---|---|
+| How many | One | As many as you like |
+| Tabs | Yes | No — one note each |
+| Sidebar | Yes | No |
+| Opens on | Scroll or hotkey | Hotkey or context menu |
+| Best for | Working in your notes | Keeping one note in view |

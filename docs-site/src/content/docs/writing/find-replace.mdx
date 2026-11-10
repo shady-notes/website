@@ -1,0 +1,42 @@
+---
+title: Find and replace
+description: Search within a note and replace matches one at a time or all at once.
+---
+
+import { Image } from "astro:assets";
+import imgFindReplaceBar from "../../../assets/screenshots/find-replace-bar.png";
+
+<kbd>⌘F</kbd> opens the find bar in the top-right of the editor. If you have text
+selected, it starts pre-filled with it.
+
+<Image src={imgFindReplaceBar} alt="The find and replace bar with a search term entered and matches highlighted in the note." />
+
+## Finding
+
+| Action | Key |
+|---|---|
+| Find next | <kbd>↵</kbd> or <kbd>⌘G</kbd> |
+| Find previous | <kbd>⇧↵</kbd> or <kbd>⇧⌘G</kbd> |
+| Close the bar | <kbd>Esc</kbd> or the **×** |
+
+Every match is highlighted; the current one more brightly. The count and current
+index sit next to the field, so you know whether you're on match 3 of 40.
+
+## Replacing
+
+Click the chevron to expand the replace field.
+
+- **Replace** changes the current match and moves to the next
+- **All** changes every match in the note
+
+## Scope
+
+Find and replace works on **the current note**. To search across your whole
+vault, use the [sidebar search](/organising/sidebar/) or the
+[Navigator](/organising/navigator/).
+
+## Esc
+
+<kbd>Esc</kbd> closes the find bar first. If closing the shade with <kbd>Esc</kbd>
+is enabled, it takes another press — the shade will not vanish out from under an
+active search.

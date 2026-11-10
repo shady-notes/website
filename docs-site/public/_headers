@@ -1,0 +1,11 @@
+# Cache policy for docs.shadynotes.app on Cloudflare Workers static assets.
+# Mirrors docs-site/nginx.conf. HSTS comes from the zone, not from here.
+
+# Hashed build assets never change under the same name.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The search index is rewritten on every build under the SAME file names. Caching it
+# immutable leaves returning readers searching a stale index that 404s on lookup.
+/pagefind/*
+  Cache-Control: public, max-age=300, must-revalidate

@@ -1,0 +1,82 @@
+---
+title: The editor
+description: Live Markdown rendering, raw mode, read-only mode, and zoom.
+---
+
+import { Image } from "astro:assets";
+import imgEditorWysiwyg from "../../../assets/screenshots/editor-wysiwyg.png";
+import imgEditorRawMode from "../../../assets/screenshots/editor-raw-mode.png";
+
+The editor renders Markdown as you type. Rather than a split pane with source on
+one side and preview on the other, there is one surface: markers hide themselves
+until your cursor enters the paragraph they belong to, then fade in so you can
+edit them.
+
+<Image src={imgEditorWysiwyg} alt="A note rendered live in the editor, with a heading, bold text, inline code and a table." />
+
+Put the cursor in a heading and the `##` reappears, dimmed. Move away and it
+hides again. Nothing is ever hidden from the file itself — only from the display.
+
+## Raw mode
+
+Press <kbd>⌃E</kbd>, or click the document icon in the toolbar, to see the plain
+Markdown source with syntax colouring only — no hidden markers, no heading
+sizes, no rendered tables.
+
+<Image src={imgEditorRawMode} alt="The same note in raw mode, showing plain Markdown source with syntax colouring." />
+
+Useful when a document's structure is not doing what you expect.
+
+## Read-only mode
+
+<kbd>⌘E</kbd> makes the current note read-only. The rendering is unchanged; the
+text simply cannot be edited. Good for a reference note you keep open and would
+rather not typo into.
+
+:::caution
+<kbd>⌃E</kbd> and <kbd>⌘E</kbd> are one modifier apart and do different things.
+<kbd>⌃E</kbd> changes how the text is **drawn**; <kbd>⌘E</kbd> changes whether
+you can **type**.
+:::
+
+## Moving lines
+
+<kbd>⌥↑</kbd> and <kbd>⌥↓</kbd> move the current line — or the selected lines —
+up and down. Useful for reordering a list without cutting and pasting.
+
+## Zoom
+
+| Action | Shortcut |
+|---|---|
+| Zoom in | <kbd>⌘=</kbd> |
+| Zoom out | <kbd>⌘-</kbd> |
+| Actual size | <kbd>⌘0</kbd> |
+
+Zoom affects the editing surface only, not the sidebar or toolbar, and persists
+across restarts.
+
+## Line numbers and whitespace
+
+Both can be turned on independently for each of the three modes — raw, editing
+and read-only — in **Preferences → Editor**. Line numbers in raw mode but not
+while writing is a common preference.
+
+## Fonts and margins
+
+Body, monospace, heading and table fonts are each set separately, as is the
+editor margin. → [Editor settings](/customising/editor-settings/)
+
+## Code blocks
+
+Fenced blocks with a language tag are syntax-highlighted. Soft wrap, maximum
+width, a language header and line height are all configurable.
+
+````markdown
+```swift
+let greeting = "Hello, world"
+print(greeting)
+```
+````
+
+Highlighting covers Swift, Python, JavaScript, TypeScript, Bash/Shell, JSON,
+HTML, CSS and Rust.

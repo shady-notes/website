@@ -1,0 +1,108 @@
+---
+title: Tour
+description: A ten-minute guided tour of everything Shady Notes can do.
+---
+
+import { Image } from "astro:assets";
+import imgNavigatorWindow from "../../assets/screenshots/navigator-window.png";
+import imgShadeOpenHero from "../../assets/screenshots/shade-open-hero.png";
+import imgToolbarMap from "../../assets/screenshots/toolbar-map.png";
+import imgSidebarFileTree from "../../assets/screenshots/sidebar-file-tree.png";
+import imgEditorWysiwyg from "../../assets/screenshots/editor-wysiwyg.png";
+import imgCheckboxesList from "../../assets/screenshots/checkboxes-list.png";
+import imgPluginKanban from "../../assets/screenshots/plugin-kanban.png";
+import imgThemePicker from "../../assets/screenshots/theme-picker.png";
+import imgWorkspaceDots from "../../assets/screenshots/workspace-dots.png";
+
+A quick pass over the whole app. Each section links to the page with the detail.
+
+<Image src={imgShadeOpenHero} alt="The Shady Notes shade open over a desktop, showing the sidebar file tree on the left and a rendered Markdown note on the right." />
+
+## 1. The shade
+
+Notes live above the top of the screen. Scroll down near the top edge, and the
+shade rolls into view; scroll up and it goes away. It floats above your other
+windows rather than joining them, so it never becomes another thing to find.
+
+→ [The shade](/concepts/the-shade/)
+
+## 2. The toolbar
+
+<Image src={imgToolbarMap} alt="The Shady Notes toolbar, showing the sidebar toggle, raw-mode, pin, window-mode and menu controls." />
+
+Everything the shade can do is reachable from here, and the **…** menu groups
+the lot.
+
+→ [Menus](/reference/menus/)
+
+## 3. The sidebar
+
+<Image src={imgSidebarFileTree} alt="The sidebar file tree with Projects, Reference and Snippets folders expanded." />
+
+Your folders and notes, a search field, starred notes, themes and plugins — all
+in tabs down the side. Toggle it with <kbd>⌥⌘S</kbd>.
+
+→ [The sidebar](/organising/sidebar/)
+
+## 4. Writing
+
+The editor renders Markdown as you type. Syntax markers hide themselves until
+your cursor enters the paragraph they belong to, so a heading looks like a
+heading rather than `## like this`.
+
+<Image src={imgEditorWysiwyg} alt="A note rendered live, with headings, bold text, a table and checkboxes styled in the editor." />
+
+Press <kbd>⌃E</kbd> to see the raw Markdown at any time.
+
+→ [The editor](/writing/editor/) · [Markdown reference](/writing/markdown/)
+
+## 5. Tasks
+
+<Image src={imgCheckboxesList} alt="A checklist with completed and outstanding tasks, some in a bulleted list and one standalone." />
+
+<kbd>⌘T</kbd> toggles a checkbox, adds one to a list item, or drops a standalone
+one on a blank line, depending on where the cursor is.
+
+→ [Checkboxes](/writing/checkboxes/)
+
+## 6. Getting around
+
+Notes open in tabs. Several root folders can be open at once, grouped into
+**workspaces** — colour-coded contexts with their own starred notes and home
+page.
+
+<Image src={imgWorkspaceDots} alt="The workspace strip in the toolbar: five coloured pills, the active one larger and highlighted." />
+
+→ [Tabs](/organising/tabs/) · [Workspaces](/concepts/workspaces/)
+
+## 7. The Navigator
+
+<Image src={imgNavigatorWindow} alt="The Navigator window listing notes from several file trees with filter pills across the top." />
+
+A full window for searching across every folder at once, comparing versions and
+browsing history — for when the shade is too small.
+
+→ [Navigator](/organising/navigator/)
+
+## 8. History
+
+Shady Notes can keep a version history of your notes, backed by git, and restore
+any earlier version.
+
+→ [Revision history](/history/revisions/)
+
+## 9. Making it yours
+
+<Image src={imgThemePicker} alt="The theme picker overlay showing colour swatches for the available themes." />
+
+Sixteen themes, remappable shortcuts, and settings for nearly everything.
+
+→ [Themes](/customising/themes/) · [Keyboard shortcuts](/reference/keyboard-shortcuts/)
+
+## 10. Plugins
+
+Boards, daily notes and task roll-ups, built from the notes you already have.
+
+<Image src={imgPluginKanban} alt="A Kanban board with cards arranged in status columns." />
+
+→ [Plugins](/plugins/overview/)

@@ -1,0 +1,59 @@
+---
+title: The git backend
+description: How Shady Notes stores note history, and what it costs on disk.
+---
+
+import { Image } from "astro:assets";
+import imgPrefsHistory from "../../../assets/screenshots/prefs-history.png";
+
+[Revision history](/history/revisions/) is backed by git. Not the git you might
+already be running in a notes folder — a separate repository the app manages
+itself.
+
+<Image src={imgPrefsHistory} alt="The History tab in Preferences showing repository location and commit interval settings." />
+
+## Where it lives
+
+Outside your vault, at a path set in **Preferences → History**. Keeping it
+elsewhere means:
+
+- your notes folder has no `.git` directory in it
+- a vault you already track in git of your own is not disturbed
+- syncing the vault does not sync the whole history
+
+## One repository, many workspaces
+
+Inside, each file tree gets its own directory:
+
+```
+<repo>/workspaces/<slug>/
+```
+
+The slug is generated once when a tree is created and never changes —
+`tb08w0k4m2-notes`, for example. It combines a creation timestamp, a short hash
+of the path, and a readable name, so two trees called `notes` in different places
+never collide, and renaming a folder does not orphan its history.
+
+## Settings
+
+| Setting | What it does |
+|---|---|
+| **Repository path** | Where the history repo lives |
+| **Commit interval** | Minimum time between recorded versions |
+| **External change debounce** | How long to wait after an outside edit before recording |
+| **Max concurrent loads** | How many histories to read at once when browsing |
+
+The debounce matters if you sync your vault: a sync writing several files at
+once would otherwise produce a version per file.
+
+## Disk usage
+
+Notes are small text files and git stores changes compactly, so history is
+typically a small fraction of the vault's size. A vault of a few thousand notes
+edited daily generally stays in the tens of megabytes.
+
+## Using git yourself
+
+It is an ordinary repository — `git log` works. Treat it as read-only: the app
+owns it, and hand-committing risks confusing its bookkeeping. To keep your notes
+in git *yourself*, make the vault its own separate repo.

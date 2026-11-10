@@ -1,0 +1,28 @@
+// The entitlement backend: api.shadynotes.app (was issuer/ on the Hostinger VPS
+// until it shut down on 2026-11-10). Deploy: `npx wrangler deploy` from this folder.
+//
+// Secrets (set once with `npx wrangler secret put <NAME>`, never committed):
+//   CLERK_SECRET_KEY   sk_live_… of the PRODUCTION Clerk instance
+//   APP_TOKEN_SECRET   HMAC key for app tokens. MUST equal the old issuer's value,
+//                      or every installed app's token stops verifying and its
+//                      user has to sign in again. Rotating it is how you force that.
+{
+  "name": "shadynotes-api",
+  "account_id": "65c6972b439fcf80bed005fdcbc9349f",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "routes": [{ "pattern": "api.shadynotes.app", "custom_domain": true }],
+  "vars": {
+    // Not secret: the publishable key ships in the site's browser bundle.
+    "CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuc2hhZHlub3Rlcy5hcHAk",
+    // Clerk plan slugs that grant premium.
+    "PREMIUM_PLANS": "personal,supporter",
+    "APP_TOKEN_TTL_DAYS": "90",
+    // Browser origins allowed to call /app/token (the site's /app/connect page).
+    "ALLOWED_ORIGINS": "https://shadynotes.app,https://www.shadynotes.app,http://localhost:4321"
+  },
+  // No request logs: they would hold IP addresses and Clerk user IDs.
+  "observability": { "enabled": false }
+}

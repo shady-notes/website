@@ -1,0 +1,65 @@
+---
+// A marked screenshot slot.
+//
+// Phase 5 writes the prose before the Phase 4 capture session runs, so every
+// image position is declared here rather than left implicit. This renders a
+// visible placeholder in the built site — deliberately visible, so an unfilled
+// slot is obvious to anyone reading a preview deploy rather than silently
+// missing.
+//
+// To fill one in:
+//   1. drop <name>.png into src/assets/screenshots/
+//   2. swap this component for Starlight's <Image>:
+//        import shot from "../../assets/screenshots/<name>.png";
+//        <Image src={shot} alt="..." />
+//   3. record it in src/assets/screenshots/README.md
+//
+// Find every remaining slot with:  grep -rn "<Shot" src/content
+interface Props {
+  name: string;
+  alt: string;
+}
+const { name, alt } = Astro.props as Props;
+---
+
+<figure class="shot-slot" data-shot={name}>
+  <div class="shot-slot-inner">
+    <span class="shot-slot-tag">Screenshot</span>
+    <code class="shot-slot-name">{name}.png</code>
+    <p class="shot-slot-alt">{alt}</p>
+  </div>
+</figure>
+
+<style>
+  .shot-slot {
+    margin: 1.5rem 0;
+  }
+  .shot-slot-inner {
+    border: 1px dashed var(--sl-color-hairline-light);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg-inline-code);
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .shot-slot-tag {
+    display: inline-block;
+    font-size: var(--sl-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sl-color-black);
+    background: var(--color-brand-accent);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+    margin-right: 0.5rem;
+  }
+  .shot-slot-name {
+    font-family: var(--sl-font-mono);
+    font-size: 0.9em;
+    color: var(--sl-color-text-accent);
+  }
+  .shot-slot-alt {
+    margin: 0.6rem 0 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+</style>

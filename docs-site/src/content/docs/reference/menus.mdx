@@ -1,0 +1,51 @@
+---
+title: Menus
+description: The toolbar menu, the status bar menu, and right-click menus.
+---
+
+import { Image } from "astro:assets";
+import imgShortcutsOverlay from "../../../assets/screenshots/shortcuts-overlay.png";
+import imgToolbarMenu from "../../../assets/screenshots/toolbar-menu.png";
+import imgStatusbarMenu from "../../../assets/screenshots/statusbar-menu.png";
+
+## The toolbar menu
+
+The **…** button in the toolbar groups everything the shade can do.
+
+<Image src={imgToolbarMenu} alt="The toolbar ellipsis menu open, showing grouped Notes, View, Editing and Other sections." />
+
+| Group | Contains |
+|---|---|
+| **Notes** | New Note · Close Tab |
+| **View** | Show/Hide Sidebar · Raw/WYSIWYG Mode · Pin on Top · Minimize · Zoom In/Out/Actual Size |
+| **Editing** | Find & Replace · Bold · Toggle Checkbox · Code Block |
+| **Other** | Theme Picker · Preferences · Keyboard Shortcuts · Close Shade · Quit |
+
+## The menu bar icon
+
+Clicking the umbrella in the menu bar gives a short menu that works whether or
+not the shade is open.
+
+<Image src={imgStatusbarMenu} alt="The menu bar status item menu open: Show / Hide Notes, Navigator, Window Mode, Check for Updates, Preferences and Quit." />
+
+- **Show / Hide Notes** — toggle the shade
+- **Window Mode** — ticked while active
+- **Preferences…**
+- **Quit Shady Notes**
+
+## Right-click menus
+
+**On a file in the sidebar:** Open · Star / Unstar · Reveal in Finder · Delete.
+
+**On a tab:** Close Other Tabs · Close Tabs to the Right · Reveal in Finder.
+
+**On the tab bar ⋮:** Close All Tabs · Close Tabs to the Right.
+
+**In the editor:** the standard macOS text menu, plus Markdown formatting.
+
+## The shortcuts overlay
+
+<kbd>⌘/</kbd> shows every shortcut with its current binding — the authority if
+you have remapped anything.
+
+<Image src={imgShortcutsOverlay} alt="The keyboard shortcuts overlay listing shortcuts grouped by category." />

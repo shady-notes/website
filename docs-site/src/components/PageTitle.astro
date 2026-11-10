@@ -1,0 +1,8 @@
+---
+const { entry } = Astro.locals.starlightRoute;
+const isHome = entry.id === 'index' || entry.id === '';
+---
+{!isHome && <nav class="docs-breadcrumb" aria-label="Breadcrumb"><a href="/">Docs</a><span aria-hidden="true">/</span><span aria-current="page">{entry.data.title}</span></nav>}
+<noscript><p><a href="/">Browse all documentation chapters</a></p></noscript>
+<h1 id="_top">{entry.data.title}</h1>
+{entry.data.description && <p class="docs-summary">{entry.data.description}</p>}

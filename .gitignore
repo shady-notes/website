@@ -10,3 +10,6 @@ npm-debug.log
 .env
 .env.local
 .env.*.local
+
+# Wrangler local state (api/, downloads/, docs-site/, newsletter/)
+.wrangler/

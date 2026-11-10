@@ -1,0 +1,128 @@
+---
+title: Markdown reference
+description: Every Markdown syntax Shady Notes renders, with examples.
+---
+
+import { Image } from "astro:assets";
+import imgMarkdownKitchenSink from "../../../assets/screenshots/markdown-kitchen-sink.png";
+
+Shady Notes follows CommonMark with GitHub-flavoured extensions, plus a few
+additions of its own.
+
+<Image src={imgMarkdownKitchenSink} alt="A note demonstrating every supported Markdown feature rendered in the editor." />
+
+:::tip
+Type `/kitchensink` on a blank line to drop a note containing every feature
+below, so you can see them all rendered at once.
+:::
+
+## Text
+
+| Syntax | Renders as |
+|---|---|
+| `**bold**` | **bold** |
+| `*italic*` | *italic* |
+| `` `inline code` `` | `inline code` |
+| `~~strikethrough~~` | ~~strikethrough~~ |
+| `==highlight==` | highlighted background |
+| `[text](https://example.com)` | a clickable link |
+| `[[wikilink]]` | a link to another note |
+
+## Headings
+
+```markdown
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+```
+
+Five levels, each scaled and weighted differently. <kbd>⌥⌘1</kbd> through
+<kbd>⌥⌘5</kbd> apply them to the current line.
+
+## Lists
+
+```markdown
+- Bullet item
+* Also a bullet
+1. Numbered item
+```
+
+Lists continue automatically on <kbd>Return</kbd>. Turn that off in
+**Preferences → Editor** if you'd rather they didn't.
+
+## Tasks
+
+```markdown
+- [ ] Unchecked
+- [x] Checked
+[ ] Standalone, no list marker needed
+```
+
+→ [Checkboxes](/writing/checkboxes/)
+
+## Blockquotes and callouts
+
+```markdown
+> An ordinary blockquote.
+
+> [!TIP]
+> A typed callout, with an icon and colour.
+```
+
+→ [Callouts](/writing/callouts/)
+
+## Code
+
+````markdown
+```swift
+let greeting = "Hello, world"
+```
+````
+
+## Tables
+
+```markdown
+| Column | Column |
+|---|---|
+| cell | cell |
+```
+
+→ [Tables](/writing/tables/)
+
+## Images
+
+```markdown
+![alt text](path/to/image.png)
+![[image.png|400]]
+```
+
+The second form is a wikilink-style embed with an explicit width in pixels.
+→ [Images](/writing/images/)
+
+## Emoji
+
+Type `:name:` for an emoji, or `:name|32:` to set its size in points. `/emoji`
+opens a picker.
+
+## Horizontal rule
+
+```markdown
+---
+```
+
+## Front matter
+
+A YAML block at the very top of a file is treated as metadata rather than
+content:
+
+```markdown
+---
+status: in-progress
+tags: [docs, launch]
+---
+```
+
+Plugins read these fields — the Kanban board builds its columns from `status`.
+→ [Plugins](/plugins/overview/)

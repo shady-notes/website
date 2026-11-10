@@ -1,0 +1,67 @@
+---
+title: First run
+description: What happens the first time you launch Shady Notes, and where your notes are kept.
+---
+
+import { Image } from "astro:assets";
+import imgMenubarIcon from "../../assets/screenshots/menubar-icon.png";
+import imgPullTabIdle from "../../assets/screenshots/pull-tab-idle.png";
+import imgPullTabHover from "../../assets/screenshots/pull-tab-hover.png";
+
+The first thing to know: **Shady Notes has no main window.** Nothing appears in
+the Dock's window list, and nothing opens on screen. If you launch it and think
+nothing happened, that is the expected behaviour.
+
+## Find it in the menu bar
+
+Look for the umbrella mark at the right-hand end of the menu bar.
+
+<Image src={imgMenubarIcon} alt="The Shady Notes umbrella icon in the macOS menu bar." />
+
+Just below it hangs a small **pull tab** — the handle for the shade, and the only
+part of the app visible while the shade is closed. It carries the colour of the
+active [workspace](/concepts/workspaces/), so it is grey on a fresh install and
+changes as you switch.
+
+<Image src={imgPullTabIdle} alt="The pull tab collapsed to a small nub beneath the menu bar, in the active workspace's colour." />
+
+The tab shrinks to a dot shortly after your pointer leaves it, and expands again
+on hover, so it stays out of the way without disappearing entirely.
+
+<Image src={imgPullTabHover} alt="The pull tab expanded to its full width as the pointer hovers over it." />
+
+## Open the shade
+
+Any of these work:
+
+- **Scroll down** near the top of the screen
+- **Click the pull tab**
+- Press <kbd>⌃⌥⌘↓</kbd> from any app
+
+The shade slides down over whatever you were looking at. Scroll back up, click
+outside it, or press <kbd>⌃⌥⌘↓</kbd> again to send it away.
+
+[The shade](/concepts/the-shade/) covers this in full, including how to change
+the scroll direction and trigger area.
+
+## Where your notes go
+
+Shady Notes creates a folder at:
+
+```
+~/Documents/ShadyNotes/
+```
+
+Every note is a plain `.md` file inside it. Nothing is stored in a database or a
+proprietary format — you can open the same folder in Obsidian, VS Code, or any
+text editor, and edits made there show up in Shady Notes.
+
+You can point it somewhere else, or add more folders, in
+**Preferences → Vault**. See [Vault and files](/concepts/vault-and-files/).
+
+## Write something
+
+Open the shade and start typing. To create a note, click **+** at the bottom of
+the sidebar; press <kbd>⌥⌘S</kbd> if the sidebar isn't showing.
+
+Next: the [tour](/tour/).

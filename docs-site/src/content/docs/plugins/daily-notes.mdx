@@ -1,0 +1,50 @@
+---
+title: Daily Notes
+description: A dated journal built from your vault.
+---
+
+import { Image } from "astro:assets";
+import { Badge } from '@astrojs/starlight/components';
+import imgPluginDailyNotes from "../../../assets/screenshots/plugin-daily-notes.png";
+
+<Badge text="Premium" variant="caution" /> Part of the plugin platform. See
+[Licensing](/account/licensing/).
+
+A journal view over dated notes.
+
+<Image src={imgPluginDailyNotes} alt="The Daily Notes plugin showing a timeline of dated entries." />
+
+## What it does
+
+Notes are grouped and ordered by date, newest first, so a run of daily notes
+reads as a timeline.
+
+| Action | Result |
+|---|---|
+| **Today's Note** | Opens today's note, creating it if needed — `2026-08-28.md` |
+| **New Entry** | A timestamped entry — `2026-08-28-143022.md` |
+
+Two actions because the two habits differ: one note per day you add to, or a
+separate note per thought.
+
+## Fields it reads
+
+From front matter:
+
+```markdown
+---
+date: 2026-08-28
+mood: focused
+tags: [docs, launch]
+project: shadynotes
+---
+```
+
+`date`, `mood`, `tags` and `project` are used for grouping and filtering. All
+optional — a note with no front matter still appears, dated by filename or
+modification time.
+
+## Filenames
+
+The date format is part of the plugin definition, so `2026-08-28.md` can become
+whatever convention you already use. → [Writing a plugin](/plugins/authoring/)

@@ -1,0 +1,79 @@
+---
+title: Checkboxes
+description: Toggle tasks from the keyboard, in lists, standalone, or inside tables.
+---
+
+import { Image } from "astro:assets";
+import imgCheckboxesList from "../../../assets/screenshots/checkboxes-list.png";
+import imgPrefsCheckboxStyles from "../../../assets/screenshots/prefs-checkbox-styles.png";
+
+<Image src={imgCheckboxesList} alt="A note with a mix of checked and unchecked tasks, some in a bulleted list and one standalone." />
+
+## The two shortcuts
+
+<kbd>⌘T</kbd> is context-aware. What it does depends on the line the cursor is on:
+
+| Cursor is on | <kbd>⌘T</kbd> does |
+|---|---|
+| A line with a checkbox | Toggles between `[ ]` and `[x]` |
+| A blank line | Inserts a standalone `[ ]` |
+| A list item (`-`, `*`, `1.`) | Inserts `[ ]` after the marker |
+
+<kbd>⇧⌘T</kbd> adds or removes the checkbox itself, rather than ticking it.
+
+You can also just click a checkbox to toggle it.
+
+## Standalone checkboxes
+
+Most Markdown editors need a list marker before a task. Shady Notes does not:
+
+```markdown
+[ ] This is a task
+[x] So is this
+```
+
+Handy for a short checklist that doesn't want to be a bulleted list.
+
+## In tables
+
+Checkboxes work inside table cells too, and stay clickable there:
+
+```markdown
+| Task | Done |
+|---|---|
+| Draft the copy | [x] |
+| Review it | [ ] |
+```
+
+## Automatic continuation
+
+Press <kbd>Return</kbd> at the end of a task line and the next line starts as a
+task. Three settings in **Preferences → Editor** control this independently:
+
+- continue **lists**
+- continue **checkbox lists**
+- continue **checkboxes**
+
+An empty task line followed by <kbd>Return</kbd> ends the run, so you are never
+stuck in a list.
+
+## Parent tracking
+
+With **parent checkbox tracking** on, ticking every child under a parent task
+ticks the parent too, and unticking one clears it again.
+
+```markdown
+- [ ] Ship the docs
+  - [x] Write the pages
+  - [ ] Capture screenshots
+```
+
+Tick the second child and the parent completes on its own.
+
+## Appearance
+
+Five checkbox styles are available in **Preferences → Editor**: Rounded + Tick,
+Square + Tick, Circle + Tick, Circle + Dot, and Rounded + Cross. There is also a
+colour mode setting, and an option to use the system checkbox rendering instead.
+
+<Image src={imgPrefsCheckboxStyles} alt="The checkbox style picker in Preferences showing the five available styles." />

@@ -1,0 +1,81 @@
+---
+title: File formats
+description: What Shady Notes writes to disk and what it keeps elsewhere.
+---
+
+Everything Shady Notes writes is either a Markdown file you can read, or macOS
+preferences. There is no database.
+
+## Notes
+
+Plain `.md`, UTF-8, one per note, in your [vault](/concepts/vault-and-files/):
+
+```
+~/Documents/ShadyNotes/
+├── Welcome.md
+├── Meeting Notes.md
+├── Projects/
+│   ├── Roadmap.md
+│   └── Launch Checklist.md
+└── _img/
+    └── diagram.png
+```
+
+Folders in the vault are folders in the sidebar. Rename or move files in Finder
+and Shady Notes follows.
+
+## Front matter
+
+An optional YAML block at the very top:
+
+```markdown
+---
+status: in-progress
+tags: [docs, launch]
+---
+
+# The note starts here
+```
+
+Ignored by the editor except that it is not rendered as content.
+[Plugins](/plugins/overview/) read these fields.
+
+## Wikilinks
+
+```markdown
+[[Another Note]]
+![[diagram.png|400]]
+```
+
+The first links to a note by name; the second embeds an image at a width. Both
+are the Obsidian conventions.
+
+## Attachments
+
+Images go in `_img/` beside your notes by default, configurable in
+**Preferences → Editor**. They are ordinary files — nothing is embedded in the
+`.md`.
+
+## Plugins
+
+A plugin is itself a Markdown file, its behaviour declared in front matter. →
+[Writing a plugin](/plugins/authoring/)
+
+## What is not in the vault
+
+| Lives in macOS preferences | Not in your notes folder |
+|---|---|
+| Window size and position | |
+| Theme | |
+| Open tabs and their order | |
+| Workspaces and file trees | |
+| Starred notes | |
+| Keyboard bindings | |
+
+Version history is separate again — a git repository outside the vault. →
+[The git backend](/history/git-backend/)
+
+## Taking your notes elsewhere
+
+Copy the folder. That is the whole export process: no conversion, and nothing
+left behind but configuration you would not want on another machine anyway.

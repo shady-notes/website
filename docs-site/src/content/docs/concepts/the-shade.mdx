@@ -1,0 +1,77 @@
+---
+title: The shade
+description: How the shade opens, closes, and stays out of your way.
+---
+
+import { Image } from "astro:assets";
+import imgShadeClosed from "../../../assets/screenshots/shade-closed.png";
+import imgShadeOpening from "../../../assets/screenshots/shade-opening.png";
+
+Most notes apps give you another window to manage. Shady Notes puts your notes
+just off the top of the screen instead — a scroll away, above everything else.
+
+<Image src={imgShadeClosed} alt="A desktop with the shade closed; only the small pull tab is visible below the menu bar." />
+
+## Opening and closing
+
+| Action | Effect |
+|---|---|
+| **Scroll down** near the top of the screen | Open |
+| **Scroll up** while open | Close |
+| **Click the pull tab** | Toggle |
+| <kbd>⌃⌥⌘↓</kbd> from any app | Toggle |
+| Click **↑** in the toolbar | Close |
+| Click outside the shade | Close, unless pinned |
+| <kbd>Esc</kbd> | Close, if enabled in Preferences |
+
+<Image src={imgShadeOpening} alt="The shade partway open, hanging below the menu bar with the pull tab at its lower edge." />
+
+### The scroll trigger
+
+The scroll gesture only fires when your pointer is within a set distance of the
+top edge of the frontmost window — the **trigger zone**. That keeps an ordinary
+scroll in a document from yanking the shade down.
+
+Both the zone depth and the scroll direction are in
+**Preferences → Appearance**. Direction defaults to matching your input device,
+so trackpad natural scrolling and a mouse wheel both behave the way you'd expect.
+
+### Esc
+
+<kbd>Esc</kbd> closing the shade is off by default, and it is deliberately
+layered: if a sidebar search is active, the first <kbd>Esc</kbd> clears the
+search and the shade stays put. Only a second press closes it.
+
+## Pinning
+
+Click the **pin** in the toolbar and clicking outside no longer closes the
+shade. Useful when you're copying between the notes and something behind them.
+Click it again to unpin.
+
+## Minimize
+
+<kbd>⇧⌘M</kbd> hides the toolbar and sidebar, leaving only the editing surface.
+A small restore button appears in the tab bar — or floating in the editor if
+only one tab is open. <kbd>⇧⌘M</kbd> again brings the chrome back.
+
+## Window mode
+
+Sometimes you want an ordinary window. Click the **⊡** icon in the toolbar (or
+choose **Window Mode** from the menu bar icon) and the shade detaches into a
+normal, resizable macOS window that behaves like any other app.
+
+Click the icon again — now showing **⇕** — or close the window to go back.
+
+## Size and position
+
+The shade opens 900 pt wide, toward the right of the screen.
+
+| Action | Effect |
+|---|---|
+| Drag the bottom edge | Height |
+| Drag the left or right edge | Width, from that side |
+| Drag a bottom corner | Both |
+| Drag the toolbar or empty tab-bar space | Move it horizontally |
+| Hold <kbd>⇧</kbd> while dragging | Resize symmetrically about the centre |
+
+Minimum size is 400 × 200 pt. Size and position persist until you quit.

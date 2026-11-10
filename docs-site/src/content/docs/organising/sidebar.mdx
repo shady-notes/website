@@ -1,0 +1,61 @@
+---
+title: The sidebar
+description: Browse, search, create, and delete notes from the file tree.
+---
+
+import { Image } from "astro:assets";
+import imgSidebarFileTree from "../../../assets/screenshots/sidebar-file-tree.png";
+import imgSidebarSearch from "../../../assets/screenshots/sidebar-search.png";
+
+Toggle the sidebar with <kbd>⌥⌘S</kbd>, or the toolbar icon. Drag the divider to
+resize it.
+
+<Image src={imgSidebarFileTree} alt="The sidebar file tree with folders expanded and notes listed beneath them." />
+
+## Tabs down the side
+
+The sidebar has several tabs: the **file tree**, **starred** notes,
+**themes**, and **plugins** when you have any enabled.
+
+## Browsing
+
+| Action | How |
+|---|---|
+| Expand or collapse a folder | Click the folder row |
+| Open a note | Click it — opens in a tab |
+| New note | **+** at the bottom |
+| Delete | **−** (asks first; hold <kbd>⌥</kbd> to skip for a single note) |
+| Select several | <kbd>⇧</kbd>-click, at any depth |
+| Reveal in Finder | <kbd>⌥</kbd>-click, or right-click → Reveal in Finder |
+| Toggle preview lines | The **eye** icon at the bottom |
+
+Folders sort alphabetically; files sort by modification date, newest first.
+
+The preview line shows the first line of content from each note without opening
+it. Turn it off for a denser list.
+
+## Searching
+
+<Image src={imgSidebarSearch} alt="The sidebar search field with a term entered and matching notes listed." />
+
+The field at the top searches **every** note in the vault, not just the visible
+folder:
+
+- **Filenames** are matched first, because it is fast
+- then **file contents**
+- results replace the tree, sorted by modification date
+- a spinner shows while a large vault is scanned — the search runs in the
+  background and the app stays responsive
+
+Clear with the **×** or <kbd>Esc</kbd>.
+
+:::note
+Sidebar search covers the current workspace's tree. To search across every file
+tree at once, use the [Navigator](/organising/navigator/).
+:::
+
+## The … menu
+
+- **Reveal in Finder**
+- **Create from Sample** — a new note demonstrating every Markdown feature
+- **Delete All Notes** — every `.md` in the vault, with a confirmation
