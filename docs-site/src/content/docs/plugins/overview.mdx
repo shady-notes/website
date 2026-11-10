@@ -1,0 +1,51 @@
+---
+title: Plugins
+description: What the plugin platform is and how to turn plugins on.
+---
+
+import { Image } from "astro:assets";
+import imgPluginsSidebar from "../../../assets/screenshots/plugins-sidebar.png";
+import { Badge } from '@astrojs/starlight/components';
+import imgPluginScopePicker from "../../../assets/screenshots/plugin-scope-picker.png";
+
+<Badge text="Premium" variant="caution" /> Plugins are one of three features that
+need a trial or a paid plan. See [Licensing](/account/licensing/).
+
+A plugin is a **view over the notes you already have**. It does not store data of
+its own: a Kanban board is your notes arranged by a front-matter field, and a
+task list is the checkboxes already in them. Turn a plugin off and nothing is
+lost, because there was never anything but Markdown underneath.
+
+<Image src={imgPluginsSidebar} alt="The plugins sidebar tab listing the built-in plugins with enable toggles." />
+
+## The built-ins
+
+| Plugin | What it shows |
+|---|---|
+| [Daily Notes](/plugins/daily-notes/) | A dated journal |
+| [Kanban](/plugins/kanban/) | A board built from a `status` field |
+| Board | An Obsidian-Kanban-compatible board |
+| [Tasks](/plugins/tasks/) | Every checkbox in the vault |
+| Recent | Recently modified notes |
+
+## Turning them on
+
+The puzzle-piece tab in the sidebar lists what is available. Toggle a plugin on
+and it appears as a tab alongside your notes.
+
+## Scope
+
+<Image src={imgPluginScopePicker} alt="The plugin scope picker, choosing which folder a plugin reads from." />
+
+Each plugin is pointed at a folder rather than the whole vault, so a board built
+from `Projects/` is not confused by everything in `Archive/`.
+
+## Home pages
+
+A plugin view can be a [workspace](/concepts/workspaces/) home page, so switching
+to **Work** can open its board rather than a note.
+
+## Writing your own
+
+Plugins are Markdown files with a front-matter definition — no compiling, no
+installing a toolchain. → [Writing a plugin](/plugins/authoring/)

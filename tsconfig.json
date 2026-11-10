@@ -7,5 +7,5 @@
     }
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "newsletter"]
+  "exclude": ["dist", "newsletter", "api", "docs-site", "downloads", "homebrew"]
 }

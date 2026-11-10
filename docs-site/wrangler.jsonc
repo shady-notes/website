@@ -1,0 +1,24 @@
+// docs.shadynotes.app — an assets-only Worker serving the Starlight build (dist/).
+// Deploy: `make docs-deploy` (scripts/deploy-docs.sh). History: changes/009-* in the private shadynotes-hostinger repo (archived).
+//
+// HSTS, gzip/brotli, Always Use HTTPS and the TLS floor are zone settings on shadynotes.app,
+// not set here. Cache policy per path lives in public/_headers.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "shadynotes-docs",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // nginx did try_files $uri $uri/ $uri.html: /install -> /install/ -> install/index.html.
+    "html_handling": "auto-trailing-slash",
+    // nginx did error_page 404 /404.html.
+    "not_found_handling": "404-page"
+  },
+  // The route rides on a proxied A record for `docs` that still points at the old VPS address.
+  // The Worker answers every request, so that address is never contacted — but do NOT delete the
+  // record or the route has nothing to attach to. (The VPS shut down on 2026-11-10; there is no
+  // rollback target any more.)
+  "routes": [{ "pattern": "docs.shadynotes.app/*", "zone_name": "shadynotes.app" }],
+  "workers_dev": true,
+  "preview_urls": false
+}

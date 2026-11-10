@@ -1,0 +1,40 @@
+---
+title: Keyboard shortcuts
+description: The complete keyboard shortcut reference for Shady Notes.
+---
+
+import ShortcutTable from "../../../components/ShortcutTable.astro";
+import shortcuts from "../../../data/shortcuts.json";
+
+Shady Notes is built to be driven from the keyboard. Every action below can be
+remapped in **Preferences → Shortcuts**, and any of them can be disabled
+outright if it clashes with something else you use.
+
+:::note
+These are the **defaults**. If you have remapped an action, the app's own
+overlay is the authority — press <kbd>⌘/</kbd> to see your current bindings.
+:::
+
+{shortcuts.groups.map((g) => <ShortcutTable title={g.title} shortcuts={g.shortcuts} />)}
+
+## Global hotkeys
+
+Three shortcuts work from **any** app, not just inside the editor. All three are
+set in **Preferences → Shortcuts**.
+
+| Action | Default |
+|---|---|
+| Toggle the shade | <kbd>⌃⌥⌘↓</kbd> |
+| New sticky note | unset by default |
+| Open the Navigator | unset by default |
+
+## Notes on a few of these
+
+- <kbd>⌘W</kbd> is **Close / Collapse**, not "quit". It closes the current tab,
+  or collapses the shade when only one tab is open.
+- <kbd>⌃E</kbd> toggles **raw Markdown**; <kbd>⌘E</kbd> toggles **read-only**.
+  They are easy to confuse — raw mode changes how the text is *drawn*,
+  read-only changes whether you can *type*.
+- <kbd>⌥⇥</kbd> and <kbd>⌥⇧⇥</kbd> move between **workspaces**, while
+  <kbd>⌃⇥</kbd> and <kbd>⌃⇧⇥</kbd> move between **tabs** inside one workspace.
+- The three Navigator shortcuts only apply inside the Navigator window.

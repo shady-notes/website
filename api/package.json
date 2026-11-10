@@ -1,0 +1,23 @@
+{
+  "name": "shadynotes-api",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Entitlement backend (api.shadynotes.app) as a Cloudflare Worker — verifies Clerk subscriptions and mints app tokens for the macOS app.",
+  "scripts": {
+    "test": "node --test --test-reporter=spec \"test/*.test.js\"",
+    "dev": "wrangler dev --local --port 8788",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@clerk/backend": "2.33.5",
+    "jose": "6.2.17"
+  },
+  "devDependencies": {
+    "jsonwebtoken": "9.0.3",
+    "wrangler": "4.149.0"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

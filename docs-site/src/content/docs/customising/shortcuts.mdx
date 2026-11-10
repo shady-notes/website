@@ -1,0 +1,49 @@
+---
+title: Shortcuts
+description: Remap the global hotkey and every editor action.
+---
+
+import { Image } from "astro:assets";
+import imgPrefsShortcuts from "../../../assets/screenshots/prefs-shortcuts.png";
+
+Every keyboard shortcut can be changed or switched off in
+**Preferences → Shortcuts**.
+
+<Image src={imgPrefsShortcuts} alt="The Shortcuts tab in Preferences listing remappable actions with their current key bindings." />
+
+## Global hotkeys
+
+Three shortcuts work from any app:
+
+| Hotkey | Default |
+|---|---|
+| Toggle the shade | <kbd>⌃⌥⌘↓</kbd> |
+| New sticky note | unset |
+| Open the Navigator | unset |
+
+Click the field and press the combination you want. Because these are captured
+system-wide, pick something no other app claims — if a global hotkey does
+nothing, a conflict is the usual reason.
+
+## Editor actions
+
+Thirty-two actions across six groups — formatting, editor, navigation, zoom,
+headings and Navigator. The full table with defaults is in the
+[keyboard shortcuts reference](/reference/keyboard-shortcuts/).
+
+To rebind one, click its shortcut and press the new combination.
+
+## Disabling one
+
+Every binding can be disabled rather than reassigned. Useful when a Shady Notes
+shortcut shadows one you rely on in the app underneath.
+
+## Restoring defaults
+
+Any changed shortcut can be reset individually to the default listed in the
+reference.
+
+## What cannot be remapped
+
+macOS text-editing shortcuts — <kbd>⌘C</kbd>, <kbd>⌘V</kbd>, <kbd>⌘Z</kbd> and
+the rest — belong to the system and behave as they do everywhere.

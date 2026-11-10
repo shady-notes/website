@@ -1,0 +1,11 @@
+---
+const { sidebar } = Astro.locals.starlightRoute;
+---
+<div class="docs-directory">
+  {sidebar.map((group) => group.type === 'group' && (
+    <section>
+      <h2>{group.label}</h2>
+      {group.entries.map((entry) => entry.type === 'link' && <a href={entry.href}>{entry.label}</a>)}
+    </section>
+  ))}
+</div>

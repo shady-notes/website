@@ -1,0 +1,29 @@
+{
+  "name": "shadynotes-docs",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "End-user documentation for Shady Notes (docs.shadynotes.app).",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview --host 0.0.0.0 --port 4322",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/starlight": "^0.41.9",
+    "@astrojs/starlight-tailwind": "^5.0.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.9",
+    "sharp": "^0.34.4",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.7.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "sharp@0.34.5": true,
+    "sharp@0.35.4": true
+  }
+}

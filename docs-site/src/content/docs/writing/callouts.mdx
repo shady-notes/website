@@ -1,0 +1,56 @@
+---
+title: Callouts
+description: Typed callout blocks for tips, warnings, and notes.
+---
+
+import { Image } from "astro:assets";
+import imgCalloutsGallery from "../../../assets/screenshots/callouts-gallery.png";
+import imgCalloutTypePanel from "../../../assets/screenshots/callout-type-panel.png";
+
+A callout is a blockquote with a type marker on the first line. It renders with
+an icon and its own colour.
+
+```markdown
+> [!TIP]
+> Type `/callout` to insert one without remembering the syntax.
+```
+
+<Image src={imgCalloutsGallery} alt="A note showing all nine callout types rendered with their icons and colours." />
+
+## The nine types
+
+| Type | For |
+|---|---|
+| `[!NOTE]` | Information, facts |
+| `[!TIP]` | Hints and tips |
+| `[!SUCCESS]` | Positive outcomes |
+| `[!WARNING]` | Cautions |
+| `[!DANGER]` | Serious risks |
+| `[!EXAMPLE]` | Worked examples |
+| `[!QUOTE]` | Quotations |
+| `[!ABSTRACT]` | Summaries |
+| `[!QUESTION]` | Open questions |
+
+## Inserting one
+
+`/callout` opens the type picker rather than making you memorise the list.
+
+<Image src={imgCalloutTypePanel} alt="The callout type picker listing the available callout types with their icons." />
+
+## Multi-line and nested
+
+Every line needs the `>` prefix, and callouts take ordinary Markdown inside:
+
+```markdown
+> [!WARNING]
+> Deleting a workspace does **not** delete its notes.
+>
+> - The folder stays on disk
+> - Only the workspace configuration is removed
+```
+
+## Compatibility
+
+This is the same syntax Obsidian and GitHub use, so callouts written here render
+in both. An editor that doesn't know the syntax shows an ordinary blockquote
+with `[!TIP]` as its first line — degraded, but not broken.

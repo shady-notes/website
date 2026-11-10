@@ -1,0 +1,196 @@
+{
+  "_generated": "scripts/gen-shortcuts-json.sh from EditorShortcuts.swift — do not hand-edit",
+  "count": 32,
+  "groups": [
+    {
+      "title": "Formatting",
+      "shortcuts": [
+        {
+          "action": "bold",
+          "name": "Bold",
+          "keys": "⌘B"
+        },
+        {
+          "action": "italic",
+          "name": "Italic",
+          "keys": "⌘I"
+        },
+        {
+          "action": "inlineCode",
+          "name": "Inline Code",
+          "keys": "⌘K"
+        },
+        {
+          "action": "highlight",
+          "name": "Highlight",
+          "keys": "⇧⌘H"
+        },
+        {
+          "action": "codeBlock",
+          "name": "Code Block",
+          "keys": "⇧⌘K"
+        },
+        {
+          "action": "bulletList",
+          "name": "Bullet List",
+          "keys": "⌥⌘8"
+        },
+        {
+          "action": "numberedList",
+          "name": "Numbered List",
+          "keys": "⌥⌘7"
+        },
+        {
+          "action": "toggleCheckbox",
+          "name": "Toggle Checkbox",
+          "keys": "⌘T"
+        },
+        {
+          "action": "toggleCheckboxPrefix",
+          "name": "Toggle Checkbox Prefix",
+          "keys": "⇧⌘T"
+        }
+      ]
+    },
+    {
+      "title": "Editor",
+      "shortcuts": [
+        {
+          "action": "closeWindow",
+          "name": "Close / Collapse",
+          "keys": "⌘W"
+        },
+        {
+          "action": "openSlashMenu",
+          "name": "Open Slash Menu",
+          "keys": "⌘."
+        },
+        {
+          "action": "toggleThemePicker",
+          "name": "Theme Picker",
+          "keys": "⌥⌘T"
+        },
+        {
+          "action": "toggleShortcutsOverlay",
+          "name": "Shortcuts Overlay",
+          "keys": "⌘/"
+        },
+        {
+          "action": "toggleReadOnly",
+          "name": "Toggle Read-Only",
+          "keys": "⌘E"
+        },
+        {
+          "action": "toggleRawMode",
+          "name": "Toggle Raw Markdown",
+          "keys": "⌃E"
+        }
+      ]
+    },
+    {
+      "title": "Navigation",
+      "shortcuts": [
+        {
+          "action": "nextTab",
+          "name": "Next Tab",
+          "keys": "⌃⇥"
+        },
+        {
+          "action": "prevTab",
+          "name": "Previous Tab",
+          "keys": "⌃⇧⇥"
+        },
+        {
+          "action": "nextTabGroup",
+          "name": "Next Tab Group",
+          "keys": "⌥⇥"
+        },
+        {
+          "action": "prevTabGroup",
+          "name": "Previous Tab Group",
+          "keys": "⌥⇧⇥"
+        },
+        {
+          "action": "moveLinesUp",
+          "name": "Move Lines Up",
+          "keys": "⌥↑"
+        },
+        {
+          "action": "moveLinesDown",
+          "name": "Move Lines Down",
+          "keys": "⌥↓"
+        }
+      ]
+    },
+    {
+      "title": "Zoom",
+      "shortcuts": [
+        {
+          "action": "zoomIn",
+          "name": "Zoom In",
+          "keys": "⌘="
+        },
+        {
+          "action": "zoomOut",
+          "name": "Zoom Out",
+          "keys": "⌘-"
+        },
+        {
+          "action": "zoomReset",
+          "name": "Reset Zoom",
+          "keys": "⌘0"
+        }
+      ]
+    },
+    {
+      "title": "Headings",
+      "shortcuts": [
+        {
+          "action": "heading1",
+          "name": "Heading 1",
+          "keys": "⌥⌘1"
+        },
+        {
+          "action": "heading2",
+          "name": "Heading 2",
+          "keys": "⌥⌘2"
+        },
+        {
+          "action": "heading3",
+          "name": "Heading 3",
+          "keys": "⌥⌘3"
+        },
+        {
+          "action": "heading4",
+          "name": "Heading 4",
+          "keys": "⌥⌘4"
+        },
+        {
+          "action": "heading5",
+          "name": "Heading 5",
+          "keys": "⌥⌘5"
+        }
+      ]
+    },
+    {
+      "title": "Navigator",
+      "shortcuts": [
+        {
+          "action": "navigatorShowInFinder",
+          "name": "Show in Finder",
+          "keys": "⇧⌘G"
+        },
+        {
+          "action": "navigatorShowInWorkspace",
+          "name": "Show in Workspace",
+          "keys": "⌘G"
+        },
+        {
+          "action": "navigatorCopyPath",
+          "name": "Copy Path",
+          "keys": "⇧⌘C"
+        }
+      ]
+    }
+  ]
+}

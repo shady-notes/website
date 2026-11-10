@@ -1,0 +1,52 @@
+---
+title: Slash commands
+description: Insert dates, headings, tables, and code blocks without leaving the keyboard.
+---
+
+import { Image } from "astro:assets";
+import imgSlashCommandPanel from "../../../assets/screenshots/slash-command-panel.png";
+
+Type `/` at the start of a blank line, or press <kbd>⌘.</kbd> anywhere, to open
+the command picker. Type to filter, <kbd>↑</kbd><kbd>↓</kbd> to move,
+<kbd>↵</kbd> to insert.
+
+<Image src={imgSlashCommandPanel} alt="The slash command picker open in the editor, listing available commands with icons." />
+
+## The commands
+
+### Structure
+
+| Command | Inserts |
+|---|---|
+| `/h1` `/h2` `/h3` | A heading prefix |
+| `/list` | A bullet list item |
+| `/numbered` | A numbered list item |
+| `/todo` | A task item |
+| `/checkbox` | A standalone checkbox |
+| `/quote` | A blockquote prefix |
+| `/hr` | A horizontal rule |
+| `/table` | A starter table |
+
+### Content
+
+| Command | Inserts |
+|---|---|
+| `/date` | Today's date |
+| `/datetime` | Date and time |
+| `/link` | A link template |
+| `/image` | An image template |
+| `/code` | A fenced code block |
+| `/callout` | A callout, via the type picker |
+| `/emoji` | The emoji picker |
+| `/kitchensink` | A note demonstrating every Markdown feature |
+
+:::note
+Some commands open a picker rather than inserting directly — `/callout` and
+`/emoji` both do. `/kitchensink` is the fastest way to see everything the
+renderer supports at once.
+:::
+
+## Cursor placement
+
+Commands that insert a template park the cursor where you will actually type.
+`/link` leaves it in the link text, not after the closing bracket.

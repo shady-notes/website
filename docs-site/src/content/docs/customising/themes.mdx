@@ -1,0 +1,51 @@
+---
+title: Themes
+description: Sixteen colour themes, and how to switch between them.
+---
+
+import { Image } from "astro:assets";
+import imgThemeGallery from "../../../assets/screenshots/theme-gallery.png";
+import { Badge } from '@astrojs/starlight/components';
+import imgThemePicker from "../../../assets/screenshots/theme-picker.png";
+
+Shady Notes ships **sixteen** themes. Light themes switch the whole interface —
+sidebar, toolbar, window materials — not just the text.
+
+<Image src={imgThemePicker} alt="The theme picker overlay showing colour swatches for each available theme." />
+
+## Switching
+
+| Action | How |
+|---|---|
+| Quick picker | <kbd>⌥⌘T</kbd>, or the toolbar menu |
+| Browse them all | The **Themes** sidebar tab |
+| Preview one | Hover a row — it applies live while you hover |
+| Apply | Click the row |
+
+<Image src={imgThemeGallery} alt="The Themes sidebar tab listing themes with colour swatches and a search field." />
+
+## Dark
+
+Dark · Solarized Dark · Dracula · Catppuccin Mocha · Catppuccin Macchiato ·
+Catppuccin Frappé · Nord · Gruvbox Dark · Tokyo Night · Rosé Pine ·
+**Chromatic Dark**
+
+## Light
+
+Light · Solarized Light · Catppuccin Latte · Gruvbox Light · **Chromatic Light**
+
+## The chromatic pair
+
+**Chromatic Dark** and **Chromatic Light** have no fixed accent. They take their
+colour from the **active [workspace](/concepts/workspaces/)**, so headings, links
+and list markers change as you switch context — the colour tells you where you
+are without reading anything.
+
+## What is free
+
+<Badge text="Premium" variant="caution" /> Three themes are free: **Dark**,
+**Light** and **Nord**. The other thirteen need a trial or a paid plan. See
+[Licensing](/account/licensing/).
+
+The free three are a complete set — one dark, one light, one alternative — rather
+than a crippled default.

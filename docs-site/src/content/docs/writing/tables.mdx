@@ -1,0 +1,68 @@
+---
+title: Tables
+description: Write and navigate Markdown tables without counting pipes.
+---
+
+import { Image } from "astro:assets";
+import imgTableToolbar from "../../../assets/screenshots/table-toolbar.png";
+import imgTableRendered from "../../../assets/screenshots/table-rendered.png";
+
+<Image src={imgTableRendered} alt="A rendered Markdown table with borders and aligned columns." />
+
+## Writing one
+
+The usual pipe syntax:
+
+```markdown
+| Milestone | Target | Status |
+|---|---|---|
+| Public docs | Sep 2026 | In progress |
+| Plugin API v2 | Oct 2026 | Planned |
+```
+
+`/table` inserts a starter skeleton and puts the cursor in the first cell.
+
+## Auto-format
+
+With **auto-format** on (the default), Shady Notes pads the source so the pipes
+line up as you type. The rendered table is unaffected — this is purely so the
+raw Markdown stays readable in another editor.
+
+## Moving around
+
+| Action | Key |
+|---|---|
+| Next cell | <kbd>⇥</kbd> |
+| Previous cell | <kbd>⇧⇥</kbd> |
+| New row below | <kbd>⇧↵</kbd> |
+
+<kbd>⇥</kbd> in the last cell of the last row adds a new row, so you can fill a
+table without reaching for the mouse.
+
+## The table toolbar
+
+Put the cursor inside a table and a small toolbar appears with row and column
+operations.
+
+<Image src={imgTableToolbar} alt="The table toolbar panel floating near a table, showing row and column controls." />
+
+## Formatting inside cells
+
+Cells take inline Markdown — bold, italic, code, links, and checkboxes:
+
+```markdown
+| Task | Owner | Done |
+|---|---|---|
+| Draft **the copy** | @sam | [x] |
+| Review `nginx.conf` | @alex | [ ] |
+```
+
+## Appearance
+
+**Preferences → Editor** controls how tables are drawn:
+
+- **Row lines** and **column lines**, independently
+- **Striped rows**
+- A separate **table font** and size
+
+Turning both line settings off gives a plainer look that suits dense tables.

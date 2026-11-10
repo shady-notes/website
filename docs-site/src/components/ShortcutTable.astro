@@ -1,0 +1,67 @@
+---
+// Renders one group from src/data/shortcuts.json.
+//
+// The data is GENERATED from the app's own EditorShortcuts.swift by
+// scripts/gen-shortcuts-json.sh. Do not hand-write shortcut tables in MDX —
+// they drift the moment a binding changes, and a wrong shortcut in the docs is
+// worse than no shortcut at all.
+interface Shortcut {
+  action: string;
+  name: string;
+  keys: string;
+}
+interface Props {
+  title: string;
+  shortcuts: Shortcut[];
+}
+const { title, shortcuts } = Astro.props;
+---
+
+<h2 id={title.toLowerCase().replace(/\s+/g, "-")}>{title}</h2>
+<div class="shortcut-scroll table-scroll" tabindex="0" role="region" aria-label={title}>
+  <table class="shortcut-table">
+    <thead>
+      <tr><th>Action</th><th>Shortcut</th></tr>
+    </thead>
+    <tbody>
+      {
+        shortcuts.map((s) => (
+          <tr>
+            <td>{s.name}</td>
+            <td><kbd>{s.keys}</kbd></td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  /* Wide content must scroll inside its own container, never the page body. */
+  .shortcut-scroll {
+    overflow-x: auto;
+  }
+  .shortcut-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .shortcut-table th,
+  .shortcut-table td {
+    text-align: left;
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid var(--sl-color-hairline);
+    white-space: nowrap;
+  }
+  .shortcut-table td:first-child {
+    white-space: normal;
+  }
+  kbd {
+    font-family: var(--sl-font-mono);
+    font-size: 0.95em;
+    background: var(--sl-color-bg-inline-code);
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.35rem;
+    padding: 0.1rem 0.45rem;
+    color: var(--sl-color-text-accent);
+  }
+</style>

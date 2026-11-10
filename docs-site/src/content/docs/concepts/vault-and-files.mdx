@@ -1,0 +1,69 @@
+---
+title: Vault and files
+description: Every note is a plain Markdown file on disk. Here is how that works.
+---
+
+import { Image } from "astro:assets";
+import imgFinderVault from "../../../assets/screenshots/finder-vault.png";
+
+Shady Notes has no database and no proprietary format. Every note is a `.md`
+file in a folder you choose.
+
+<Image src={imgFinderVault} alt="A Finder window showing the vault folder containing Markdown files and subfolders." />
+
+The default location is:
+
+```
+~/Documents/ShadyNotes/
+```
+
+## What that buys you
+
+- **Nothing is locked in.** Open the same folder in Obsidian, VS Code, `vim`, or
+  anything else. Edits made elsewhere appear in Shady Notes.
+- **Your existing tools work.** Back it up with Time Machine, sync it with
+  iCloud Drive or Dropbox, put it in a git repo.
+- **Uninstalling loses nothing.** Delete the app and the notes are still there.
+
+:::caution[Sync and conflicts]
+If you sync the folder across machines, two copies of a note can diverge. Shady
+Notes detects this and can show you a three-way diff rather than silently
+picking a winner — see [Conflicts](/history/conflicts/).
+:::
+
+## File trees
+
+You are not limited to one folder. Shady Notes shows one or more **file trees**,
+each a root folder somewhere on disk — say a personal vault, a work notes
+folder, and a code repository's docs directory.
+
+Add and remove them in **Preferences → Vault**. Each tree can:
+
+- carry a **display name** different from its folder name
+- **auto-track new files** it discovers
+- be marked **inactive**, which keeps it out of the combined Navigator view
+  while still being reachable from its own filter
+
+Trees are the raw folders. [Workspaces](/concepts/workspaces/) are how you group
+them into working contexts.
+
+## Attachments
+
+Images pasted or dragged into a note are written into an attachments folder
+alongside your notes — `_img/` by default, configurable in
+**Preferences → Editor**. See [Images](/writing/images/).
+
+## Filenames
+
+New notes are named according to the **naming strategy** in
+**Preferences → Vault** — from the first heading, from the date, or prompted.
+
+## What is *not* in the vault
+
+Your notes and attachments are on disk. Everything else — window size, theme,
+open tabs, workspace setup, starred notes, keyboard bindings — lives in macOS
+preferences, not in the vault. Copying the folder to another Mac brings the
+notes, not the layout.
+
+Version history is separate again: a git repository outside the vault, so it
+never clutters the folder. See [The git backend](/history/git-backend/).

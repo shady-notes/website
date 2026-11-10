@@ -1,0 +1,92 @@
+---
+title: Writing a plugin
+description: Build your own plugin with the front-matter DSL.
+---
+
+import { Image } from "astro:assets";
+import { Badge } from '@astrojs/starlight/components';
+import imgPluginDefinitionViewer from "../../../assets/screenshots/plugin-definition-viewer.png";
+
+<Badge text="Premium" variant="caution" /> Part of the plugin platform. See
+[Licensing](/account/licensing/).
+
+A plugin is **a Markdown file**. No build step, no toolchain, no restart — a
+definition in front matter, and the app renders it.
+
+## The shape
+
+```markdown
+---
+plugin: my-bookshelf
+name: Bookshelf
+icon: book
+schema:
+  - name: title
+    type: string
+  - name: rating
+    type: number
+query:
+  folder: Reading
+  where: status == "finished"
+  sort: rating desc
+layout:
+  type: list
+  fields: [title, rating]
+actions:
+  - name: newBook
+    label: Add a book
+    template: "{{title}}.md"
+---
+```
+
+Five parts:
+
+| Part | Purpose |
+|---|---|
+| `schema` | The front-matter fields this plugin reads |
+| `query` | Which notes to include, and in what order |
+| `layout` | How to draw them |
+| `actions` | Buttons, and what they create |
+| `name` / `icon` | How it appears in the sidebar |
+
+## Queries
+
+`where` takes an expression over front-matter fields and note metadata —
+comparisons, boolean operators, and functions for dates and strings. `sort` takes
+a field and a direction.
+
+## Layouts
+
+Over thirty components are available: lists, tables, boards, cards, timelines,
+counters and more. `layout.type` picks one and `fields` says which values it
+shows.
+
+## Templates
+
+`actions` use a template engine for new-note filenames and content:
+
+```
+{{today | format 'yyyy-MM-dd'}}.md
+```
+
+Filters chain, so dates, string casing and defaults compose.
+
+## Theming
+
+Use the **semantic theme tokens** rather than fixed colours — accent, background,
+muted, and so on. A plugin written against them looks right in all sixteen
+themes, including the two that follow the workspace colour.
+
+## The escape hatch
+
+When the DSL is not enough, a plugin can host a WebView and talk to the app
+through `window.shady.*`. That trades the "it is just Markdown" simplicity for
+arbitrary HTML and JavaScript — reach for it only when the declarative route
+genuinely cannot express what you need.
+
+## Inspecting one
+
+Any plugin's **View Definition** shows its source, which is the quickest way to
+learn the DSL — open a built-in and read it.
+
+<Image src={imgPluginDefinitionViewer} alt="The View Definition panel showing a plugin's front-matter source." />

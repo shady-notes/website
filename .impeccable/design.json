@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-10T05:05:52.804692+00:00",
+  "title": "Design System: Shady Notes Web",
+  "extensions": {
+    "shadows": [
+      {
+        "name": "reference-panel-edge",
+        "value": "0 4px 0 #000",
+        "purpose": "Explicitly selected reference framing for panels."
+      },
+      {
+        "name": "zoom-separation",
+        "value": "0 1.5rem 3rem rgb(0 0 0 / 0.45)",
+        "purpose": "Enlarged docs screenshots only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "control-state",
+        "value": "0.15s ease-out",
+        "purpose": "Button colour changes and screenshot zoom."
+      },
+      {
+        "name": "gesture-shade",
+        "value": "1s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Demonstrated shade movement."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "docs-small",
+        "value": "600px"
+      },
+      {
+        "name": "marketing-medium",
+        "value": "768px"
+      },
+      {
+        "name": "docs-header-links",
+        "value": "960px"
+      },
+      {
+        "name": "marketing-large",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Shared pill action with black hover and visible focus.",
+      "html": "<button class=\"ds-button-primary\">Download</button>",
+      "css": ".ds-button-primary{font-family:-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;font-size:14px;font-weight:600;min-height:44px;padding:10px 20px;border:1px solid #000;border-radius:999px;color:#000;text-decoration:none;transition:background-color .15s ease-out,color .15s ease-out;cursor:pointer;background:var(--accent, #ffd60a);}.ds-button-primary:hover{background:#000;color:#fff;text-decoration:none}.ds-button-primary:focus-visible{outline:3px solid #000;outline-offset:3px}.ds-button-primary:disabled{background:#eee;color:#555;cursor:not-allowed} @media(prefers-reduced-motion:reduce){.ds-button-primary{transition:none}}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Shared pill action with black hover and visible focus.",
+      "html": "<button class=\"ds-button-secondary\">Download</button>",
+      "css": ".ds-button-secondary{font-family:-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;font-size:14px;font-weight:600;min-height:44px;padding:10px 20px;border:1px solid #000;border-radius:999px;color:#000;text-decoration:none;transition:background-color .15s ease-out,color .15s ease-out;cursor:pointer;background:#fff;}.ds-button-secondary:hover{background:#000;color:#fff;text-decoration:none}.ds-button-secondary:focus-visible{outline:3px solid #000;outline-offset:3px}.ds-button-secondary:disabled{background:#eee;color:#555;cursor:not-allowed} @media(prefers-reduced-motion:reduce){.ds-button-secondary{transition:none}}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Shared pill action with black hover and visible focus.",
+      "html": "<button class=\"ds-button-ghost\">Download</button>",
+      "css": ".ds-button-ghost{font-family:-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;font-size:14px;font-weight:600;min-height:44px;padding:10px 20px;border:1px solid #000;border-radius:999px;color:#000;text-decoration:none;transition:background-color .15s ease-out,color .15s ease-out;cursor:pointer;background:transparent;border-color:transparent;text-decoration:underline;}.ds-button-ghost:hover{background:#000;color:#fff;text-decoration:none}.ds-button-ghost:focus-visible{outline:3px solid #000;outline-offset:3px}.ds-button-ghost:disabled{background:#eee;color:#555;cursor:not-allowed} @media(prefers-reduced-motion:reduce){.ds-button-ghost{transition:none}}"
+    },
+    {
+      "name": "Pricing Panel",
+      "kind": "card",
+      "refersTo": "card-pricing",
+      "description": "Framed plan container with the reference panel edge.",
+      "html": "<article class=\"ds-card\"><h2>Personal</h2><p>Pay for the app. Never for your notes.</p></article>",
+      "css": ".ds-card{font-family:-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;background:#fff;color:#000;border:1px solid #000;border-radius:14px;padding:32px;box-shadow:0 4px 0 #000}.ds-card h2{font-size:20px;font-weight:700;letter-spacing:-.025em;margin:0}.ds-card p{font-size:14px;line-height:1.65;color:#555}"
+    },
+    {
+      "name": "Inline Code",
+      "kind": "chip",
+      "refersTo": "code-chip",
+      "description": "Wrapping technical token in reading text.",
+      "html": "<code class=\"ds-code\">~/Documents/ShadyNotes/</code>",
+      "css": ".ds-code{font-family:ui-monospace, \"SF Mono\", Menlo, monospace;font-size:.88em;color:#000;background:var(--tint-soft,#fff9dc);border-radius:5px;padding:2px 6px;overflow-wrap:anywhere}"
+    },
+    {
+      "name": "Chapter Navigation",
+      "kind": "nav",
+      "description": "Current chapter uses a yellow fill and a black leading bar.",
+      "html": "<nav class=\"ds-chapters\" aria-label=\"Chapters\"><a href=\"#install\" aria-current=\"page\">Install Shady Notes</a><a href=\"#write\">Write your first note</a></nav>",
+      "css": ".ds-chapters{font:14px/1.65 -apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", \"Helvetica Neue\", Helvetica, Arial, sans-serif}.ds-chapters a{display:block;padding:8px 12px;color:#000;text-decoration:none}.ds-chapters a[aria-current]{background:var(--tint,#fff3b0);font-weight:700;box-shadow:inset 3px 0 0 #000}.ds-chapters a:hover{background:var(--tint-soft,#fff9dc)}.ds-chapters a:focus-visible{outline:3px solid #000;outline-offset:3px}"
+    },
+    {
+      "name": "Keyboard Key",
+      "kind": "custom",
+      "description": "Physical key label in documentation.",
+      "html": "<kbd class=\"ds-key\">\u2318</kbd>",
+      "css": ".ds-key{font:600 .88em ui-monospace, \"SF Mono\", Menlo, monospace;color:#000;background:#fff;border:1px solid #000;border-bottom-width:2px;border-radius:6px;padding:2px 6px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The High-Contrast Manual",
+    "overview": "White paper, black structure and yellow emphasis make the marketing site and documentation feel like one readable manual. This is the user-selected Dozer reference as implemented for Shady Notes: plain controls, framed product evidence and generous reading space. It replaces the earlier green terminal treatment on web surfaces.\n\nThis file governs `site/` and `docs-site/`. Native macOS imagery, existing brand films and slide decks retain their own visual authority in `brand/brand-brief.md`; their genuine colours are product evidence, not web chrome. The umbrella remains the actual artwork beside the two-word name.",
+    "keyCharacteristics": [
+      "White ground and black text, borders and focus rings.",
+      "Yellow fills and pale yellow reading highlights.",
+      "Sans reading and controls; mono code, paths and pricing data.",
+      "Rounded framed panels and pill controls.",
+      "Real app imagery, shared navigation and shared footer language."
+    ],
+    "rules": [
+      {
+        "name": "The Yellow Fill Rule",
+        "body": "Yellow is a fill or highlight with black text; reading links remain black and underlined.",
+        "section": "colors"
+      },
+      {
+        "name": "The Evidence Colour Rule",
+        "body": "Product screenshots, app theme samples and existing films keep their authentic colours; the surrounding web controls use the web palette.",
+        "section": "colors"
+      },
+      {
+        "name": "The Reading Measure Rule",
+        "body": "Docs article width is 70ch; summaries and prose excerpts stay within 60\u201365ch where their components establish that limit.",
+        "section": "typography"
+      },
+      {
+        "name": "The State Before Lift Rule",
+        "body": "Buttons respond through colour and focus, without hover elevation.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep web reading surfaces white with black structure and yellow emphasis.",
+      "**Do** use black text on yellow and keep reading links underlined.",
+      "**Do** preserve actual app imagery and the real umbrella artwork.",
+      "**Do** keep wide code and tables inside their own scroll boxes.",
+      "**Do** retain visible focus and respect reduced motion."
+    ],
+    "donts": [
+      "**Don't** reintroduce green glow, Matrix rain or dark web chrome from the replaced web system.",
+      "**Don't** apply web colours to native app screenshots or existing authored films.",
+      "**Don't** overlay text on the umbrella or redraw the artwork.",
+      "**Don't** add decorative kickers above page or section headings.",
+      "**Don't** treat the reference's system display face or hard panel edge as permission to reuse those devices in a different visual world."
+    ]
+  }
+}

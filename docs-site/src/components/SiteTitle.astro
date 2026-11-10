@@ -1,0 +1,56 @@
+---
+// Starlight's SiteTitle, with the title linking back to the marketing site
+// instead of to the docs root. Readers arriving from shadynotes.app expect the
+// wordmark to take them home; the docs root is one click away in the sidebar.
+import mark from "../assets/logo.png";
+
+// NOT Astro.props. Starlight renders this component as a bare <SiteTitle />
+// with no props at all and puts the title on Astro.locals.starlightRoute —
+// destructuring Astro.props here gave undefined, so the header rendered an
+// empty <span> and the "Shady Notes" wordmark was simply missing next to the
+// mark. Match Starlight's own SiteTitle.astro if this ever needs revisiting.
+const { siteTitle } = Astro.locals.starlightRoute;
+---
+
+<a href="https://shadynotes.app" class="site-title sl-flex">
+  <span class="site-logo" style={`--mark: url(${mark.src})`} aria-hidden="true" />
+  <span class="site-title-text" translate="no">{siteTitle}</span>
+  <span class="site-title-badge">Docs</span>
+</a>
+
+<style>
+  .site-title {
+    align-items: center;
+    gap: var(--sl-nav-gap);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--sl-color-text-accent);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .site-logo {
+    flex-shrink: 0;
+    /* Starlight's own sizing: fill the nav bar's inner height rather than a
+       fixed 32px, which the removed width/height attributes used to pin. */
+    height: 28px;
+    width: 28px;
+    background: #000;
+    mask: var(--mark) center / contain no-repeat;
+    -webkit-mask: var(--mark) center / contain no-repeat;
+  }
+  .site-title-text {
+    color: var(--sl-color-white);
+  }
+  .site-title-badge {
+    font-size: var(--sl-text-xs);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #000;
+    background: #ffd60a;
+    border: 1px solid #000;
+    border-radius: 999px;
+    padding: 0.1rem 0.45rem;
+  }
+</style>

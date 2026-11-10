@@ -1,0 +1,57 @@
+---
+title: Navigator
+description: A full window for searching and comparing notes across every file tree.
+---
+
+import { Image } from "astro:assets";
+import imgNavigatorWindow from "../../../assets/screenshots/navigator-window.png";
+import imgNavigatorFilters from "../../../assets/screenshots/navigator-filters.png";
+import imgNavigatorDiff from "../../../assets/screenshots/navigator-diff.png";
+
+The shade is deliberately small. The **Navigator** is the opposite: an ordinary,
+resizable window for working across everything at once.
+
+<Image src={imgNavigatorWindow} alt="The Navigator window listing notes from several file trees, with a preview pane and filter pills." />
+
+Open it from the toolbar menu, or with its global hotkey — unset by default,
+assignable in **Preferences → Shortcuts**.
+
+## What it adds
+
+- **Search across every file tree**, not just the current workspace
+- **Preview tabs** for reading without disturbing the shade's tabs
+- **A gutter** showing per-line change markers
+- **A right sidebar** with note metadata
+- **Diff and history panels** for comparing versions
+
+## Workspace filters
+
+<Image src={imgNavigatorFilters} alt="The Navigator's workspace filter pills, with one workspace selected." />
+
+Filter pills across the top scope the list to one workspace, or show everything
+combined.
+
+The combined view respects the **active** flag: a workspace marked inactive in
+**Preferences → Workspaces** is excluded from it, but selecting its pill
+directly still shows its files. That is how you keep an archive searchable
+without it appearing in every result.
+
+## Diff and history
+
+<Image src={imgNavigatorDiff} alt="The Navigator diff panel showing additions and deletions between two versions of a note." />
+
+With [revision history](/history/revisions/) enabled, the Navigator shows a
+note's timeline and diffs any two versions side by side.
+
+## Its own shortcuts
+
+Three shortcuts apply only inside the Navigator:
+
+| Action | Default |
+|---|---|
+| Show in Finder | <kbd>⇧⌘G</kbd> |
+| Show in Workspace | <kbd>⌘G</kbd> |
+| Copy Path | <kbd>⇧⌘C</kbd> |
+
+**Show in Workspace** jumps from a Navigator result to the same note in the
+shade, switching workspace if needed.

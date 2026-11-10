@@ -1,0 +1,26 @@
+---
+import SiteTitle from './SiteTitle.astro';
+import Search from '@astrojs/starlight/components/Search.astro';
+---
+<div class="docs-header">
+  <SiteTitle />
+  <nav aria-label="Site">
+    <a href="https://shadynotes.app/#features">Features</a>
+    <a href="https://shadynotes.app/pricing">Pricing</a>
+    <a href="/" aria-current="page">Docs</a>
+    <a href="https://shadynotes.app/changelog">Changelog</a>
+  </nav>
+  <div class="header-actions"><Search /><a class="download" href="https://shadynotes.app/download">Download</a></div>
+</div>
+<style>
+  .docs-header { display: flex; height: 100%; align-items: center; justify-content: space-between; gap: 24px; }
+  nav, .header-actions { display: flex; align-items: center; gap: 24px; }
+  nav { font-size: 14px; }
+  nav a { color: #555; text-decoration: none; }
+  nav a:hover, nav a[aria-current] { color: #000; text-decoration: underline; }
+  .download { color: #000; background: #ffd60a; border: 1px solid #000; border-radius: 999px; padding: 8px 18px; font-size: 14px; font-weight: 600; text-decoration: none; }
+  .download:hover { background: #000; color: #fff; }
+  @media (max-width: 1100px) { nav { gap: 16px; } .header-actions { gap: 12px; } }
+  @media (max-width: 959px) { nav { display: none; } }
+  @media (max-width: 600px) { .download { display: none; } .docs-header { gap: 12px; } }
+</style>

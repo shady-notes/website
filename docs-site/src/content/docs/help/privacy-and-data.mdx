@@ -1,0 +1,60 @@
+---
+title: Privacy and data
+description: What leaves your Mac, and what never does.
+---
+
+## The short version
+
+**Your notes never leave your Mac.** They are not uploaded, synced, indexed or
+read by us. There is no account requirement to write notes, and no telemetry in
+the editor.
+
+## What does go online
+
+One thing: an **account token**, sent to `api.shadynotes.app` to check whether
+your plan is active.
+
+That request carries the token and nothing else — no note content, no filenames,
+no vault paths, no usage statistics.
+
+It happens when you sign in, and periodically afterwards. Between checks the app
+works offline for 14 days.
+
+:::note
+This is a deliberately precise claim. Shady Notes is not a "nothing ever leaves
+your machine" app — it does contact a server to verify entitlement. What it does
+not do is send anything about your notes.
+:::
+
+## Two other network connections
+
+- **Update checks**, once a day, to the release feed. A version request; nothing
+  about you. → [Updates](/account/updates/)
+- **Sign-in**, which happens in your browser against our authentication
+  provider. The app never sees your password.
+
+## Where things are stored
+
+| What | Where |
+|---|---|
+| Notes and attachments | Your vault folder, as plain files |
+| Account token | The macOS Keychain |
+| Settings, workspaces, starred notes | macOS preferences |
+| Revision history | A git repository on your Mac |
+
+All local. Nothing is on a server.
+
+## If you never sign in
+
+The app works. You get the free tier plus a 14-day trial, and the only network
+traffic is the daily update check.
+
+## Deleting your data
+
+Notes are yours: delete the folder. Sign out to remove the token from the
+Keychain. Uninstalling removes the app and leaves your notes alone.
+
+## The site
+
+The [privacy policy](https://shadynotes.app/privacy) covers shadynotes.app and
+account handling.

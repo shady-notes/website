@@ -1,0 +1,57 @@
+---
+title: Images
+description: Paste, drag, resize, and preview images inside a note.
+---
+
+import { Image } from "astro:assets";
+import imgImageInline from "../../../assets/screenshots/image-inline.png";
+import imgImagePreviewWindow from "../../../assets/screenshots/image-preview-window.png";
+
+## Getting an image in
+
+- **Paste** from the clipboard
+- **Drag** a file into the editor
+
+Either way the file is copied into your attachments folder and a link is
+inserted. The image is not embedded in the note — the `.md` file stays plain
+text with a reference to a real file on disk.
+
+<Image src={imgImageInline} alt="A note with an inline image displayed at a set width." />
+
+## Where the files go
+
+Into `_img/` beside your notes by default. Change the folder name in
+**Preferences → Editor**.
+
+Keeping attachments in a normal folder means they sync, back up and open in
+other apps like any other file.
+
+## Sizing
+
+Two syntaxes:
+
+```markdown
+![alt text](_img/diagram.png)
+![[diagram.png|400]]
+```
+
+The second sets an explicit width in pixels. You can also **drag the edge of an
+image** in the editor to resize it — the number in the link updates as you drag.
+The step size for that drag is configurable in **Preferences → Editor**.
+
+## The preview window
+
+Click an image to open it full size in its own window, where you can page
+through every image in the note.
+
+<Image src={imgImagePreviewWindow} alt="The image preview window showing an image at full size." />
+
+## Dropping several at once
+
+The **multi-image drop mode** setting decides what happens when you drag in more
+than one file — one per line, or laid out together.
+
+## Animated GIFs
+
+Animate in the editor by default. If they are distracting, turn **animate GIFs**
+off in **Preferences → Editor** and they render as a still first frame.

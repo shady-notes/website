@@ -1,0 +1,82 @@
+---
+title: Troubleshooting
+description: Fixes for the problems people hit most often.
+---
+
+## The shade will not open when I scroll
+
+The scroll gesture only fires inside the **trigger zone** near the top of the
+screen, and in the configured direction.
+
+- Move the pointer closer to the top edge
+- Increase **trigger zone depth** in **Preferences → Appearance**
+- Check **scroll direction** — it defaults to matching your input device, so
+  switching between a trackpad and a mouse can surprise you
+- Failing that, click the pull tab or press <kbd>⌃⌥⌘↓</kbd>
+
+## The global hotkey does nothing
+
+Almost always another app has claimed it first. Global hotkeys are
+first-come-first-served in macOS, and the loser gets no error.
+
+Assign a different combination in **Preferences → Shortcuts**.
+
+## I cannot find the app after launching it
+
+There is no window and no Dock entry by design. Look for the umbrella in the
+**menu bar**, with the pull tab below it — grey by default, or whatever colour
+the active workspace uses. The tab shrinks to a dot when the pointer is
+elsewhere. → [First run](/first-run/)
+
+## Changes made in another editor are not showing
+
+- Confirm the file is inside a folder listed in **Preferences → Vault**
+- If the note is open with unsaved changes of yours, the conflict setting
+  decides what happens. **Silent** keeps your version without telling you —
+  switch to **Notify**. → [Conflicts](/history/conflicts/)
+
+## A note has disappeared
+
+Notes are files, so start in Finder:
+
+- Search for the filename with Spotlight — it may have been moved
+- Check the folder is still listed in **Preferences → Vault**; removing a file
+  tree hides its notes without deleting them
+- With [revision history](/history/revisions/) on, a deleted note's history
+  survives and the content can be recovered
+
+## A plugin says it is locked
+
+Plugins are one of the three premium features. Your trial has probably ended. →
+[Licensing](/account/licensing/)
+
+## My theme changed on its own
+
+Thirteen of the sixteen themes are premium. When a trial ends, a premium theme
+falls back to a free one. → [Themes](/customising/themes/)
+
+## Sign-in hangs or never returns
+
+- Let the connect page finish loading before switching away
+- The hand-off uses a `shadynotes://` link — allow your browser to open it
+- The link is single-use; if it failed, start again from
+  **Preferences → Premium**
+- → [Signing in](/account/sign-in/)
+
+## An update will not install
+
+Updates are refused unless both Apple notarisation and an EdDSA signature check
+pass. A failure usually means an interrupted download — try again.
+
+If you installed with Homebrew, use `brew upgrade --cask shadynotes` instead. →
+[Updates](/account/updates/)
+
+## The text is hard to read over what is behind it
+
+The shade is translucent. Reduce transparency, or add an editor background tint,
+in **Preferences → Appearance**.
+
+## Still stuck
+
+Ask in [Discord](https://discord.gg/2TT9Mm9Uzf). Your macOS version and the app
+version from **Preferences → Premium** help.

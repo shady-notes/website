@@ -1,0 +1,28 @@
+---
+// Starlight's Footer, plus the version these docs were written against.
+//
+// DOCUMENTED_VERSION is a single constant (src/config/docs.ts) that the
+// screenshot script's preflight also checks against the installed app, so the
+// docs cannot quietly claim a version they were never verified against.
+import Default from "@astrojs/starlight/components/Footer.astro";
+import { DOCUMENTED_VERSION, CHANGELOG_URL } from "../config/docs";
+---
+
+<Default><slot /></Default>
+
+<p class="docs-version">
+  Documented against Shady Notes <strong>{DOCUMENTED_VERSION}</strong> ·
+  <a href={CHANGELOG_URL}>release notes</a>
+</p>
+<style>
+  .docs-version {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--sl-color-hairline);
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+  }
+  .docs-version a {
+    color: var(--sl-color-text-accent);
+  }
+</style>

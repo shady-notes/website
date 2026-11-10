@@ -1,0 +1,47 @@
+---
+title: Tasks
+description: Every checkbox in your vault, gathered in one place.
+---
+
+import { Image } from "astro:assets";
+import { Badge } from '@astrojs/starlight/components';
+import imgPluginTasks from "../../../assets/screenshots/plugin-tasks.png";
+
+<Badge text="Premium" variant="caution" /> Part of the plugin platform. See
+[Licensing](/account/licensing/).
+
+Tasks scans your notes for [checkboxes](/writing/checkboxes/) and collects them
+into one list, so a to-do scattered across twenty notes is still one to-do list.
+
+<Image src={imgPluginTasks} alt="The Tasks plugin listing checkboxes gathered from across the vault, each linked to its source note." />
+
+## What it finds
+
+Every checkbox, in whatever form:
+
+```markdown
+- [ ] In a bulleted list
+[ ] Standalone
+| Task | [ ] |
+```
+
+Each row links back to the note and line it came from.
+
+## Ticking things off
+
+Ticking a task here **writes to the source note**. There is no separate task
+database to fall out of sync — the note is the record.
+
+## Scope
+
+Point it at a folder rather than the whole vault, so an archive's finished tasks
+do not crowd out live ones.
+
+## Keeping it useful
+
+Because it aggregates everything, Tasks is only as good as your notes are tidy. A
+few habits help:
+
+- Keep genuinely actionable items as checkboxes, and use bullets for notes
+- Delete or archive completed work rather than leaving long ticked lists
+- Scope the plugin to active folders
