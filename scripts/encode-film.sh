@@ -13,8 +13,8 @@
 # green-black backgrounds from banding.
 set -euo pipefail
 
-# brand/ lives next to this repo (not in git): ../brand from the repo root.
-BRAND="$(cd "$(dirname "$0")/../.." && pwd)/brand"
+# Brand media lives at docs/brand in this repo (git-ignored, local only).
+BRAND="$(cd "$(dirname "$0")/.." && pwd)/docs/brand"
 SRC="${1:-$BRAND/promo-videos/shadynotes-brand-film-2min.mp4}"
 OUT="${2:-$BRAND/promo-videos/web}"
 mkdir -p "$OUT"

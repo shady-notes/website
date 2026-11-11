@@ -36,8 +36,9 @@ Hostinger VPS shut down. Each service is a Cloudflare Worker with its own folder
 | `downloads.shadynotes.app` — DMGs, Sparkle appcast, brand film | `downloads/` | the app repo's `make publish` |
 | `subscribe.shadynotes.app` — newsletter sign-up | `newsletter/` | `cd newsletter && npx wrangler deploy` |
 
-The ops targets expect two folders next to this repo: the app repo at `../shadynotes`
-and the brand media (not in git) at `../brand`.
+The ops targets expect the app repo next to this one at `../shadynotes`, and the brand
+media and launch plans at `docs/brand/`. That folder is git-ignored: this repo is
+public, so it stays on your machine only.
 
 Also here: `homebrew/` (the Homebrew cask). The old repo's feature history, the
 community Discord bot (retired with the VPS) and the internal ops guides stay in
