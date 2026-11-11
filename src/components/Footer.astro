@@ -10,7 +10,7 @@ const year = new Date().getFullYear();
 const startYear = siteConfig.buildYearRange.split("–")[0];
 const yearSpan = String(year) === startYear ? startYear : `${startYear}–${year}`;
 
-const groups: { title: string; links: { href: string; label: string; external?: boolean }[] }[] = [
+const groups: { title: string; links: { href: string; label: string; external?: boolean; consent?: boolean }[] }[] = [
   {
     title: "Product",
     links: [
@@ -45,6 +45,10 @@ const groups: { title: string; links: { href: string; label: string; external?: 
       { href: "/terms", label: "Terms" },
       { href: "/privacy", label: "Privacy" },
       { href: "/refund", label: "Refund" },
+      // Re-opens the consent banner (GoogleTag.astro); only when the tag exists.
+      ...(siteConfig.analytics.googleTagId
+        ? [{ href: "/privacy#google-ads", label: "Cookie choices", consent: true }]
+        : []),
     ],
   },
 ];
@@ -81,6 +85,7 @@ const groups: { title: string; links: { href: string; label: string; external?: 
                     href={l.href}
                     rel={l.external ? "noopener noreferrer" : undefined}
                     target={l.external ? "_blank" : undefined}
+                    data-consent-open={l.consent ? "" : undefined}
                     class="inline-flex min-h-11 items-center text-sm text-brand-muted transition-colors hover:text-brand-accent md:min-h-0"
                   >
                     {l.label}

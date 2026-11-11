@@ -1,0 +1,164 @@
+---
+// The Google tag (Google Ads conversions) behind a consent banner. Renders
+// NOTHING while siteConfig.analytics.googleTagId is empty.
+//
+// Consent first, script second: gtag.js is not requested at all until the
+// visitor clicks "Allow". "No thanks" (or ignoring the banner) means no Google
+// request of any kind. The choice is kept in localStorage; the footer's
+// "Cookie choices" link (data-consent-open) shows the banner again.
+//
+// Events, the same for every channel (launch plan 2.2):
+//   download_click     any click on a link to downloads.shadynotes.app
+//   newsletter_signup  the sign-up form's `newsletter:sent` event
+//   purchase           /thanks?plan=…&period=… (Clerk's post-checkout redirect)
+// Pages call window.snTrack(name, params) for anything else; before consent
+// it is a no-op.
+import { siteConfig } from "~/config/site";
+
+const { googleTagId, conversionLabels } = siteConfig.analytics;
+---
+
+{
+  googleTagId && (
+    <>
+      <div
+        id="consent-banner"
+        class="consent-banner fixed inset-x-4 bottom-4 z-50 mx-auto hidden max-w-xl rounded-2xl border border-brand-fg bg-brand-bg p-5 shadow-lg"
+        role="region"
+        aria-label="Cookie choices"
+      >
+        <p class="text-sm text-brand-fg">
+          May we use a Google cookie to measure which ads lead to downloads? Nothing
+          loads unless you allow it. <a href="/privacy#google-ads" class="underline">Details</a>
+        </p>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <button
+            type="button"
+            data-consent="granted"
+            class="inline-flex min-h-11 items-center rounded-full border border-brand-fg bg-brand-cta px-5 font-mono text-sm font-bold text-brand-fg hover:bg-brand-cta-strong"
+          >
+            Allow
+          </button>
+          <button
+            type="button"
+            data-consent="denied"
+            class="inline-flex min-h-11 items-center rounded-full border border-brand-fg px-5 font-mono text-sm font-bold text-brand-fg"
+          >
+            No thanks
+          </button>
+        </div>
+      </div>
+
+      <script is:inline define:vars={{ googleTagId, conversionLabels }}>
+        (() => {
+          const KEY = "sn-consent";
+          const banner = document.getElementById("consent-banner");
+          const read = () => {
+            try { return localStorage.getItem(KEY); } catch { return null; }
+          };
+          const write = (v) => {
+            try { localStorage.setItem(KEY, v); } catch {}
+          };
+
+          let loaded = false;  // gtag.js requested on this page
+          let allowed = false; // visitor's current choice is "Allow"
+          const load = () => {
+            allowed = true;
+            if (loaded) {
+              gtag("consent", "update", { ad_storage: "granted", ad_user_data: "granted" });
+              return;
+            }
+            loaded = true;
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function () { window.dataLayer.push(arguments); };
+            gtag("consent", "default", {
+              ad_storage: "granted",
+              ad_user_data: "granted",
+              ad_personalization: "denied",
+              analytics_storage: "denied",
+            });
+            gtag("js", new Date());
+            gtag("config", googleTagId);
+            const s = document.createElement("script");
+            s.async = true;
+            s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(googleTagId);
+            document.head.appendChild(s);
+          };
+
+          window.snTrack = (name, params = {}) => {
+            if (!allowed) return;
+            gtag("event", name, { transport_type: "beacon", ...params });
+            const label = conversionLabels[name];
+            if (label) {
+              gtag("event", "conversion", {
+                send_to: googleTagId + "/" + label,
+                transport_type: "beacon",
+                ...params,
+              });
+            }
+          };
+
+          const show = () => banner.classList.remove("hidden");
+          const hide = () => banner.classList.add("hidden");
+
+          banner.addEventListener("click", (e) => {
+            const btn = e.target.closest("[data-consent]");
+            if (!btn) return;
+            const choice = btn.dataset.consent;
+            write(choice);
+            hide();
+            if (choice === "granted") {
+              load();
+              firePurchase();
+            } else if (loaded) {
+              // Withdrawn after loading: stop storage now; the next page view
+              // won't load the tag at all.
+              gtag("consent", "update", { ad_storage: "denied", ad_user_data: "denied" });
+              allowed = false;
+            }
+          });
+
+          document.addEventListener("click", (e) => {
+            if (e.target.closest("[data-consent-open]")) {
+              e.preventDefault();
+              show();
+              return;
+            }
+            const a = e.target.closest("a[href]");
+            if (a && a.hostname === "downloads.shadynotes.app") {
+              window.snTrack("download_click", { link_url: a.href });
+            }
+          });
+
+          document.addEventListener("newsletter:sent", () => window.snTrack("newsletter_signup"));
+
+          // /thanks?plan=personal&period=month — sent once per checkout.
+          const PRICES = {
+            personal: { month: 4, annual: 36 },
+            supporter: { month: 8, annual: 72 },
+          };
+          function firePurchase() {
+            if (location.pathname.replace(/\/$/, "") !== "/thanks") return;
+            const q = new URLSearchParams(location.search);
+            const value = PRICES[q.get("plan")]?.[q.get("period")];
+            if (!value) return;
+            const once = "sn-purchase-" + q.get("plan") + "-" + q.get("period") + "-" + new Date().toISOString().slice(0, 10);
+            try {
+              if (sessionStorage.getItem(once)) return;
+              sessionStorage.setItem(once, "1");
+            } catch {}
+            window.snTrack("purchase", { value, currency: "USD" });
+          }
+
+          const choice = read();
+          if (choice === "granted") {
+            load();
+            firePurchase();
+          } else if (choice !== "denied") {
+            show();
+          }
+        })();
+      </script>
+    </>
+  )
+}

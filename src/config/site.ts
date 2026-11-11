@@ -45,6 +45,27 @@ export const siteConfig = {
       "Email me new Shady Notes posts on the topics I picked. I'll confirm by the link you send, and I can unsubscribe from any email.",
   },
 
+  analytics: {
+    // The Google tag for Google Ads conversions (launch plan, Phase 2). EMPTY =
+    // OFF: no script, no consent banner, and the privacy page keeps its
+    // current text. The tag never loads before the visitor clicks "Allow" on
+    // the banner (no cookieless pings either). To turn it on, in one deploy:
+    //   1. `googleTagId` -> the Google Ads tag id, "AW-XXXXXXXXXX".
+    //   2. `conversionLabels` -> the label of each conversion action created in
+    //      Google Ads (Goals -> Conversions -> the action -> Tag setup). An empty
+    //      label still sends the plain gtag event, it just counts in no action.
+    //   3. `policyVersion` -> the go-live date (YYYY-MM-DD). The privacy page
+    //      shows the Google Ads section from then on and dates itself by it, so
+    //      also set the newsletter Worker's POLICY_VERSION to the same date.
+    googleTagId: "",
+    conversionLabels: {
+      download_click: "",
+      purchase: "",
+      newsletter_signup: "",
+    },
+    policyVersion: "",
+  },
+
   download: {
     // macOS — versioned download URL, derived from DMG_VERSION above.
     //
