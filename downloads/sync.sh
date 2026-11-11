@@ -3,12 +3,13 @@
 # Mirrors the old VPS layout: /macos/* (Sparkle feed + DMGs), /media/* (brand film).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-# The folder holding website/, shadynotes/ (app repo) and brand/ side by side.
+# The folder holding website/ and shadynotes/ (app repo) side by side.
+# Brand media lives inside this repo at docs/brand (git-ignored).
 ROOT="$(cd "$HERE/../.." && pwd)"
 [ -d "$ROOT/shadynotes/dist" ] || { echo "✗ no app repo dist/ at $ROOT/shadynotes/dist"; exit 1; }
-[ -d "$ROOT/brand/promo-videos/web" ] || { echo "✗ no brand film renditions at $ROOT/brand/promo-videos/web"; exit 1; }
+FILM_DIR="$HERE/../docs/brand/promo-videos/web"
+[ -d "$FILM_DIR" ] || { echo "✗ no brand film renditions at $FILM_DIR"; exit 1; }
 APP_DIST="$ROOT/shadynotes/dist"
-FILM_DIR="$ROOT/brand/promo-videos/web"
 PUB="$HERE/public"
 VERSION="$(cat "$ROOT/shadynotes/VERSION")"
 

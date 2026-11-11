@@ -24,6 +24,7 @@
 #   make verify-docs     Check docs.shadynotes.app serves correctly (and the site still does)
 #   make docs-check      Run every docs check: build, links, budget, freshness
 #   make docs-shots      Capture the documentation screenshots from the installed app
+#   make downloads-stats  DMG downloads per day (site / update / homebrew / other)
 #   make film-encode     Encode the brand film renditions into docs/brand/promo-videos/web
 #   make film-publish    Deploy those renditions to downloads.shadynotes.app/media
 #   make verify-film     Check the film renditions the site points at
@@ -37,7 +38,7 @@ DOCS     := https://docs.shadynotes.app
 API      := https://api.shadynotes.app
 APP_REPO := ../shadynotes
 
-.PHONY: help build verify verify-download verify-api api-test api-deploy downloads-deploy \
+.PHONY: help build verify verify-download verify-api api-test api-deploy downloads-test downloads-deploy downloads-stats \
         docs-build docs-deploy verify-docs docs-shots docs-shots-budget docs-shots-wired docs-linkcheck \
         docs-freshness docs-check film-encode film-publish verify-film cask-release
 
@@ -191,8 +192,17 @@ verify-api:
 # runs the same two steps plus its own checks. This is for re-deploying as-is.
 # ---------------------------------------------------------------------------
 
-downloads-deploy:
+downloads-test:
+	cd downloads && node --test test/worker.test.js
+
+downloads-deploy: downloads-test
 	cd downloads && ./sync.sh && npx wrangler deploy
+
+# DMG downloads per day, by kind: site (browser) · update (Sparkle) · homebrew · other.
+# Counted by downloads/src/worker.js; nothing about the visitor is stored.
+downloads-stats:
+	cd downloads && npx wrangler d1 execute downloads --remote --command \
+	  "SELECT day, SUM(CASE WHEN kind='site' THEN n ELSE 0 END) AS site, SUM(CASE WHEN kind='update' THEN n ELSE 0 END) AS updates, SUM(CASE WHEN kind='homebrew' THEN n ELSE 0 END) AS homebrew, SUM(CASE WHEN kind='other' THEN n ELSE 0 END) AS other FROM downloads GROUP BY day ORDER BY day DESC LIMIT 60"
 
 # ---------------------------------------------------------------------------
 # Docs site (docs.shadynotes.app) — served by the Cloudflare Worker
