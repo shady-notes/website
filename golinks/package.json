@@ -1,0 +1,18 @@
+{
+  "name": "shadynotes-golinks",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Campaign short links (go.shadynotes.app) with a per-day click count.",
+  "scripts": {
+    "test": "node --test --test-reporter=spec \"test/*.test.js\"",
+    "stats": "wrangler d1 execute golinks --remote --command \"SELECT source, content, SUM(n) AS clicks, MIN(day) AS first, MAX(day) AS last FROM clicks GROUP BY source, content ORDER BY clicks DESC\"",
+    "daily": "wrangler d1 execute golinks --remote --command \"SELECT day, source, SUM(n) AS clicks FROM clicks GROUP BY day, source ORDER BY day DESC, clicks DESC LIMIT 200\""
+  },
+  "devDependencies": {
+    "wrangler": "4.149.0"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

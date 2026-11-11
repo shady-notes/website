@@ -1,0 +1,20 @@
+# Campaign short links: go.shadynotes.app (launch plan 2.3–2.4). See README.md.
+#
+# Deploy: `npx wrangler deploy` from this folder. The custom domain and its DNS
+# record are created by the deploy. No secrets.
+name = "golinks"
+account_id = "65c6972b439fcf80bed005fdcbc9349f"   # Julius@roundrect.com's Account (holds the shadynotes.app zone)
+main = "src/worker.js"
+compatibility_date = "2026-09-01"
+workers_dev = false
+routes = [ { pattern = "go.shadynotes.app", custom_domain = true } ]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "golinks"
+# Created 2026-11-11 with `npx wrangler d1 create golinks --location=oc`.
+database_id = "0a02d9d0-7da5-4acd-b9fb-0d931e9c8e82"
+migrations_dir = "migrations"
+
+[observability]
+enabled = false          # no request logs, so no IP addresses are kept
