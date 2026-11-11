@@ -9,8 +9,9 @@
 #   docs.shadynotes.app       docs-site/                   Worker `shadynotes-docs`    make docs-deploy
 #   downloads.shadynotes.app  downloads/                   Worker `shadynotes-downloads` (the app repo's `make publish`)
 #
-# Expects the app repo and the brand media checked out NEXT TO this repo:
-#   ../shadynotes   (github.com/johnoscott/shadynotes)  ../brand  (local only, not in git)
+# Expects the app repo checked out NEXT TO this repo (../shadynotes,
+# github.com/johnoscott/shadynotes) and the brand media at docs/brand (local only,
+# git-ignored).
 #
 #   make verify          Check the apex serves the live site (GitHub Pages behind Cloudflare)
 #   make verify-download Check the download button serves the current, universal release
@@ -23,7 +24,7 @@
 #   make verify-docs     Check docs.shadynotes.app serves correctly (and the site still does)
 #   make docs-check      Run every docs check: build, links, budget, freshness
 #   make docs-shots      Capture the documentation screenshots from the installed app
-#   make film-encode     Encode the brand film renditions into ../brand/promo-videos/web
+#   make film-encode     Encode the brand film renditions into docs/brand/promo-videos/web
 #   make film-publish    Deploy those renditions to downloads.shadynotes.app/media
 #   make verify-film     Check the film renditions the site points at
 #   make cask-release    Build + notarize the app DMG, upload to GitHub Releases, bump the tap cask
@@ -357,13 +358,13 @@ cask-release:
 
 # ── Brand film (feature 008) ────────────────────────────────────────────────
 # The landing page plays two renditions of brand/promo-videos/shadynotes-brand-
-# film-2min.mp4 (../brand, outside git), hosted on downloads.shadynotes.app/media/
+# film-2min.mp4 (docs/brand, git-ignored), hosted on downloads.shadynotes.app/media/
 # by the downloads Worker. Filenames carry a content hash and are served
 # immutable, so a re-render means: film-encode -> film-publish -> update the two
 # names in src/config/site.ts -> deploy. Publish BEFORE merging the site
 # change: main auto-deploys, and a page pointing at a missing file shows only
 # the poster and "The film is unavailable right now."
-FILM_WEB := ../brand/promo-videos/web
+FILM_WEB := docs/brand/promo-videos/web
 
 film-encode:
 	@./scripts/encode-film.sh

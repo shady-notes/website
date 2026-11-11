@@ -13,3 +13,5 @@ npm-debug.log
 
 # Wrangler local state (api/, downloads/, docs-site/, newsletter/)
 .wrangler/
+# Brand media and internal launch plans: local only (this repo is public).
+/docs/brand/
