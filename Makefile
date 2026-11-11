@@ -201,8 +201,7 @@ downloads-deploy: downloads-test
 # DMG downloads per day, by kind: site (browser) · update (Sparkle) · homebrew · other.
 # Counted by downloads/src/worker.js; nothing about the visitor is stored.
 downloads-stats:
-	cd downloads && npx wrangler d1 execute downloads --remote --command \
-	  "SELECT day, SUM(CASE WHEN kind='site' THEN n ELSE 0 END) AS site, SUM(CASE WHEN kind='update' THEN n ELSE 0 END) AS updates, SUM(CASE WHEN kind='homebrew' THEN n ELSE 0 END) AS homebrew, SUM(CASE WHEN kind='other' THEN n ELSE 0 END) AS other FROM downloads GROUP BY day ORDER BY day DESC LIMIT 60"
+	@node downloads/tools/stats.mjs
 
 # ---------------------------------------------------------------------------
 # Docs site (docs.shadynotes.app) — served by the Cloudflare Worker

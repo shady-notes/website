@@ -1,92 +1,58 @@
 #!/usr/bin/env bash
-# release-cask.sh — full ShadyNotes Homebrew release loop:
-#   make release (app repo, auto-bumps VERSION) → upload DMG to GitHub Releases
-#   → bump version/sha256 in the tap cask → verify upgrade path.
+# release-cask.sh — point the Homebrew cask at the current release.
 #
-# Requirements on the machine running this:
-#   - the app repo checked out next to this repo (../shadynotes from the repo root) with Makefile.config (Developer ID
-#     cert in Keychain + NOTARY_PROFILE stored)
-#   - gh authenticated with push access to $RELEASES_REPO and $TAP_REPO
+# Run AFTER the app repo's `make publish` has put the release on
+# downloads.shadynotes.app. It builds nothing and uploads nothing:
+#   1. read VERSION from the app repo (../shadynotes, next to this repo)
+#   2. check the local DMG is notarised, and that the live versioned DMG on
+#      downloads.shadynotes.app is byte-identical to it
+#   3. bump version + sha256 in the tap cask (juliusnguyen/homebrew-tap) and in
+#      the staged copy here (homebrew/Casks/shadynotes.rb)
 #
-# The app-repo git commit + tag of the VERSION bump stays manual, per that
-# repo's workflow. This script only builds, uploads, and updates the cask.
+# The cask downloads https://downloads.shadynotes.app/macos/ShadyNotes-<v>.dmg,
+# the same file as the website's download button. Until 2026-11-11 this script
+# ran `make release` and uploaded to a GitHub releases repo; that path is gone.
+#
+# Needs: gh with push access to the tap, jq, curl.
 set -euo pipefail
 
-APP_DIR="$(cd "$(dirname "$0")/../../shadynotes" && pwd)"
-RELEASES_REPO="juliusnguyen/shadynotes-releases"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+APP_DIR="$(cd "$ROOT/../shadynotes" && pwd)"
 TAP_REPO="juliusnguyen/homebrew-tap"
 CASK_PATH="Casks/shadynotes.rb"
+STAGED="$ROOT/homebrew/$CASK_PATH"
 
-SKIP_BUILD="${SKIP_BUILD:-}"   # SKIP_BUILD=1 → reuse existing DMG for current VERSION
-
-if [ -z "$SKIP_BUILD" ]; then
-  ( cd "$APP_DIR" && make release )          # bumps VERSION itself
-fi
-
-VERSION="$(cat "$APP_DIR/VERSION")"          # read AFTER the bump
+VERSION="$(cat "$APP_DIR/VERSION")"
 DMG="$APP_DIR/ShadyNotes-$VERSION.dmg"
+URL="https://downloads.shadynotes.app/macos/ShadyNotes-$VERSION.dmg"
 [ -f "$DMG" ] || { echo "✘ missing $DMG"; exit 1; }
 
-echo "━━━ Verifying artifact before upload ━━━"
-xcrun stapler validate "$DMG"
+echo "━━━ Checking v$VERSION ━━━"
+xcrun stapler validate "$DMG" >/dev/null
 spctl --assess --type open --context context:primary-signature "$DMG"
-
 SHA="$(shasum -a 256 "$DMG" | awk '{print $1}')"
-echo "  v$VERSION  sha256=$SHA"
+LIVE="$(curl -fsSL -A "release-cask" "$URL" | shasum -a 256 | awk '{print $1}')" \
+  || { echo "✘ $URL is not live — run the app repo's make publish first"; exit 1; }
+[ "$SHA" = "$LIVE" ] || { echo "✘ live DMG differs from $DMG ($LIVE vs $SHA)"; exit 1; }
+echo "  ✓ notarised, live, identical  sha256=$SHA"
 
-echo "━━━ Uploading to $RELEASES_REPO ━━━"
-if gh release view "v$VERSION" -R "$RELEASES_REPO" >/dev/null 2>&1; then
-  echo "  release v$VERSION exists — uploading asset (clobber)"
-  gh release upload "v$VERSION" "$DMG" -R "$RELEASES_REPO" --clobber
-else
-  gh release create "v$VERSION" "$DMG" -R "$RELEASES_REPO" \
-    -t "Shady Notes $VERSION" -n "See https://shadynotes.app"
-fi
-
-echo "━━━ Bumping cask in $TAP_REPO ━━━"
+echo "━━━ Bumping $TAP_REPO ━━━"
 CUR="$(gh api "repos/$TAP_REPO/contents/$CASK_PATH")"
-NEW="$(printf '%s' "$CUR" | jq -r .content | base64 -d \
-  | sed -E "s/version \"[0-9.]+\"/version \"$VERSION\"/; s/sha256 \"[0-9a-f]+\"/sha256 \"$SHA\"/")"
-gh api -X PUT "repos/$TAP_REPO/contents/$CASK_PATH" \
-  -f message="shadynotes $VERSION" \
-  -f sha="$(printf '%s' "$CUR" | jq -r .sha)" \
-  -f content="$(printf '%s' "$NEW" | base64)" >/dev/null
-echo "  cask now at v$VERSION"
-
-echo "━━━ Self-verifying upgrade path ━━━"
-if brew list --cask shadynotes >/dev/null 2>&1; then
-  brew update
-  brew upgrade --cask shadynotes || brew reinstall --cask shadynotes
-  echo "✓ brew upgraded to $(brew list --cask --versions shadynotes)"
+OLD="$(printf '%s' "$CUR" | jq -r .content | base64 -d)"
+NEW="$(printf '%s\n' "$OLD" | sed -E "s/version \"[0-9.]+\"/version \"$VERSION\"/; s/sha256 \"[0-9a-f]+\"/sha256 \"$SHA\"/")"
+if [ "$NEW" = "$OLD" ]; then
+  echo "  tap already at v$VERSION"
 else
-  echo "  (shadynotes cask not installed locally — skipping brew upgrade check)"
+  gh api -X PUT "repos/$TAP_REPO/contents/$CASK_PATH" \
+    -f message="shadynotes $VERSION" \
+    -f sha="$(printf '%s' "$CUR" | jq -r .sha)" \
+    -f content="$(printf '%s\n' "$NEW" | base64)" >/dev/null
+  echo "  ✓ tap now at v$VERSION"
 fi
 
-echo ""
-echo "══════════════════════════════════════════════"
-echo "  Shady Notes v$VERSION released to Homebrew"
-echo "  Remember: commit + tag the VERSION bump in the app repo"
-echo "══════════════════════════════════════════════"
+sed -i '' -E "s/version \"[0-9.]+\"/version \"$VERSION\"/; s/sha256 \"[0-9a-f]+\"/sha256 \"$SHA\"/" "$STAGED"
+echo "  ✓ staged copy updated: commit homebrew/$CASK_PATH"
 
-# The docs carry a "Documented against <version>" claim in their footer, and it
-# goes stale silently the moment a release ships. Say so here rather than
-# letting the site quietly describe an older build.
-DOCS_CFG="$(cd "$(dirname "$0")/.." && pwd)/docs-site/src/config/docs.ts"
-if [ -f "$DOCS_CFG" ]; then
-  DOCUMENTED=$(grep -oE 'DOCUMENTED_VERSION = "[^"]+"' "$DOCS_CFG" | sed -E 's/.*"([^"]+)".*/\1/')
-  if [ "$DOCUMENTED" != "$VERSION" ]; then
-    echo ""
-    echo "──────────────────────────────────────────────"
-    echo "  DOCS: docs.shadynotes.app still says $DOCUMENTED"
-    echo ""
-    echo "  If this release changed anything user-visible:"
-    echo "    1. re-check the affected pages against the new build"
-    echo "    2. re-capture any screenshot that has changed  (make docs-shots)"
-    echo "    3. bump DOCUMENTED_VERSION in docs-site/src/config/docs.ts"
-    echo "    4. make docs-check && make docs-deploy"
-    echo ""
-    echo "  Bump the number only AFTER re-checking — an honest old"
-    echo "  version beats a wrong new one."
-    echo "──────────────────────────────────────────────"
-  fi
-fi
+echo "━━━ Done ━━━"
+echo "  Users get it with: brew install --cask juliusnguyen/tap/shadynotes"
+echo "  (auto_updates: existing installs update through Sparkle, not brew upgrade)"
