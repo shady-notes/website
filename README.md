@@ -35,6 +35,7 @@ Hostinger VPS shut down. Each service is a Cloudflare Worker with its own folder
 | `docs.shadynotes.app` — Starlight docs | `docs-site/` | `make docs-deploy` |
 | `downloads.shadynotes.app` — DMGs, Sparkle appcast, brand film | `downloads/` | the app repo's `make publish` |
 | `subscribe.shadynotes.app` — newsletter sign-up | `newsletter/` | `cd newsletter && npx wrangler deploy` |
+| `go.shadynotes.app` — campaign short links + click counts | `golinks/` | `cd golinks && npx wrangler deploy` |
 
 The ops targets expect the app repo next to this one at `../shadynotes`, and the brand
 media and launch plans at `docs/brand/`. That folder is git-ignored: this repo is
