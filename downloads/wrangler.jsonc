@@ -3,11 +3,13 @@
 // (2026-11-10); same URLs, so the app's SUFeedURL and the site did not change.
 //
 // public/ is NOT in git: `./sync.sh` fills it from the app repo's dist/ (DMGs,
-// deltas, appcast.xml) and brand/promo-videos/web/ (brand film), both checked
-// out NEXT TO this repo (../../shadynotes, ../../brand). The app repo's
+// deltas, appcast.xml), checked out NEXT TO this repo (../../shadynotes), and
+// the brand film renditions in ../docs/brand/promo-videos/web/. The app repo's
 // `make publish` runs sync.sh + `wrangler deploy` for you. Per-file limit 25 MiB.
 // Cache rules (ported from the old nginx.conf) live in public/_headers, written
-// by sync.sh. src/worker.js runs only for /media/* to serve byte ranges.
+// by sync.sh. src/worker.js runs only for /media/* (byte ranges for the film)
+// and /macos/*.dmg (a daily download count in D1: day, file, kind, n — nothing
+// about the visitor; request logs stay off). Read it with `make downloads-stats`.
 {
   "name": "shadynotes-downloads",
   "account_id": "65c6972b439fcf80bed005fdcbc9349f",
@@ -16,10 +18,20 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": ["/media/*"],
+    "run_worker_first": ["/media/*", "/macos/*.dmg"],
     "not_found_handling": "none",
     "html_handling": "none"
   },
   "workers_dev": true,
-  "routes": [{ "pattern": "downloads.shadynotes.app", "custom_domain": true }]
+  "routes": [{ "pattern": "downloads.shadynotes.app", "custom_domain": true }],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "downloads",
+      // Created 2026-11-11 with `npx wrangler d1 create downloads --location=oc`.
+      "database_id": "655fd930-fbeb-4705-810d-0dcd923c31fe",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "observability": { "enabled": false }
 }
