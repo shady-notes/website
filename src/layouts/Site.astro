@@ -3,6 +3,7 @@ import Base from "~/layouts/Base.astro";
 import Nav from "~/components/Nav.astro";
 import Footer from "~/components/Footer.astro";
 import NewsletterPopup from "~/components/NewsletterPopup.astro";
+import GoogleTag from "~/components/GoogleTag.astro";
 
 interface Props {
   title?: string;
@@ -45,4 +46,5 @@ const popupSource = `popup:${Astro.url.pathname}`.replace(/[^a-z0-9:/_-]/gi, "-"
   </main>
   {!hideFooter && <Footer />}
   {newsletterPopup && <NewsletterPopup source={popupSource} />}
+  <GoogleTag />
 </Base>

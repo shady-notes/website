@@ -25,6 +25,9 @@ const planId =
       : "";
 // Live checkout is gated: until go-live, paid tiers show a disabled CTA.
 const checkoutLive = isPaid && billing.billingLive && Boolean(planId);
+// After a successful checkout Clerk sends the buyer to /thanks; plan and
+// period let the Google tag report the purchase value (GoogleTag.astro).
+const thanksUrl = (period: "month" | "annual") => `/thanks?plan=${tier.id}&period=${period}`;
 
 // Brand-styled CTA (Clerk's unstyled buttons take a class + slotted label).
 const ctaBase =
@@ -113,12 +116,12 @@ const ctaClass = tier.featured
              fights the button's own inline-flex display. */}
           <Show when="signed-in">
             <div data-billing-show="monthly" class="flex">
-              <CheckoutButton planId={planId} planPeriod="month" for="user" asChild><button type="button" class={ctaClass}>
+              <CheckoutButton planId={planId} planPeriod="month" for="user" newSubscriptionRedirectUrl={thanksUrl("month")} asChild><button type="button" class={ctaClass}>
                 {tier.ctaLabel}
               </button></CheckoutButton>
             </div>
             <div data-billing-show="yearly" class="hidden">
-              <CheckoutButton planId={planId} planPeriod="annual" for="user" asChild><button type="button" class={ctaClass}>
+              <CheckoutButton planId={planId} planPeriod="annual" for="user" newSubscriptionRedirectUrl={thanksUrl("annual")} asChild><button type="button" class={ctaClass}>
                 {tier.ctaLabel}
               </button></CheckoutButton>
             </div>
