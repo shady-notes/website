@@ -84,7 +84,9 @@ export const siteConfig = {
     // for any platform whose URL is empty. Fill in when those builds ship.
     windowsUrl: "",
     linuxUrl: "",
-    homebrewCommand: "",
+    // Shown under the Mac card on /download. The tap's cask installs the same
+    // notarised DMG as dmgUrl; scripts/release-cask.sh keeps it current.
+    homebrewCommand: "brew install --cask juliusnguyen/tap/shadynotes",
   },
 
   // The brand film on the homepage (feature 008). Renditions live on the

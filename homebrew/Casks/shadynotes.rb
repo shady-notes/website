@@ -1,25 +1,28 @@
-# Staged copy of the tap cask — the live file belongs in
+# Staged copy of the tap cask. The live file is
 # github.com/juliusnguyen/homebrew-tap : Casks/shadynotes.rb
-# (this copy exists so the cask is versioned/reviewable alongside the infra;
-#  scripts/release-cask.sh updates version/sha256 in the TAP, not here).
+# (this copy exists so the cask is versioned and reviewable alongside the infra;
+#  scripts/release-cask.sh bumps version/sha256 in the TAP and here).
 #
-# Currently pinned to the v4.1.3 AD-HOC TEST build (pipeline validation only);
-# the release script bumps to the notarised 4.1.4 when it exists.
+# Serves the same notarised, versioned DMG as the website's download button, from
+# downloads.shadynotes.app (2026-11-11; it used to point at a GitHub releases repo
+# holding only the 4.1.3 ad-hoc test build). Installs from it are counted in the
+# downloads Worker's `homebrew` column.
 cask "shadynotes" do
-  version "4.1.3"
-  sha256 "fd720a2918699654b90c1e6f680278fe2936f5e7d19dc89faa2fa6882a146bba"
+  version "4.1.19"
+  sha256 "bd4e9c6c7508478b3080c9df373de091e04cac63578c6fc9d16bbbaafbda8188"
 
-  url "https://github.com/juliusnguyen/shadynotes-releases/releases/download/v#{version}/ShadyNotes-#{version}.dmg",
-      verified: "github.com/juliusnguyen/shadynotes-releases/"
+  url "https://downloads.shadynotes.app/macos/ShadyNotes-#{version}.dmg"
   name "Shady Notes"
   desc "Menu-bar markdown notes app that slides down like a window shade"
   homepage "https://shadynotes.app/"
 
   livecheck do
-    url :url
-    strategy :github_latest
+    url "https://downloads.shadynotes.app/macos/appcast.xml"
+    strategy :sparkle, &:short_version
   end
 
+  # The app updates itself with Sparkle; brew leaves it alone unless --greedy.
+  auto_updates true
   depends_on macos: :ventura
 
   app "ShadyNotes.app"
